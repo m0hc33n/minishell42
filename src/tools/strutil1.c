@@ -32,4 +32,3 @@ bool	minishell_iscmdsep(int c)
 		return (true);
 	return (false);
 }
-
