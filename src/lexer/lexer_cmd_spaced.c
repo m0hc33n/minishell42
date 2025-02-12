@@ -1,13 +1,39 @@
 #include "../../inc/lexer.h"
 
+static uint32_t	cmd_spaced_len(char *cmdline, int *sz)
+{
+	while (*cmdline)
+	{
+		if (minishell_iscmdsep(*cmdline))
+		{
+			if (!minishell_iscmdsep(*(cmdline - 1)))
+				(*sz)++;
+			else if (*cmdline != *(cmdline - 1))
+				(*sz)++;
+		}
+		else
+		{
+			if (minishell_iscmdsep(*(cmdline - 1)))
+				(*sz)++;
+		}
+		(*sz)++;
+		cmdline++;
+	}
+	return (STATUS_SUCCESS);
+}
+
 static t_status	init_spaced(t_lexer *lexer)
 {
-	lexer->spaced.sz = cmd_spaced_len(lexer->cmdline); //TODO
-	if (lexer->spaced.sz == 0)
+	uint32_t	spaced_sz;
+
+	spaced_sz = 0;
+	cmd_spaced_len(lexer->cmdline, &spaced_sz);
+	if (spaced_sz == 0)
 		return (STATUS_EMPTYCMD);
-	lexer->spaced.spaced_cmdline = (char *)malloc(lexer->spaced.sz);
+	lexer->spaced.spaced_cmdline = (char *)malloc(spaced_sz);
 	if (!lexer->spaced.spaced_cmdline)
 		return (STATUS_MALLOCERR);
+	lexer->spaced.sz = spaced_sz;
 	return (STATUS_SUCCESS);
 }	
 
@@ -28,26 +54,29 @@ static bool	cmd_ignore_quotes(char **cmdline, char **spaced_cmdline)
 	return (true);
 }
 
-static t_status	cmd_spaced1(char **cmdline, char **spaced_cmdline)
+static t_status	cmd_spaced(char **cmdline, char **spaced_cmdline, bool cmdissep)
 {
-	if (!cmd_ignore_quotes(cmdline, spaced_cmdline))
-		return (STATUS_SYNTAXERR);
-	if (minishell_iscmdsep(*((*cmdline) - 1)))
-		*(*spaced_cmdline)++ = SPACE;
-	*(*spaced_cmdline)++ = *(*cmdline)++;
-	return (STATUS_SUCCESS);
-}
-
-static void	cmd_spaced2(char **cmdline, char **spaced_cmdline)
-{
-	if (minishell_iscmdsep(*((*cmdline) - 1)) && **cmdline == *((*cmdline) - 1))
-		*(*spaced_cmdline)++ = *(*cmdline)++;
-	else
+	if (!cmdissep)
 	{
-		if (*((*cmdline) - 1) != SPACE)
+		if (minishell_iscmdsep(*((*cmdline) - 1)))
 			*(*spaced_cmdline)++ = SPACE;
+		if (!cmd_ignore_quotes(cmdline, spaced_cmdline))
+			return (STATUS_SYNTAXERR);
 		*(*spaced_cmdline)++ = *(*cmdline)++;
 	}
+	else
+	{
+		if (minishell_iscmdsep(*((*cmdline) - 1))
+			&& **cmdline == *((*cmdline) - 1))
+			*(*spaced_cmdline)++ = *(*cmdline)++;
+		else
+		{
+			if (*((*cmdline) - 1) != SPACE)
+				*(*spaced_cmdline)++ = SPACE;
+			*(*spaced_cmdline)++ = *(*cmdline)++;
+		}
+	}
+	return (STATUS_SUCCESS);
 }
 
 t_status	lexer_cmd_spaced(t_lexer *lexer)
@@ -65,12 +94,13 @@ t_status	lexer_cmd_spaced(t_lexer *lexer)
 	{
 		if (!minishell_iscmdsep(*cmdline))
 		{
-			status = cmd_spaced1(&cmdline, &spaced_cmdline);
+			status = cmd_spaced(&cmdline, &spaced_cmdline, false);
 			if (status)
 				return (status);
 		}
 		else
-			cmd_spaced2(&cmdline, &spaced_cmdline);
+			cmd_spaced(&cmdline, &spaced_cmdline, true);
 	}
+	*spaced_cmdline = 0;
 	return (STATUS_SUCCESS);
 }
