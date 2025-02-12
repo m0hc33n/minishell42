@@ -15,7 +15,11 @@ static t_status	lexer_init(t_lexer **lexer, t_minishell *ms)
 		(*lexer)->cmdline = ms->cmdline;
 		(*lexer)->spaced.spaced_cmdline = NULL;
 		(*lexer)->spaced.sz = 0;
-		if ((status = lexer_cmd(*lexer)))
+		status = lexer_cmd(*lexer);
+		if (status)
+			return (status);
+		status = lexer_cmd_split(*lexer);
+		if (status)
 			return (status);
 		(*lexer)->current_position = 0;
 		(*lexer)->sztoken = 0;

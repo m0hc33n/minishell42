@@ -6,10 +6,10 @@ t_status	lexer_cmd(t_lexer *lexer)
 
 	if (lexer)
 	{
-		status = lexer_cmd_spaced(lexer); //TODO
+		status = lexer_cmd_spaced(lexer);
 		if (status)
 			return (status);
-		status = lexer_cmd_split(lexer); //TODO
+		status = lexer_cmd_split(lexer); //WORKING_ON_IT
 		if (status)
 			return (status);
 	}

@@ -1,6 +1,6 @@
 #include "../../inc/lexer.h"
 
-static uint32_t	cmd_spaced_len(char *cmdline, int *sz)
+static t_status	cmd_spaced_len(char *cmdline, uint64_t *sz)
 {
 	while (*cmdline)
 	{
@@ -21,21 +21,6 @@ static uint32_t	cmd_spaced_len(char *cmdline, int *sz)
 	}
 	return (STATUS_SUCCESS);
 }
-
-static t_status	init_spaced(t_lexer *lexer)
-{
-	uint32_t	spaced_sz;
-
-	spaced_sz = 0;
-	cmd_spaced_len(lexer->cmdline, &spaced_sz);
-	if (spaced_sz == 0)
-		return (STATUS_EMPTYCMD);
-	lexer->spaced.spaced_cmdline = (char *)malloc(spaced_sz);
-	if (!lexer->spaced.spaced_cmdline)
-		return (STATUS_MALLOCERR);
-	lexer->spaced.sz = spaced_sz;
-	return (STATUS_SUCCESS);
-}	
 
 static bool	cmd_ignore_quotes(char **cmdline, char **spaced_cmdline)
 {
@@ -78,6 +63,17 @@ static t_status	cmd_spaced(char **cmdline, char **spaced_cmdline, bool cmdissep)
 	}
 	return (STATUS_SUCCESS);
 }
+
+static t_status	init_spaced(t_lexer *lexer)
+{
+	cmd_spaced_len(lexer->cmdline, &lexer->spaced.sz);
+	if (lexer->spaced.sz == 0)
+		return (STATUS_EMPTYCMD);
+	lexer->spaced.spaced_cmdline = (char *)malloc(lexer->spaced.sz);
+	if (!lexer->spaced.spaced_cmdline)
+		return (STATUS_MALLOCERR);
+	return (STATUS_SUCCESS);
+}	
 
 t_status	lexer_cmd_spaced(t_lexer *lexer)
 {
