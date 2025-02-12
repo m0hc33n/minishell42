@@ -49,16 +49,23 @@ typedef struct s_token
 typedef struct s_spaced_cmd
 {
     char        *spaced_cmdline;
-    uint32_t    *sz;
+    uint64_t    *sz;
 }   t_spaced_cmd;
+
+typedef struct s_spaced_cmdline_arr
+{
+	char		**spaced_cmdline_arr;
+	uint64_t	sz;
+}	t_spaced_cmdline_arr;
+
 
 typedef struct s_lexer
 {
-	t_token			*token;
-	uint32_t		sztoken;
-    char            *cmdline;
-    t_spaced_cmd	spaced;
-    char            **spaced_cmdline_arr;
+	t_token					*token;
+	uint32_t				sztoken;
+    char           			*cmdline;
+    t_spaced_cmd			spaced;
+    t_spaced_cmdline_arr	spaced_arr;
     int32_t         current_position;
 }	t_lexer;
 

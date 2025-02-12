@@ -39,8 +39,10 @@ t_status	minishell_lexer(t_minishell *minishell)
 	t_lexer		*lexer;
 	t_status	status;
 
-	if ((status = lexer_init(&lexer, minishell)))
+	status = lexer_init(&lexer, minishell);
+	if (status)
 		return (status);
-	if ((status = lexer_lex(lexer)))
+	status = lexer_lex(lexer);
+	if (status)
 		return (status);
 }

@@ -9,7 +9,7 @@ t_status	lexer_cmd(t_lexer *lexer)
 		status = lexer_cmd_spaced(lexer);
 		if (status)
 			return (status);
-		status = lexer_cmd_split(lexer); //WORKING_ON_IT
+		status = lexer_cmd_split(lexer);
 		if (status)
 			return (status);
 	}
