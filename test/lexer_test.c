@@ -113,6 +113,7 @@ typedef enum e_token_type
     TTOKEN_OR_OP,
     TTOKEN_REDIRECT,
 	TTOKEN_REDIRECT_FILE,
+	TTOKEN_REDIRECT_EOF,
 	TTOKEN_PARENTHESE_OPEN,
 	TTOKEN_PARENTHESE_CLOSE,
     TTOKEN_COMMENT,
@@ -496,8 +497,12 @@ static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
 	t_token	*ltoken;
 
 	ltoken = lex_last_token(lexer->token);
-	if (ltoken && ltoken->ttype == TTOKEN_REDIRECT)
+	if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_GT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
+	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_LT)
+		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_EOF));
 	else
 		return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
 }
@@ -590,7 +595,9 @@ void printtype(t_token_type ttype)
 	else if (ttype == TTOKEN_REDIRECT)
 		printf("REDIRECTION\n");
 	else if (ttype == TTOKEN_REDIRECT_FILE)
-		printf("REDIRECTION FILE\n");
+		printf("REDIRECT OUTPUT\n");
+	else if (ttype == TTOKEN_REDIRECT_EOF)
+		printf("REDIRECT INPUT 'EOF'\n");
 	else if (ttype == TTOKEN_VARIABLE)
 		printf("VARIABLE\n");
 	else if (ttype == TTOKEN_PARENTHESE_OPEN)
@@ -623,7 +630,7 @@ int main(int ac, char **av)
 		printf("===========================\n");
 		printtype(token->ttype);
 		printf("token id    : %d\n", token->tid);
-		printf("token value :%s\n", token->tvalue);
+		printf("token value : %s\n", token->tvalue);
 		token = token->next_token;
 	}
 

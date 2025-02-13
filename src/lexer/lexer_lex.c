@@ -5,8 +5,12 @@ static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
 	t_token	*ltoken;
 
 	ltoken = lex_last_token(lexer->token);
-	if (ltoken && ltoken->ttype == TTOKEN_REDIRECT)
+	if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_GT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
+	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_LT)
+		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_EOF));
 	else
 		return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
 }
