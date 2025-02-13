@@ -26,7 +26,7 @@ static bool	cmd_ignore_quotes(char **cmdline, char **spaced_cmdline)
 {
 	char	quote;
 
-	if (**cmdline == SINGLE_QUOTE || **cmdline == DOUBLE_QUOTE)
+	if (**cmdline == CHAR_SINGLE_QUOTE || **cmdline == CHAR_DOUBLE_QUOTE)
 	{
 		quote = **cmdline;
 		*(*spaced_cmdline)++ = *(*cmdline)++;

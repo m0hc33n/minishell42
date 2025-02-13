@@ -9,7 +9,7 @@ static void	cmd_split_size(const char *s, uint64_t *count)
 	*count = 1;
 	while (*s)
 	{
-		if (*s == SINGLE_QUOTE || *s == DOUBLE_QUOTE)
+		if (*s == CHAR_SINGLE_QUOTE || *s == CHAR_DOUBLE_QUOTE)
 		{
 			quote = *s++;
 			while (*s != quote)
@@ -54,7 +54,7 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 	size_t		i;
 
 	len = 0;
-	if (**spaced == SINGLE_QUOTE || **spaced == DOUBLE_QUOTE)
+	if (**spaced == CHAR_SINGLE_QUOTE || **spaced == CHAR_DOUBLE_QUOTE)
 	{
 		cmd_split_quoted(spaced, lexer, element);
 		return (STATUS_SUCCESS);
