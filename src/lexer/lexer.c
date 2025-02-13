@@ -15,7 +15,7 @@ static t_status	lexer_cmd(t_lexer *lexer)
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_LEXERNULL);
-} 
+}
 
 static t_status	lexer_init(t_lexer **lexer, t_minishell *ms)
 {
@@ -27,17 +27,11 @@ static t_status	lexer_init(t_lexer **lexer, t_minishell *ms)
 		if (!*lexer)
 			return (STATUS_MALLOCERR);
 		ms->lexer = *lexer;
-		(*lexer)->token = NULL;
-		(*lexer)->sztoken = 0;
+		minishell_memset(*lexer, 0, sizeof(t_lexer));
 		(*lexer)->cmdline = ms->cmdline;
-		(*lexer)->spaced.spaced_cmdline = NULL;
-		(*lexer)->spaced.sz = 0;
 		status = lexer_cmd(*lexer);
 		if (status)
 			return (status);
-		(*lexer)->current_position = 0;
-		(*lexer)->sztoken = 0;
-		(*lexer)->token = NULL;
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_LINITERROR);

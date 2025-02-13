@@ -23,11 +23,12 @@ t_token_type	lex_get_token_type(char *token_value)
 		return (cmdsep_token_type(token_value));
 	else
 	{
-		if (*token_value== CHAR_DOLLAR_SIGN)
+		if (*token_value == CHAR_DOLLAR_SIGN)
 			return (TTOKEN_VARIABLE);
 		if (*token_value == CHAR_DASH)
 			return (TTOKEN_OPTION);
-		if (*token_value == CHAR_SINGLE_QUOTE || *token_value == CHAR_DOUBLE_QUOTE)
+		if (*token_value == CHAR_SINGLE_QUOTE
+			|| *token_value == CHAR_DOUBLE_QUOTE)
 			return (TTOKEN_STRING | TTOKEN_ARGUMENT);
 		else
 			return (TTOKEN_ARGUMENT);
@@ -48,8 +49,8 @@ static t_token	*lex_last_token(t_token *token)
 
 t_status	lex_add_token(t_lexer *lexer, char *tvalue, t_token_type ttype)
 {
-	t_token				*token;
-	static	uint32_t	tid;
+	t_token			*token;
+	static uint32_t	tid;
 
 	token = (t_token *)malloc(sizeof(t_token));
 	if (!token)

@@ -29,7 +29,7 @@ int main(int ac, char **av, char **env)
 	while (true)
 	{
 		minishell->cmdline = readline(minishell->prompt);
-		if (!(status = minishell_lexer(minishell)))	 // WORKING ON IT
+		if (!(status = minishell_lexer(minishell)))
 			return (minishell_error(status, &minishell));
 		if (!(status = minishell_parser(minishell)))  // TODO > minishell_parser
 			return (minishell_error(status, &minishell));

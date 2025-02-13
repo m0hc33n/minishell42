@@ -1,5 +1,16 @@
 #include "../../inc/lexer.h"
 
+static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
+{
+	t_token	*ltoken;
+
+	ltoken = lex_last_token(lexer->token);
+	if (ltoken && ltoken->ttype == TTOKEN_REDIRECT)
+		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
+	else
+		return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
+}
+
 static t_status	lex_lex(t_lexer *lexer, char **splited_cmd)
 {
 	bool		tflag;
@@ -11,17 +22,17 @@ static t_status	lex_lex(t_lexer *lexer, char **splited_cmd)
 		if (minishell_iscmdsep(**splited_cmd))
 		{
 			status = lex_add_token(lexer, *splited_cmd,
-				lex_get_token_type(*splited_cmd));
+					lex_get_token_type(*splited_cmd));
 			tflag = true;
 		}
 		else if (tflag)
 		{
-			status = lex_add_token(lexer, *splited_cmd, TTOKEN_COMMAND);
+			status = lex_tflag(lexer, *splited_cmd);
 			tflag = false;
 		}
 		else
 			status = lex_add_token(lexer, *splited_cmd,
-				lex_get_token_type(*splited_cmd));
+					lex_get_token_type(*splited_cmd));
 		if (status)
 			return (status);
 		splited_cmd++;
@@ -32,7 +43,7 @@ static t_status	lex_lex(t_lexer *lexer, char **splited_cmd)
 t_status	lexer_lex(t_lexer *lexer)
 {
 	t_status	status;
-	
+
 	status = lex_lex(lexer, lexer->spaced_arr.spaced_cmdline_arr);
 	if (status)
 		return (status);
