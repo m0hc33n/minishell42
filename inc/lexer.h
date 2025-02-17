@@ -1,7 +1,8 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-#include "tools.h"
+# include "minishell.h"
+# include "tools.h"
 
 // CMD AND WORD SEPARATORS
 # define METACHARACTER "|&()<> "
@@ -69,7 +70,6 @@ typedef struct s_lexer
     char           			*cmdline;
     t_spaced_cmdline		spaced;
     t_spaced_cmdline_arr	spaced_arr;
-    int32_t         current_position;
 }	t_lexer;
 
 t_status		minishell_lexer(t_minishell *minishell);
@@ -78,5 +78,6 @@ t_status    	lexer_cmd_split(t_lexer *lexer);
 t_status		lexer_lex(t_lexer *lexer);
 t_status		lex_add_token(t_lexer *lexer, char *tvalue, t_token_type ttype);
 t_token_type	lex_get_token_type(char *token_vlaue);
+t_status		lexer_validate(t_token *token);
 
 #endif

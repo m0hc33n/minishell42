@@ -31,7 +31,7 @@ int main(int ac, char **av, char **env)
 		minishell->cmdline = readline(minishell->prompt);
 		if (!(status = minishell_lexer(minishell)))
 			return (minishell_error(status, &minishell));
-		if (!(status = minishell_parser(minishell)))  // TODO > minishell_parser
+		if (!(status = minishell_parser(minishell)))  // WORKING_ON > minishell_parser
 			return (minishell_error(status, &minishell));
 		if (!(status = minishell_executer(minishell))) // TODO > minishell_executor
 			return (minishell_error(status, &minishell));

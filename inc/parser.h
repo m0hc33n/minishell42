@@ -1,0 +1,30 @@
+#ifndef PARSER_H
+# define PARSER_H
+
+# include "minishell.h"
+# include "lexer.h"
+
+typedef enum e_node_type
+{
+	TNODE_COMMAND,
+	TNODE_ARG,
+	TNODE_PIPE,
+	TNODE_AND,
+	TNODE_OR,
+	TNODE_IRED,
+	TNODE_ORED,
+	TNODE_IRED_OVER,
+	TNODE_ORED_OVER
+}	t_node_type;
+
+typedef struct s_cmd_tree
+{
+	t_node_type			type;
+	char				*value;
+	struct s_cmd_tree	*right;
+	struct s_cmd_tree	*left;
+} s_cmd_tree;
+
+t_status	minishell_parser(t_minishell *minishell);
+
+#endif
