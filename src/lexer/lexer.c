@@ -48,5 +48,8 @@ t_status	minishell_lexer(t_minishell *minishell)
 	status = lexer_lex(lexer);
 	if (status)
 		return (status);
+	status = lexer_validate(lexer->token);
+	if (status)
+		return (status);
 	return (STATUS_SUCCESS);
 }
