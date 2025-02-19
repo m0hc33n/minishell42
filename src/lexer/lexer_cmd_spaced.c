@@ -20,7 +20,7 @@ static t_status	cmd_spaced_len(char *cmdline, uint64_t *sz)
 		cmdline++;
 	}
 	return (STATUS_SUCCESS);
-}
+} 	
 
 static bool	cmd_ignore_quotes(char **cmdline, char **spaced_cmdline)
 {

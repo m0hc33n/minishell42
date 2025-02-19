@@ -17,13 +17,14 @@ typedef enum e_node_type
 	TNODE_ORED_OVER
 }	t_node_type;
 
-typedef struct s_cmd_tree
+typedef struct s_root
 {
 	t_node_type			type;
 	char				*value;
+	uint32_t			priority;
 	struct s_cmd_tree	*right;
 	struct s_cmd_tree	*left;
-} s_cmd_tree;
+} t_root;
 
 t_status	minishell_parser(t_minishell *minishell);
 

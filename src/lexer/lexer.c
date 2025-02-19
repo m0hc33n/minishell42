@@ -23,11 +23,10 @@ static t_status	lexer_init(t_lexer **lexer, t_minishell *ms)
 
 	if (lexer)
 	{
-		(*lexer) = (t_lexer *)malloc(sizeof(t_lexer));
+		(*lexer) = (t_lexer *)minishell_calloc(1, sizeof(t_lexer));
 		if (!*lexer)
 			return (STATUS_MALLOCERR);
 		ms->lexer = *lexer;
-		minishell_memset(*lexer, 0, sizeof(t_lexer));
 		(*lexer)->cmdline = ms->cmdline;
 		status = lexer_cmd(*lexer);
 		if (status)

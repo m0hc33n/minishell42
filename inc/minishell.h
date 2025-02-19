@@ -37,6 +37,8 @@ typedef struct s_minishell
 	char	*prompt;
 	char	*cmdline;
 	t_lexer	*lexer;
+	t_root	*root;
+	
 }	t_minishell;
 
 // INIT

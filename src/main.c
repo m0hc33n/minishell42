@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 /*
 	TODO
 		* s_minisell init
@@ -19,22 +18,35 @@ t_status	minishell_init(t_minishell **minishell)
 	return (STATUS_MSINITERROR);
 }
 
-int main(int ac, char **av, char **env)
+static t_status minishell(t_minishell *minishell)
 {
-	t_minishell	*minishell;
 	t_status	status;
 
-	if (! (status = minishell_init(&minishell))) // TODO > minishell_init
+	minishell->cmdline = readline(minishell->prompt);
+	status = minishell_lexer(minishell);
+	if (status)
+		return (status);
+	status = minishell_parser(minishell);
+	if (status)
+		return (status);
+	status = minishell_executer(minishell);
+	if (status)
+		return (status);
+	return (STATUS_SUCCESS);
+} 
+
+int main(int ac, char **av, char **env)
+{
+	t_minishell	*ms;
+	t_status	status;
+
+	if (! (status = minishell_init(&ms))) // TODO > minishell_init
 		return (minishell_error(status, NULL)); // TODO > minishell_error
 	while (true)
 	{
-		minishell->cmdline = readline(minishell->prompt);
-		if (!(status = minishell_lexer(minishell)))
-			return (minishell_error(status, &minishell));
-		if (!(status = minishell_parser(minishell)))  // WORKING_ON > minishell_parser
-			return (minishell_error(status, &minishell));
-		if (!(status = minishell_executer(minishell))) // TODO > minishell_executor
-			return (minishell_error(status, &minishell));
-		minishell_reset(&minishell); // TODO > minishell_reset
+		status = minishell(ms);
+		if (status)
+			minishell_error(status); // TODO > minishell_error
+		minishell_reset(&ms); // TODO > minishell_reset
 	}
 }
