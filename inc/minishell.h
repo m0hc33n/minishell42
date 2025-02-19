@@ -29,13 +29,15 @@ typedef enum e_status
 	STATUS_INITFAIL			= 0x000005,
 	STATUS_SYNTAXERR		= 0x000006,
 	STATUS_MALLOCERR		= 0x000007,
-	STATUS_EMPTYCMD			= 0x000008
+	STATUS_EMPTYCMD			= 0x000008,
+	STATUS_ENVFAILED		= 0x000009
 }	t_status;
 
 typedef struct s_minishell
 {
 	char	*prompt;
 	char	*cmdline;
+	char	**env;
 	t_lexer	*lexer;
 	t_root	*root;
 	

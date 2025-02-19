@@ -5,7 +5,7 @@
 		* s_minisell init
 		* segnal init
 */
-t_status	minishell_init(t_minishell **minishell)	
+t_status	minishell_init(t_minishell **minishell, char **env)	
 {
 	if (minishell)
 	{
@@ -13,6 +13,9 @@ t_status	minishell_init(t_minishell **minishell)
 		if (!minishell)
 			return (STATUS_MALLOCERR);
 		(*minishell)->prompt = PROMPT;
+		(*minishell)->env = minishell_get_env(env); // TODO
+		if (!(*minishell)->env)
+			return (STATUS_ENVFAILED);
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_MSINITERROR);
@@ -40,7 +43,7 @@ int main(int ac, char **av, char **env)
 	t_minishell	*ms;
 	t_status	status;
 
-	if (! (status = minishell_init(&ms))) // TODO > minishell_init
+	if (! (status = minishell_init(&ms, env))) // TODO > minishell_init
 		return (minishell_error(status, NULL)); // TODO > minishell_error
 	while (true)
 	{

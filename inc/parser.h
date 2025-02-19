@@ -17,6 +17,13 @@ typedef enum e_node_type
 	TNODE_ORED_OVER
 }	t_node_type;
 
+typedef struct s_env
+{
+	char			*key;
+	char			*value;
+	struct s_env	*next_key
+}	t_env;
+
 typedef struct s_root
 {
 	t_node_type			type;
