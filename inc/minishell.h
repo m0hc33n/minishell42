@@ -44,6 +44,6 @@ typedef struct s_minishell
 }	t_minishell;
 
 // INIT
-t_status	minishell_init(t_minishell **minishell);
+t_status	minishell_init(t_minishell **minishell, char **env);
 
 #endif

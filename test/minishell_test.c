@@ -151,13 +151,23 @@ typedef struct s_lexer
     t_spaced_cmdline		spaced;
     t_spaced_cmdline_arr	spaced_arr;
     int32_t         current_position;
-}	t_lexer;;
+}	t_lexer;
+
+typedef struct s_root
+{
+	t_token_type		type;
+	char				*value;
+	uint32_t			priority;
+	struct s_root		*right;
+	struct s_root		*left;
+} t_root;
 
 typedef struct s_minishell
 {
 	char	*prompt;
 	char	*cmdline;
 	t_lexer	*lexer;
+	t_root	*root;
 }	t_minishell;
 
 typedef enum e_status
@@ -173,6 +183,13 @@ typedef enum e_status
 	STATUS_EMPTYCMD			= 0x000014
 }	t_status;
 
+typedef enum e_default_priority
+{
+	PRIORITY_CRITICAL = 1,
+	PRIORITY_HIGHT,
+	PRIORITY_MEDIUM,
+	PRIORITY_IDLE
+}	t_default_priority;
 
 static t_status	cmd_spaced_len(char *cmdline, uint64_t *sz)
 {
@@ -371,7 +388,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 	spaced = lexer->spaced.spaced_cmdline;
 	while (*spaced)
 	{
-		while (*spaced == SPACE)
+		while (minishell_isspace(*spaced))
 			spaced++;
 		if (!spaced)
 			break ;
@@ -381,6 +398,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 		count++;
 	}
 	lexer->spaced_arr.spaced_cmdline_arr[count] = 0;
+	lexer->sztoken = count;
 	return (STATUS_SUCCESS);
 }
 
@@ -407,21 +425,14 @@ static t_status	lexer_init(t_lexer **lexer, t_minishell *ms)
 
 	if (lexer)
 	{
-		(*lexer) = (t_lexer *)malloc(sizeof(t_lexer));
+		(*lexer) = (t_lexer *)minishell_calloc(1, sizeof(t_lexer));
 		if (!*lexer)
 			return (STATUS_MALLOCERR);
 		ms->lexer = *lexer;
-		(*lexer)->token = NULL;
-		(*lexer)->sztoken = 0;
 		(*lexer)->cmdline = ms->cmdline;
-		(*lexer)->spaced.spaced_cmdline = NULL;
-		(*lexer)->spaced.sz = 0;
 		status = lexer_cmd(*lexer);
 		if (status)
 			return (status);
-		(*lexer)->current_position = 0;
-		(*lexer)->sztoken = 0;
-		(*lexer)->token = NULL;
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_LINITERROR);
@@ -501,10 +512,14 @@ static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
 		&& ltoken->tvalue[0] == CHAR_GT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
 	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
-		&& ltoken->tvalue[0] == CHAR_LT)
+		&& ltoken->tvalue[0] == CHAR_LT && ltoken->tvalue[1] == CHAR_LT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_EOF));
+	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_LT)
+		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
 	else
 		return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
+	return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
 }
 
 static t_status	lex_lex(t_lexer *lexer, char **splited_cmd)
@@ -576,6 +591,91 @@ t_status	minishell_init(t_minishell **minishell)
 
 #define ERR(x) (printf("[!!] error number : %d\n", x))
 
+static t_default_priority	default_priority(t_token_type type)
+{
+	if (type == TTOKEN_AND_OP || type == TTOKEN_OR_OP)
+		return (PRIORITY_CRITICAL);
+	if (type == TTOKEN_REDIRECT
+		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
+		|| type == TTOKEN_PIPE)
+		return (PRIORITY_HIGHT);
+	if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
+		return (PRIORITY_IDLE);
+	return (PRIORITY_MEDIUM);
+}
+
+static void		get_priority(uint32_t i, t_root *nodes, uint32_t size)
+{
+	uint32_t	j;
+	uint32_t	counter;
+
+	nodes[i].priority = default_priority(nodes[i].type);
+	j = 0;
+	counter = 0;
+	while (j <= i)
+	{
+		if (nodes[j].type == TTOKEN_PARENTHESE_OPEN)
+			counter += 1;
+		if (nodes[j].type == TTOKEN_PARENTHESE_CLOSE)
+			counter -= 1;
+		j += 1;
+	}
+	if (nodes[i].type == TTOKEN_PARENTHESE_CLOSE)
+		counter += 1;
+	nodes[i].priority += counter;
+}
+
+static t_root	*parse_tree(t_root *nodes, uint32_t start, uint32_t end)
+{
+	uint32_t	i;
+	uint32_t	prior;
+
+	if (end <= start)
+		return (NULL);
+	prior = start;
+	i = start + 1;
+	while (i < end)
+	{
+		if (nodes[i].priority < nodes[prior].priority)
+			prior = i;
+		i += 1;
+	}
+	nodes[prior].left = parse_tree(nodes, start, prior);
+	nodes[prior].right = parse_tree(nodes, prior + 1, end);
+	return (&nodes[prior]);
+}
+
+static void	fill_nodes(t_root *nodes, t_token *token, uint32_t size)
+{
+	uint32_t	i;
+
+	i = 0;
+	while (i < size)
+	{
+		nodes[i].type = token->ttype;
+		nodes[i].value = token->tvalue; 
+		get_priority(i, nodes, size);
+		i += 1;
+		token = token->next_token;
+	}
+}
+
+t_status	minishell_parser(t_minishell *minishell)
+{
+	t_token		*token;
+	uint32_t	size;
+	t_root	*nodes;
+
+	token = minishell->lexer->token;
+	size = minishell->lexer->sztoken;
+	nodes = (t_root *)malloc(sizeof(t_root) * size);
+	if (!nodes)
+		return (STATUS_MALLOCERR);
+	fill_nodes(nodes, token, size);
+	minishell->root = parse_tree(nodes, 0, size);
+	return (STATUS_SUCCESS);
+}
+
 void printtype(t_token_type ttype)
 {
 	if (ttype == TTOKEN_COMMAND)
@@ -595,7 +695,7 @@ void printtype(t_token_type ttype)
 	else if (ttype == TTOKEN_REDIRECT)
 		printf("REDIRECTION\n");
 	else if (ttype == TTOKEN_REDIRECT_FILE)
-		printf("REDIRECT OUTPUT\n");
+		printf("REDIRECT FILE\n");
 	else if (ttype == TTOKEN_REDIRECT_EOF)
 		printf("REDIRECT INPUT 'EOF'\n");
 	else if (ttype == TTOKEN_VARIABLE)
@@ -607,7 +707,6 @@ void printtype(t_token_type ttype)
 	else if (ttype == TTOKEN_UNKOWN)
 		printf("UNKOWN\n");
 }
-
 
 int main(int ac, char **av)
 {
@@ -624,15 +723,22 @@ int main(int ac, char **av)
 	if (status)	 // WORKING ON IT
 		return (status);
 	// print tokens;
-	t_token *token = minishell->lexer->token;
-	while (token)
-	{
-		printf("===========================\n");
-		printtype(token->ttype);
-		printf("token id    : %d\n", token->tid);
-		printf("token value : %s\n", token->tvalue);
-		token = token->next_token;
-	}
+	// t_token *token = minishell->lexer->token;
+	// while (token)
+	// {
+	// 	printf("===========================\n");
+	// 	printtype(token->ttype);
+	// 	printf("token id    : %d\n", token->tid);
+	// 	printf("token value : %s\n", token->tvalue);
+	// 	token = token->next_token;
+	// }
+
+	status = minishell_parser(minishell);
+
+	if (status)
+		return (status);
+
+	printroot(minishell->root);
 
 	return (0);
 }
