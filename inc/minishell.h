@@ -9,7 +9,10 @@
 # include <readline/readline.h>
 # include <wait.h>
 # include "lexer.h"
-# include "parser.h"s
+# include "parser.h"
+# include "executor.h"
+# include "tools.h"
+
 
 // SHELL PROMPT
 # define PROMPT "MINISHELL> "

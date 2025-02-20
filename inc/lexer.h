@@ -2,7 +2,6 @@
 # define LEXER_H
 
 # include "minishell.h"
-# include "tools.h"
 
 // CMD AND WORD SEPARATORS
 # define METACHARACTER "|&()<> "

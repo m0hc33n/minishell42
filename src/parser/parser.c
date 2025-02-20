@@ -4,11 +4,11 @@ static t_default_priority	default_priority(t_token_type type)
 {
 	if (type == TTOKEN_AND_OP || type == TTOKEN_OR_OP)
 		return (PRIORITY_CRITICAL);
-	if (type == TTOKEN_REDIRECT
+	else if (type == TTOKEN_REDIRECT
 		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
 		|| type == TTOKEN_PIPE)
 		return (PRIORITY_HIGHT);
-	if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
+	else if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
 		return (PRIORITY_IDLE);
 	return (PRIORITY_MEDIUM);
 }

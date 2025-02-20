@@ -2,7 +2,6 @@
 # define PARSER_H
 
 # include "minishell.h"
-# include "lexer.h"
 
 // typedef enum e_node_type
 // {
