@@ -1,21 +1,19 @@
 #include "../../inc/parser.h"
 
-static void	fill_nodes(t_root *nodes, t_token *token, uint32_t size)
+static t_default_priority	default_priority(t_token_type type)
 {
-	uint32_t	i;
-
-	i = 0;
-	while (i < size)
-	{
-		nodes[i].type = token->ttype;
-		nodes[i].value = token->tvalue; 
-		get_priority(i, nodes, size);
-		i += 1;
-		token = token->next_token;
-	}
+	if (type == TTOKEN_AND_OP || type == TTOKEN_OR_OP)
+		return (PRIORITY_CRITICAL);
+	if (type == TTOKEN_REDIRECT
+		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
+		|| type == TTOKEN_PIPE)
+		return (PRIORITY_HIGHT);
+	if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
+		return (PRIORITY_IDLE);
+	return (PRIORITY_MEDIUM);
 }
 
-static void		get_priority(uint32_t i, t_root *nodes, uint32_t size)
+static void		get_priority(uint32_t i, t_root *nodes)
 {
 	uint32_t	j;
 	uint32_t	counter;
@@ -34,18 +32,6 @@ static void		get_priority(uint32_t i, t_root *nodes, uint32_t size)
 	if (nodes[i].type == TTOKEN_PARENTHESE_CLOSE)
 		counter += 1;
 	nodes[i].priority += counter;
-}
-
-static uint32_t	default_priority(t_token_type type)
-{
-	if (type == TTOKEN_AND_OP || type == TTOKEN_OR_OP)
-		return (1);
-	if (type == TTOKEN_REDIRECT || type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
-		|| type == TTOKEN_PIPE)
-		return (2);
-	if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
-		return (4);
-	return (3);
 }
 
 static t_root	*parse_tree(t_root *nodes, uint32_t start, uint32_t end)
@@ -68,11 +54,26 @@ static t_root	*parse_tree(t_root *nodes, uint32_t start, uint32_t end)
 	return (&nodes[prior]);
 }
 
+static void	fill_nodes(t_root *nodes, t_token *token, uint32_t size)
+{
+	uint32_t	i;
+
+	i = 0;
+	while (i < size)
+	{
+		nodes[i].type = token->ttype;
+		nodes[i].value = token->tvalue; 
+		get_priority(i, nodes);
+		i += 1;
+		token = token->next_token;
+	}
+}
+
 t_status	minishell_parser(t_minishell *minishell)
 {
+	t_root		*nodes;
 	t_token		*token;
 	uint32_t	size;
-	t_root	*nodes;
 
 	token = minishell->lexer->token;
 	size = minishell->lexer->sztoken;
