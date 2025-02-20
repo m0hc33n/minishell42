@@ -9,8 +9,11 @@ static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
 		&& ltoken->tvalue[0] == CHAR_GT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
 	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
-		&& ltoken->tvalue[0] == CHAR_LT)
+		&& ltoken->tvalue[0] == CHAR_LT && ltoken->tvalue[1] == CHAR_LT)
 		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_EOF));
+	else if (ltoken && ltoken->ttype == TTOKEN_REDIRECT
+		&& ltoken->tvalue[0] == CHAR_LT)
+		return (lex_add_token(lexer, tvalue, TTOKEN_REDIRECT_FILE));
 	else
 		return (lex_add_token(lexer, tvalue, TTOKEN_COMMAND));
 }

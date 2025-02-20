@@ -94,7 +94,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 	spaced = lexer->spaced.spaced_cmdline;
 	while (*spaced)
 	{
-		while (*spaced == SPACE)
+		while (minishell_isspace(*spaced))
 			spaced++;
 		if (!spaced)
 			break ;
@@ -104,5 +104,6 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 		count++;
 	}
 	lexer->spaced_arr.spaced_cmdline_arr[count] = 0;
+	lexer->sztoken = count;
 	return (STATUS_SUCCESS);
 }
