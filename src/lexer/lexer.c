@@ -41,6 +41,9 @@ t_status	minishell_lexer(t_minishell *minishell)
 	t_lexer		*lexer;
 	t_status	status;
 
+	/*
+		BUG1 : handle arg string case where `"something""something"` is one arg;
+	*/
 	status = lexer_init(&lexer, minishell);
 	if (status)
 		return (status);

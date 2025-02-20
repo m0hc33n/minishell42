@@ -52,3 +52,15 @@ uint64_t	minishell_strlcpy(char *dst, const char *src, uint64_t dstsize)
 		*(dst + i) = '\0';
 	return (src_len);
 }
+
+bool	minishell_strcmp(char *s1, char *s2)
+{
+	while (*s1 || *s2)
+	{
+		if (*s1 != *s2)
+			return (false);
+		s1++;
+		s2++;
+	}
+	return (true);
+}

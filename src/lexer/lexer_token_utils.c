@@ -29,7 +29,7 @@ t_token_type	lex_get_token_type(char *token_value)
 			return (TTOKEN_OPTION);
 		if (*token_value == CHAR_SINGLE_QUOTE
 			|| *token_value == CHAR_DOUBLE_QUOTE)
-			return (TTOKEN_STRING | TTOKEN_ARGUMENT);
+			return (TTOKEN_STRING);
 		else
 			return (TTOKEN_ARGUMENT);
 	}

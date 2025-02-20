@@ -260,7 +260,7 @@ static t_status	init_spaced(t_lexer *lexer)
 	cmd_spaced_len(lexer->cmdline, &lexer->spaced.sz);
 	if (lexer->spaced.sz == 0)
 		return (STATUS_EMPTYCMD);
-	lexer->spaced.spaced_cmdline = (char *)malloc(lexer->spaced.sz);
+	lexer->spaced.spaced_cmdline = (char *)malloc(lexer->spaced.sz + 1);
 	if (!lexer->spaced.spaced_cmdline)
 		return (STATUS_MALLOCERR);
 	return (STATUS_SUCCESS);
@@ -332,7 +332,13 @@ void	cmd_split_quoted(char **spaced, t_lexer *lexer,
 	len = 0;
 	quote = *(*spaced)++;
 	while (*((*spaced) + len) != quote)
+	while (*((*spaced) + len))
+	{
+		if (*((*spaced) + len) == quote
+			&& (*((*spaced) + len + 1) == SPACE) || *((*spaced) + len) == '\0')
+			break ;
 		len++;
+	}
 	len += 2;
 	lexer->spaced_arr.spaced_cmdline_arr[element]
 		= (char *)minishell_calloc(len + 1, 1);
@@ -723,22 +729,20 @@ int main(int ac, char **av)
 	if (status)	 // WORKING ON IT
 		return (status);
 	// print tokens;
-	// t_token *token = minishell->lexer->token;
-	// while (token)
-	// {
-	// 	printf("===========================\n");
-	// 	printtype(token->ttype);
-	// 	printf("token id    : %d\n", token->tid);
-	// 	printf("token value : %s\n", token->tvalue);
-	// 	token = token->next_token;
-	// }
+	t_token *token = minishell->lexer->token;
+	while (token)
+	{
+		printf("===========================\n");
+		printtype(token->ttype);
+		printf("token id    : %d\n", token->tid);
+		printf("token value : %s\n", token->tvalue);
+		token = token->next_token;
+	}
 
-	status = minishell_parser(minishell);
+	// status = minishell_parser(minishell);
 
-	if (status)
-		return (status);
-
-	printroot(minishell->root);
+	// if (status)
+	// 	return (status);
 
 	return (0);
 }

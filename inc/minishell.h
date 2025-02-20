@@ -6,6 +6,7 @@
 # include <stdbool.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
 # include <readline/readline.h>
 # include <wait.h>
 # include "lexer.h"
@@ -43,6 +44,7 @@ typedef struct s_minishell
 	char	**env;
 	t_lexer	*lexer;
 	t_root	*root;
+	int32_t	exit_code;
 	
 }	t_minishell;
 

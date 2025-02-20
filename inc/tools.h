@@ -4,6 +4,7 @@
 #include "minishell.h"
 
 // STRING FUNCTIONS
+bool		minishell_strcmp(char *s1, char *s2);
 bool		minishell_strchr(const char *s, int c);
 uint32_t	minishell_strlen(const char *s);
 uint64_t	minishell_strlcpy(char *dst, const char *src,

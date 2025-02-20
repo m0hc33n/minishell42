@@ -33,7 +33,7 @@ typedef struct s_env
 
 typedef struct s_root
 {
-	t_token_type			type;
+	t_token_type		type;
 	char				*value;
 	uint32_t			priority;
 	struct s_root		*right;

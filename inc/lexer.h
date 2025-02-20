@@ -27,6 +27,7 @@ typedef enum e_token_type
     TTOKEN_OPTION,
     TTOKEN_ARGUMENT,
     TTOKEN_STRING,
+    TTOKEN_VARIABLE,
     TTOKEN_PIPE,
     TTOKEN_AND_OP,
     TTOKEN_OR_OP,
@@ -36,7 +37,6 @@ typedef enum e_token_type
 	TTOKEN_PARENTHESE_OPEN,
 	TTOKEN_PARENTHESE_CLOSE,
     TTOKEN_COMMENT,
-    TTOKEN_VARIABLE,
     TTOKEN_UNKOWN
 }	t_token_type;
 
