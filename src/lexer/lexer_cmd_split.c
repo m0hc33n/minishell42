@@ -12,7 +12,7 @@ static void	cmd_split_size(const char *s, uint64_t *count)
 		if (*s == CHAR_SINGLE_QUOTE || *s == CHAR_DOUBLE_QUOTE)
 		{
 			quote = *s++;
-			while (*s != quote)
+			while ((*s && *s != quote) || (*s && *s != SPACE))
 				s++;
 			s++;
 			(*count)++;
@@ -35,16 +35,21 @@ void	cmd_split_quoted(char **spaced, t_lexer *lexer,
 	char		quote;
 	uint64_t	len;
 
-	len = 0;
-	quote = *(*spaced)++;
+	len = 1;
+	quote = *(*spaced);
 	while (*((*spaced) + len) != quote)
 		len++;
-	len += 2;
+	len += 1;
+	if (*((*spaced) + len) && *((*spaced) + len) != SPACE)
+	{
+		while (*((*spaced) + len) && *((*spaced) + len) != SPACE)
+			len++;
+	}
 	lexer->spaced_arr.spaced_cmdline_arr[element]
 		= (char *)minishell_calloc(len + 1, 1);
 	minishell_strlcpy(lexer->spaced_arr.spaced_cmdline_arr[element],
-		*(spaced) - 1, len + 1);
-	*spaced += len;
+		*(spaced), len + 1);
+	*spaced += len;	
 }
 
 static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
@@ -96,7 +101,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 	{
 		while (minishell_isspace(*spaced))
 			spaced++;
-		if (!spaced)
+		if (!*spaced)
 			break ;
 		status = cmd_split_word(&spaced, lexer, count);
 		if (status)
