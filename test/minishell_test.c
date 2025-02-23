@@ -720,26 +720,26 @@ int main(int ac, char **av)
 	if (status) // TODO > minishell_init
 		return (status); // TODO > minishell_error
 	
-	while (1)
-	{
-		minishell->cmdline = readline(minishell->prompt);
+	// while (1)
+	// {
+	 	minishell->cmdline = readline(minishell->prompt);
 
-		status = minishell_lexer(minishell);
-		if (status)	 // WORKING ON IT
-			return (status);
-		// print tokens;
-		t_token *token = minishell->lexer->token;
-		while (token)
-		{
-			printf("===========================\n");
-			printtype(token->ttype);
-			printf("token id    : %d\n", token->tid);
-			printf("token value : %s\n", token->tvalue);
-			token = token->next_token;
-		}
-	}
+	 	status = minishell_lexer(minishell);
+	// 	if (status)	 // WORKING ON IT
+	// 		return (status);
+	// 	// print tokens;
+	// 	t_token *token = minishell->lexer->token;
+	// 	while (token)
+	// 	{
+	// 		printf("===========================\n");
+	// 		printtype(token->ttype);
+	// 		printf("token id    : %d\n", token->tid);
+	// 		printf("token value : %s\n", token->tvalue);
+	// 		token = token->next_token;
+	// 	}
+	// }
 
-	// status = minishell_parser(minishell);
+	status = minishell_parser(minishell);
 
 	// if (status)
 	// 	return (status);
