@@ -22,10 +22,11 @@ static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
 	exit(EXIT_FAILURE);
 }
 
-static bool	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
+static void	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
 {
 	int32_t pipe_fd[2];
 	pid_t	pid;
+	int32_t	status;
 
 	if (node == NULL || node->type == TTOKEN_PARENTHESE_CLOSE
 		|| node->type == TTOKEN_PARENTHESE_OPEN)
@@ -45,12 +46,10 @@ static bool	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
 			pipeit(node->right, pipe_fd[PIPE_READ_END], exit_code);
 		else
 			pipeit(node->right, input_fd, exit_code);
-		waitpid(pid, &exit_code, 0);
-		if (WIFEXITED(*exit_code) && WEXITSTATUS(*exit_code) != 0)
-			return ;
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(*exit_code) && WEXITSTATUS(status) != 0)
+			*exit_code = WEXITSTATUS(status);
     }
-	else
-        *exit_code = 1;
 }
 
 void	exec_pipe(t_root *root, int32_t *exit_code)
