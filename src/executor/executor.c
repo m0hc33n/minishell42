@@ -7,13 +7,13 @@ static void	executor_exec(t_root *root, int32_t *exit_code)
 		if (root->type == TTOKEN_AND_OP)
 		{
 			executor_exec(root->left, exit_code);
-			if (!exit_code)
+			if (!*exit_code)
 				executor_exec(root->right, exit_code);
 		}
 		else if (root->type == TTOKEN_OR_OP)
 		{
 			executor_exec(root->left, exit_code);
-			if (exit_code)
+			if (*exit_code)
 				executor_exec(root->right, exit_code);
 		}
 		else if (root->type == TTOKEN_PIPE)
