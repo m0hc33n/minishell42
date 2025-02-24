@@ -1,20 +1,5 @@
 #include "../../inc/executor.h"
 
-static char **getargs_init(t_root *root, int32_t *argc)
-{
-	char		**argv;
-
-	if (root)
-	{
-		*argc = getargs_argc(root);
-		argv = (char **)malloc(sizeof(char *) * *argc);
-		if (argv)
-			return (NULL);
-		return (argv);
-	}
-	return (NULL);
-}
-
 static uint32_t getargs_argc(t_root *root)
 {	
 	uint32_t	sz;
@@ -22,7 +7,8 @@ static uint32_t getargs_argc(t_root *root)
 	sz = 0;
 	if (root)
 	{
-		while (root)
+		while (root && root->type != TTOKEN_PARENTHESE_CLOSE
+		&& root->type != TTOKEN_PARENTHESE_OPEN)
 		{
 			sz++;
 			root = root->right;
@@ -31,6 +17,21 @@ static uint32_t getargs_argc(t_root *root)
 	}
 	return (0);
 }	
+
+static char **getargs_init(t_root *root, int32_t *argc)
+{
+	char		**argv;
+
+	if (root)
+	{
+		*argc = getargs_argc(root);
+		argv = (char **)malloc(sizeof(char *) * (*argc + 1));
+		if (!argv)
+			return (NULL);
+		return (argv);
+	}
+	return (NULL);
+}
 
 char	**executor_getargs(t_root *root)
 {
@@ -48,10 +49,12 @@ char	**executor_getargs(t_root *root)
 		argv[count++] = root->value;
 		root = root->right;
 	}
-	while (root)
+	while (root && root->type != TTOKEN_PARENTHESE_CLOSE
+		&& root->type != TTOKEN_PARENTHESE_OPEN)
 	{
 		argv[count++] = root->value;
 		root = root->right;
 	}
+	argv[count] = 0;
 	return (argv);
 }

@@ -3,7 +3,9 @@
 
 #include "minishell.h"
 
-# define CHILD_PROCESS 0x000000
+# define CHILD_PROCESS 0x00000000
+# define PIPE_READ_END 0x00000000
+# define PIPE_WRITE_END 0x00000001
 
 // EXECUTION
 t_status	minishell_executor(t_minishell *minishell);

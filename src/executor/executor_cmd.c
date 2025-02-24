@@ -5,7 +5,7 @@ void	exec_cmd(t_root *root, int32_t *exit_code)
 	char		**argv;
 	uint32_t	procid;
 
-	argv = executor_getargs(root); //TODO
+	argv = executor_getargs(root);
 	// TODO : ADD SUPPORT TO `*`
 	procid = fork();
 	if (procid == CHILD_PROCESS)

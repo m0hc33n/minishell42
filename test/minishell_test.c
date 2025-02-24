@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdint.h>
-#include <readline/readline.h>
+# include <stdio.h>
+# include <stdint.h>
+# include <stdbool.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <fcntl.h>
+# include <readline/readline.h>
+# include <wait.h>
 
 
 # define CMDSEP "|&()><"
@@ -166,8 +168,11 @@ typedef struct s_minishell
 {
 	char	*prompt;
 	char	*cmdline;
+	char	**env;
 	t_lexer	*lexer;
 	t_root	*root;
+	int32_t	exit_code;
+	
 }	t_minishell;
 
 typedef enum e_status
@@ -602,7 +607,7 @@ static t_default_priority	default_priority(t_token_type type)
 		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
 		|| type == TTOKEN_PIPE)
 		return (PRIORITY_HIGHT);
-	if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
+	if (type == TTOKEN_PARENTHESE_OPEN || type == TTOKEN_PARENTHESE_CLOSE)
 		return (PRIORITY_IDLE);
 	return (PRIORITY_MEDIUM);
 }
@@ -711,6 +716,187 @@ void printtype(t_token_type ttype)
 		printf("UNKOWN\n");
 }
 
+
+
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////EXECUTION///////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+// args
+
+static uint32_t getargs_argc(t_root *root)
+{	
+	uint32_t	sz;
+
+	sz = 0;
+	if (root)
+	{
+		while (root && root->type != TTOKEN_PARENTHESE_CLOSE
+			&& root->type != TTOKEN_PARENTHESE_OPEN)
+		{
+			sz++;
+			root = root->right;
+		}
+		return (sz);
+	}
+	return (0);
+}	
+
+static char **getargs_init(t_root *root, int32_t *argc)
+{
+	char		**argv;
+
+	if (root)
+	{
+		*argc = getargs_argc(root);
+		argv = (char **)malloc(sizeof(char *) * (*argc + 1));
+		if (!argv)
+			return (NULL);
+		return (argv);
+	}
+	return (NULL);
+}
+
+char	**executor_getargs(t_root *root)
+{
+	char		**argv;
+	uint32_t	argc;
+	uint32_t	count;
+
+	count = 0;
+	argv = NULL;
+	argv = getargs_init(root, &argc);
+	if (!argv || !argc)
+		return (NULL);
+	if (root->value == TTOKEN_COMMAND)
+	{
+		argv[count++] = root->value;
+		root = root->right;
+	}
+	while (root && root->type != TTOKEN_PARENTHESE_CLOSE
+		&& root->type != TTOKEN_PARENTHESE_OPEN)
+	{
+		argv[count++] = root->value;
+		root = root->right;
+	}
+	argv[count] = 0;
+	return (argv);
+}
+
+//pipes
+
+# define CHILD_PROCESS 0x00000000
+# define PIPE_READ_END 0x00000000
+# define PIPE_WRITE_END 0x00000001
+
+static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
+{
+	char	**argv;
+
+	if (input_fd != 0)
+	{
+		dup2(input_fd, 0);
+		close(input_fd);
+	}
+	if (node->type == TTOKEN_PIPE)
+	{
+		dup2(output_fd, 1);
+		close(output_fd);
+		argv = executor_getargs(node->left);
+	}
+	else if (node->type != TTOKEN_PARENTHESE_CLOSE
+		&& node->type != TTOKEN_PARENTHESE_OPEN)
+		argv = executor_getargs(node);
+	execve(argv[0], argv, NULL);
+	exit(EXIT_FAILURE);
+}
+
+static void	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
+{
+    int32_t 	pipe_fd[2];
+	uint32_t	pid;
+	uint32_t	status;
+
+    if (node == NULL || node->type == TTOKEN_PARENTHESE_CLOSE
+		|| node->type == TTOKEN_PARENTHESE_OPEN)
+		return ;
+    if (node->type == TTOKEN_PIPE)
+        pipe(pipe_fd);
+    pid = fork();
+    if (pid == CHILD_PROCESS)
+		pipeit_child(node, input_fd, pipe_fd[1]);
+	else if (pid > 0)
+	{
+        if (input_fd != 0)
+            close(input_fd); // Close the old input
+        if (node->type == TTOKEN_PIPE)
+            close(pipe_fd[1]); // Close the write end of the pipe
+		if (node->type == TTOKEN_PIPE)
+       		pipeit(node->right, pipe_fd[0], exit_code);
+		else
+			pipeit(node->right, input_fd, exit_code);
+        waitpid(pid, &status, 0);
+		if (WIFEXITED(*exit_code))
+			*exit_code =  WEXITSTATUS(*exit_code);
+		if (exit_code)
+			return ;
+    } 
+	else
+        *exit_code = 1;
+}
+
+void	exec_pipe(t_root *root, int32_t *exit_code)
+{
+	if (root)
+	{
+		pipeit(root, 0, exit_code);
+	}
+}
+
+static void	executor_exec(t_root *root, int32_t *exit_code)
+{
+	if (root)
+	{
+		if (root->type == TTOKEN_AND_OP)
+		{
+			executor_exec(root->left, exit_code);
+			if (!exit_code)
+				executor_exec(root->right, exit_code);
+		}
+		else if (root->type == TTOKEN_OR_OP)
+		{
+			executor_exec(root->left, exit_code);
+			if (exit_code)
+				executor_exec(root->right, exit_code);
+		}
+		else if (root->type == TTOKEN_PIPE)
+			exec_pipe(root, exit_code);
+		//else if (root->type == TTOKEN_REDIRECT)
+		//	exec_redirect(root, exit_code);
+		//else if (root->type == TTOKEN_COMMAND)
+		//	exec_cmd(root, exit_code);
+	}
+}
+
+t_status	minishell_executor(t_minishell *minishell)
+{
+	executor_exec(minishell->root, &minishell->exit_code);
+	return (STATUS_SUCCESS);
+}
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+////////////////////////////////////////////////
+
+
 int main(int ac, char **av)
 {
 	t_minishell	*minishell;
@@ -720,8 +906,8 @@ int main(int ac, char **av)
 	if (status) // TODO > minishell_init
 		return (status); // TODO > minishell_error
 	
-	// while (1)
-	// {
+	while (1)
+	{
 	 	minishell->cmdline = readline(minishell->prompt);
 
 	 	status = minishell_lexer(minishell);
@@ -729,17 +915,20 @@ int main(int ac, char **av)
 	// 		return (status);
 	// 	// print tokens;
 	// 	t_token *token = minishell->lexer->token;
-	// 	while (token)
-	// 	{
-	// 		printf("===========================\n");
-	// 		printtype(token->ttype);
-	// 		printf("token id    : %d\n", token->tid);
-	// 		printf("token value : %s\n", token->tvalue);
-	// 		token = token->next_token;
-	// 	}
-	// }
+		// while (true)
+		// {
+		// 	// printf("===========================\n");
+		// 	// printtype(token->ttype);
+		// 	// printf("token id    : %d\n", token->tid);
+		// 	// printf("token value : %s\n", token->tvalue);
+		// 	// token = token->next_token;
+		// }
+		status = minishell_parser(minishell);
+		minishell_executor(minishell);
+	}
 
-	status = minishell_parser(minishell);
+	// status = minishell_parser(minishell);
+	// minishell_executor(minishell);
 
 	// if (status)
 	// 	return (status);

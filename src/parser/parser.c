@@ -8,7 +8,7 @@ static t_default_priority	default_priority(t_token_type type)
 		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
 		|| type == TTOKEN_PIPE)
 		return (PRIORITY_HIGHT);
-	else if (type == TTOKEN_PARENTHESE_OPEN || TTOKEN_PARENTHESE_CLOSE)
+	else if (type == TTOKEN_PARENTHESE_OPEN || type == TTOKEN_PARENTHESE_CLOSE)
 		return (PRIORITY_IDLE);
 	return (PRIORITY_MEDIUM);
 }
