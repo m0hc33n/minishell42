@@ -856,6 +856,25 @@ void	exec_pipe(t_root *root, int32_t *exit_code)
 		pipeit(root, 0, exit_code);
 	}
 }
+void	exec_cmd(t_root *root, int32_t *exit_code)
+{
+	char		**argv;
+	uint32_t	pid;
+	uint32_t	status;
+
+	//argv = executor_getargs(root);
+	// TODO : ADD SUPPORT TO `*`
+	pid = fork();
+	if (pid == CHILD_PROCESS)
+	{
+		argv = executor_getargs(root);
+		execve(argv[0], argv, NULL);
+		exit(EXIT_FAILURE);
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+		*exit_code = status;
+}
 
 static void	executor_exec(t_root *root, int32_t *exit_code)
 {
@@ -877,8 +896,8 @@ static void	executor_exec(t_root *root, int32_t *exit_code)
 			exec_pipe(root, exit_code);
 		//else if (root->type == TTOKEN_REDIRECT)
 		//	exec_redirect(root, exit_code);
-		//else if (root->type == TTOKEN_COMMAND)
-		//	exec_cmd(root, exit_code);
+		else if (root->type == TTOKEN_COMMAND)
+			exec_cmd(root, exit_code);
 	}
 }
 
