@@ -19,7 +19,7 @@
 typedef enum e_default_priority
 {
 	PRIORITY_CRITICAL = 1,
-	PRIORITY_HIGHT,
+	PRIORITY_HIGH,
 	PRIORITY_MEDIUM,
 	PRIORITY_IDLE
 }	t_default_priority;

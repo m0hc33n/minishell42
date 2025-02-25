@@ -13,7 +13,9 @@
 # include "parser.h"
 # include "executor.h"
 # include "tools.h"
-
+# include "builtins.h"
+# include <sys/types.h> // d1xn9uf
+# include <dirent.h>	// d1xn9uf
 
 // SHELL PROMPT
 # define PROMPT "MINISHELL> "
@@ -23,6 +25,7 @@
  * SYNTERR  : cmdline syntax erro
  * LEXERCMDERR : lexer_cmd bad argument
 */
+
 typedef enum e_status
 {
 	STATUS_SUCCESS			= 0x000000,
@@ -41,7 +44,7 @@ typedef struct s_minishell
 {
 	char	*prompt;
 	char	*cmdline;
-	char	**env;
+	t_env	*env;
 	t_lexer	*lexer;
 	t_root	*root;
 	int32_t	exit_code;
