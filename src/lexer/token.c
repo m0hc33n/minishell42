@@ -36,7 +36,7 @@ t_token_type	lex_get_token_type(char *token_value)
 	return (TTOKEN_UNKOWN);
 }
 
-static t_token	*lex_last_token(t_token *token)
+t_token	*lex_last_token(t_token *token)
 {
 	if (token)
 	{

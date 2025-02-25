@@ -25,7 +25,7 @@ t_env	*minishell_envlist(int32_t count)
 	return (l_env);
 }
 
-t_env	*minishell_envsize(char **env)
+int32_t	minishell_envsize(char **env)
 {
 	int32_t	count;
 

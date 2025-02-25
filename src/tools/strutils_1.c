@@ -59,7 +59,7 @@ char		*minishell_strjoin(const char *s1, const char *s2)
 	res = (char *)malloc(sizeof(char) * (total_len + 1));
 	if (res == NULL)
 		return (NULL);
-	minishell_strlcpy(res, s1, ft_strlen(s1) + 1);
+	minishell_strlcpy(res, s1, minishell_strlen(s1) + 1);
 	minishell_strlcat(res, s2, total_len + 1);
 	return (res);
 }

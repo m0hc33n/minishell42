@@ -24,22 +24,6 @@ typedef enum e_default_priority
 	PRIORITY_IDLE
 }	t_default_priority;
 
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next_key
-}	t_env;
-
-typedef struct s_root
-{
-	t_token_type		type;
-	char				*value;
-	uint32_t			priority;
-	struct s_root		*right;
-	struct s_root		*left;
-} t_root;
-
 t_status	minishell_parser(t_minishell *minishell);
 
 #endif

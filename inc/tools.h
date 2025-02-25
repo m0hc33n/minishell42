@@ -3,13 +3,6 @@
 
 # include "minishell.h"
 
-typedef struct s_env
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next_key;
-}	t_env;
-
 // STRING FUNCTIONS
 bool		minishell_strchr(const char *s, int c);
 uint32_t	minishell_strlen(const char *s);

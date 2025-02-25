@@ -2,5 +2,6 @@
 
 void	minishell_error(t_status status)
 {
-    printf("MINISHELL ERROR : %#06x", status);
+    if (status != STATUS_EMPTYCMD)
+        printf("MINISHELL ERROR : %#06x", status);
 }

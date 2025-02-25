@@ -3,8 +3,8 @@
 void	exec_cmd(t_root *root, int32_t *exit_code)
 {
 	char		**argv;
-	uint32_t	pid;
-	uint32_t	status;
+	pid_t		pid;
+	int32_t		status;
 
 	// TODO : ADD SUPPORT TO `*`
 	pid = fork();

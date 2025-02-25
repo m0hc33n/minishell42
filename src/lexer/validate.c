@@ -13,7 +13,7 @@ static bool	validate_paren(t_token *token)
 				return (true);
 			if (token->ttype == TTOKEN_PARENTHESE_OPEN)
 				count++;
-			else if (token->ttype = TTOKEN_PARENTHESE_CLOSE)
+			else if (token->ttype == TTOKEN_PARENTHESE_CLOSE)
 				count--;
 			token = token->next_token;
 		}

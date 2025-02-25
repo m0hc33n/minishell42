@@ -56,7 +56,6 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 	uint32_t element)
 {
 	uint64_t	len;
-	size_t		i;
 
 	len = 0;
 	if (**spaced == CHAR_SINGLE_QUOTE || **spaced == CHAR_DOUBLE_QUOTE)

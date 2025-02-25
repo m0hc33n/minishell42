@@ -22,7 +22,7 @@ static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
 	exit(EXIT_FAILURE);
 }
 
-static void	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
+static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 {
 	int32_t pipe_fd[2];
 	pid_t	pid;

@@ -18,7 +18,7 @@ static uint32_t getargs_argc(t_root *root)
 	return (0);
 }	
 
-static char **getargs_init(t_root *root, int32_t *argc)
+static char **getargs_init(t_root *root, uint32_t *argc)
 {
 	char		**argv;
 

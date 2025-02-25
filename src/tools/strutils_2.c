@@ -58,7 +58,7 @@ static int	ft_split(char const *s, char c, char **split, int count)
 		split[split_i] = (char *)malloc(sizeof(char) * (i - st + 1));
 		if (split[split_i] == NULL)
 		{
-			free_all(split);
+			minishell_free_arr(split);
 			return (0);
 		}
 		minishell_strlcpy(split[split_i], s + st, i - st + 1);

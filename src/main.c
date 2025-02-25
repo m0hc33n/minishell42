@@ -32,7 +32,7 @@ static t_status minishell(t_minishell *minishell)
 	status = minishell_parser(minishell);
 	if (status)
 		return (status);
-	status = minishell_executer(minishell);
+	status = minishell_executor(minishell);
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);
@@ -43,6 +43,8 @@ int main(int ac, char **av, char **env)
 	t_minishell	*ms;
 	t_status	status;
 
+	(void)av;
+	(void)ac;
 	status = minishell_init(&ms, env);
 	if (status)
 	{

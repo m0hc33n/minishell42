@@ -38,7 +38,7 @@ BUILTINS_SRCS	= $(addprefix $(BUILTINS_PATH), $(BUILTINS_FILES))
 EXECUTOR_SRCS	= $(addprefix $(EXECUTOR_PATH), $(EXECUTOR_FILES))
 PARSER_SRCS		= $(addprefix $(PARSER_PATH), $(PARSER_FILES))
 LEXER_SRCS		= $(addprefix $(LEXER_PATH), $(LEXER_FILES))
-TOOLS_SRCS		= $(addprefix $(LEXER_PATH), $(TOOLS_FILES))
+TOOLS_SRCS		= $(addprefix $(TOOL_PATH), $(TOOLS_FILES))
 
 ## object files
 MINISHELL_OBJS	= $(patsubst $(MINISHELL_PATH)%.c, $(OBJ_PATH)%.o, $(MINISHELL_SRCS))
@@ -83,7 +83,7 @@ $(OBJ_PATH)%.o: $(TOOL_PATH)/%.c $(TOOLS_HDR)
 
 ## clean target
 clean:
-	rm -f $(OBJ_PATH)*.o
+	rm -fr $(OBJ_PATH)
 
 ## fclean target
 fclean: clean
