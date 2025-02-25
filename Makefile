@@ -1,0 +1,86 @@
+CC		= cc
+CFLAGS	= -Wall -Wextra -Werror
+
+## minishell headers
+MINISHELL_HDR	= inc/minishell.h
+EXECUTOR_HDR	= inc/executorh
+PARSER_HDR		= inc/parser.h
+LEXER_HDR		= inc/lexer.h
+TOOLS_HDR		= inc/tools.h
+
+## src files
+MINISHELL_FILES	= main.c
+EXECUTOR_FILES	= executor.c getargs.c pipe.c redirection.c \
+				  command.c
+
+PARSER_FILES	= parser.c
+LEXER_FILES		= lexer.c lex.c spaceit.c splitit.c \
+				  validate.c token.c \
+TOOLS_FILES		= strutils1.c memutils.c \
+				  cleanup.c reset.c error.c
+
+## paths
+MINISHELL_PATH	= src
+EXECUTOR_PATH	= src/executor
+PARSER_PATH		= src/parser
+LEXER_PATH		= src/lexer
+TOOL_PATH		= src/tools
+OBJ_PATH		= obj
+
+## srcs
+MINISHELL_SRCS	= $(addprefix $(MINISHELL_PATH)/, $(MINISHELL_FILES))
+EXECUTOR_SRCS	= $(addprefix $(EXECUTOR_PATH)/, $(EXECUTOR_FILES))
+PARSER_SRCS		= $(addprefix $(PARSER_PATH)/, $(PARSER_FILES))
+LEXER_SRCS		= $(addprefix $(LEXER_PATH)/, $(LEXER_FILES))
+TOOLS_SRCS		= $(addprefix $(LEXER_PATH)/, $(TOOLS_FILES))
+
+## object files
+MINISHELL_OBJS	= $(patsubst $(MINISHELL_PATH)%.c, $(OBJ_PATH)%.o, $(MINISHELL_SRCS))
+EXECUTOR_OBJS	= $(patsubst $(EXECUTOR_PATH)/%.c, $(OBJ_PATH)%.o, $(EXECUTOR_SRCS))
+PARSER_OBJS		= $(patsubst $(PARSER_PATH)/%.c, $(OBJ_PATH)%.o, $(PARSER_SRCS))
+LEXER_OBJS		= $(patsubst $(LEXER_PATH)/%.c, $(OBJ_PATH)%.o, $(LEXER_SRCS))
+TOOLS_OBJS		= $(patsubst $(TOOL_PATH)/%.c, $(OBJ_PATH)%.o, $(TOOLS_SRCS))
+
+## final executable
+NAME			= minishell
+
+## all target
+all: $(OBJ_PATH) $(NAME)
+
+## create obj directory if it doesn't exist
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
+
+## linking
+$(NAME): $(MINISHELL_OBJS) $(EXECUTOR_OBJS) $(PARSER_OBJS) $(LEXER_OBJS) $(TOOLS_OBJS)
+	$(CC) $(CFLAGS) -lreadline -o $@ $^
+
+## compilation
+$(OBJ_PATH)%.o: $(MINISHELL_PATH)%.c $(MINISHELL_HDR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_PATH)%.o: $(EXECUTOR_PATH)/%.c $(EXECUTOR_HDR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_PATH)%.o: $(PARSER_PATH)/%.c $(PARSER_HDR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_PATH)%.o: $(LEXER_PATH)/%.c $(LEXER_HDR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_PATH)%.o: $(TOOL_PATH)/%.c $(TOOLS_HDR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+## clean target
+clean:
+	rm -f $(OBJ_PATH)*.o
+
+## fclean target
+fclean: clean
+	rm -f $(NAME)
+
+## re target
+re: fclean all
+
+## phony targets
+.PHONY: all clean fclean re

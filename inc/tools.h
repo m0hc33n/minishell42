@@ -18,4 +18,11 @@ void		*minishell_calloc(size_t count, size_t size);
 bool		minishell_isspace(int c);
 bool		minishell_iscmdsep(int c);
 
+// ERROR HANDLING
+void	minishell_error(t_status status);
+
+// CLEAN
+void    minishell_reset(t_minishell **minishell);
+void    minishell_free_arr(char **arr);
+
 #endif

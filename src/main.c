@@ -13,7 +13,7 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 		if (!minishell)
 			return (STATUS_MALLOCERR);
 		(*minishell)->prompt = PROMPT;
-		(*minishell)->env = minishell_get_env(env); // TODO
+		(*minishell)->env = minishell_getenv(env);
 		if (!(*minishell)->env)
 			return (STATUS_ENVFAILED);
 		return (STATUS_SUCCESS);
@@ -32,7 +32,7 @@ static t_status minishell(t_minishell *minishell)
 	status = minishell_parser(minishell);
 	if (status)
 		return (status);
-	status = minishell_executer(minishell); //undere dev by `m0hc33n` (estimate time: 7days)
+	status = minishell_executer(minishell);
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);
@@ -43,13 +43,17 @@ int main(int ac, char **av, char **env)
 	t_minishell	*ms;
 	t_status	status;
 
-	if (! (status = minishell_init(&ms, env))) // TODO > minishell_init
-		return (minishell_error(status, NULL)); // TODO > minishell_error
+	status = minishell_init(&ms, env);
+	if (status)
+	{
+		minishell_error(status);
+		return (1);
+	}
 	while (true)
 	{
 		status = minishell(ms);
 		if (status)
-			minishell_error(status); // TODO > minishell_error
-		minishell_reset(&ms); // TODO > minishell_reset
+			minishell_error(status);
+		minishell_reset(&ms);
 	}
 }
