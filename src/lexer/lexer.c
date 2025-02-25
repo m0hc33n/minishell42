@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../inc/lexer.h"
 
 static t_status	lexer_cmd(t_lexer *lexer)
 {
