@@ -7,8 +7,8 @@ static uint32_t getargs_argc(t_root *root)
 	sz = 0;
 	if (root)
 	{
-		while (root && root->type != TTOKEN_PARENTHESE_CLOSE
-		&& root->type != TTOKEN_PARENTHESE_OPEN)
+		while (root && root->ttype != TTOKEN_PARENTHESE_CLOSE
+		&& root->ttype != TTOKEN_PARENTHESE_OPEN)
 		{
 			sz++;
 			root = root->right;
@@ -44,15 +44,15 @@ char	**executor_getargs(t_root *root)
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
-	if (root->value == TTOKEN_COMMAND)
+	if (root->tvalue == TTOKEN_COMMAND)
 	{
-		argv[count++] = root->value;
+		argv[count++] = root->tvalue;
 		root = root->right;
 	}
-	while (root && root->type != TTOKEN_PARENTHESE_CLOSE
-		&& root->type != TTOKEN_PARENTHESE_OPEN)
+	while (root && root->ttype != TTOKEN_PARENTHESE_CLOSE
+		&& root->ttype != TTOKEN_PARENTHESE_OPEN)
 	{
-		argv[count++] = root->value;
+		argv[count++] = root->tvalue;
 		root = root->right;
 	}
 	argv[count] = 0;

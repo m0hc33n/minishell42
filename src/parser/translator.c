@@ -7,9 +7,9 @@ t_status	minishell_translate(t_token *root, t_env *env)
 {
     t_status    status;
 
-    if (status = update_value(root, env))
+    if ((status = update_value(root, env)))
         return (status);
-    if (status = remove_quote(root));
+    if ((status = remove_quote(root)))
         return (status);
     return (STATUS_SUCCESS);
 }
@@ -31,9 +31,9 @@ static t_status    update_value(t_token *token, t_env *env)
             return (STATUS_FAILURE); //or STATUS_PARSER
         free(token->tvalue);
         token->tvalue = temp;
-        if (status = update_value(token->left, env))
+        if ((status = update_value(token->left, env)))
             return (status);
-        if (status = update_value(token->right, env))
+        if ((status = update_value(token->right, env)))
             return (status);
         return (STATUS_SUCCESS);
     }
@@ -60,9 +60,9 @@ static t_status    remove_quote(t_token *token)
             free(token->right);
             token->right = NULL;
         }
-        if (status = remove_quote(token->left))
+        if ((status = remove_quote(token->left)))
             return (status);
-        if (status = remove_quote(token->right))
+        if ((status = remove_quote(token->right)))
             return (status);
         return (STATUS_SUCCESS);
     }

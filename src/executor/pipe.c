@@ -9,14 +9,14 @@ static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
 		dup2(input_fd, 0);
 		close(input_fd);
 	}
-	if (node->type == TTOKEN_PIPE)
+	if (node->ttype == TTOKEN_PIPE)
 	{
 		dup2(output_fd, 1);
 		close(output_fd);
 		argv = executor_getargs(node->left);
 	}
-	else if (node->type != TTOKEN_PARENTHESE_CLOSE
-		&& node->type != TTOKEN_PARENTHESE_OPEN)
+	else if (node->ttype != TTOKEN_PARENTHESE_CLOSE
+		&& node->ttype != TTOKEN_PARENTHESE_OPEN)
 		argv = executor_getargs(node);
 	execve(argv[0], argv, NULL);
 	exit(EXIT_FAILURE);
@@ -28,10 +28,10 @@ static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 	pid_t	pid;
 	int32_t	status;
 
-	if (node == NULL || node->type == TTOKEN_PARENTHESE_CLOSE
-		|| node->type == TTOKEN_PARENTHESE_OPEN)
+	if (node == NULL || node->ttype == TTOKEN_PARENTHESE_CLOSE
+		|| node->ttype == TTOKEN_PARENTHESE_OPEN)
 		return ;
-	if (node->type == TTOKEN_PIPE)
+	if (node->ttype == TTOKEN_PIPE)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
@@ -40,9 +40,9 @@ static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 	{
 		if (input_fd != 0)
 			close(input_fd); // Close the old input
-		if (node->type == TTOKEN_PIPE)
+		if (node->ttype == TTOKEN_PIPE)
 			close(pipe_fd[PIPE_WRITE_END]); // Close the write end of the pipe
-		if (node->type == TTOKEN_PIPE)
+		if (node->ttype == TTOKEN_PIPE)
 			pipeit(node->right, pipe_fd[PIPE_READ_END], exit_code);
 		else
 			pipeit(node->right, input_fd, exit_code);

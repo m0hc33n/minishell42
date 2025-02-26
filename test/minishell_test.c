@@ -735,8 +735,8 @@ static uint32_t getargs_argc(t_root *root)
 	sz = 0;
 	if (root)
 	{
-		while (root && root->type != TTOKEN_PARENTHESE_CLOSE
-			&& root->type != TTOKEN_PARENTHESE_OPEN)
+		while (root && root->ttype != TTOKEN_PARENTHESE_CLOSE
+			&& root->ttype != TTOKEN_PARENTHESE_OPEN)
 		{
 			sz++;
 			root = root->right;
@@ -772,15 +772,15 @@ char	**executor_getargs(t_root *root)
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
-	if (root->value == TTOKEN_COMMAND)
+	if (root->tvalue == TTOKEN_COMMAND)
 	{
-		argv[count++] = root->value;
+		argv[count++] = root->tvalue;
 		root = root->right;
 	}
-	while (root && root->type != TTOKEN_PARENTHESE_CLOSE
-		&& root->type != TTOKEN_PARENTHESE_OPEN)
+	while (root && root->ttype != TTOKEN_PARENTHESE_CLOSE
+		&& root->ttype != TTOKEN_PARENTHESE_OPEN)
 	{
-		argv[count++] = root->value;
+		argv[count++] = root->tvalue;
 		root = root->right;
 	}
 	argv[count] = 0;
@@ -802,14 +802,14 @@ static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
 		dup2(input_fd, 0);
 		close(input_fd);
 	}
-	if (node->type == TTOKEN_PIPE)
+	if (node->ttype == TTOKEN_PIPE)
 	{
 		dup2(output_fd, 1);
 		close(output_fd);
 		argv = executor_getargs(node->left);
 	}
-	else if (node->type != TTOKEN_PARENTHESE_CLOSE
-		&& node->type != TTOKEN_PARENTHESE_OPEN)
+	else if (node->ttype != TTOKEN_PARENTHESE_CLOSE
+		&& node->ttype != TTOKEN_PARENTHESE_OPEN)
 		argv = executor_getargs(node);
 	execve(argv[0], argv, NULL);
 	exit(EXIT_FAILURE);
@@ -821,10 +821,10 @@ static void	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
 	pid_t	pid;
 	int32_t	status;
 
-	if (node == NULL || node->type == TTOKEN_PARENTHESE_CLOSE
-		|| node->type == TTOKEN_PARENTHESE_OPEN)
+	if (node == NULL || node->ttype == TTOKEN_PARENTHESE_CLOSE
+		|| node->ttype == TTOKEN_PARENTHESE_OPEN)
 		return ;
-	if (node->type == TTOKEN_PIPE)
+	if (node->ttype == TTOKEN_PIPE)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
@@ -833,9 +833,9 @@ static void	pipeit(t_root *node, int32_t input_fd, uint32_t *exit_code)
 	{
 		if (input_fd != 0)
 			close(input_fd); // Close the old input
-		if (node->type == TTOKEN_PIPE)
+		if (node->ttype == TTOKEN_PIPE)
 			close(pipe_fd[PIPE_WRITE_END]); // Close the write end of the pipe
-		if (node->type == TTOKEN_PIPE)
+		if (node->ttype == TTOKEN_PIPE)
 			pipeit(node->right, pipe_fd[PIPE_READ_END], exit_code);
 		else
 			pipeit(node->right, input_fd, exit_code);
@@ -878,23 +878,23 @@ static void	executor_exec(t_root *root, int32_t *exit_code)
 {
 	if (root)
 	{
-		if (root->type == TTOKEN_AND_OP)
+		if (root->ttype == TTOKEN_AND_OP)
 		{
 			executor_exec(root->left, exit_code);
 			if (!*exit_code)
 				executor_exec(root->right, exit_code);
 		}
-		else if (root->type == TTOKEN_OR_OP)
+		else if (root->ttype == TTOKEN_OR_OP)
 		{
 			executor_exec(root->left, exit_code);
 			if (*exit_code)
 				executor_exec(root->right, exit_code);
 		}
-		else if (root->type == TTOKEN_PIPE)
+		else if (root->ttype == TTOKEN_PIPE)
 			exec_pipe(root, exit_code);
-		//else if (root->type == TTOKEN_REDIRECT)
+		//else if (root->ttype == TTOKEN_REDIRECT)
 		//	exec_redirect(root, exit_code);
-		else if (root->type == TTOKEN_COMMAND)
+		else if (root->ttype == TTOKEN_COMMAND)
 			exec_cmd(root, exit_code);
 	}
 }

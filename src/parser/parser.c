@@ -15,7 +15,7 @@ t_status	minishell_parser(t_minishell *minishell)
 	size = minishell->lexer->sztoken;
 	fill_tokens(head, size);
 	minishell->root = parse_tree(head, 0, size);
-	if (status = minishell_translate(minishell->root, minishell->env))
+	if ((status = minishell_translate(minishell->root, minishell->env)))
 		return (status);
 	return (STATUS_SUCCESS);
 }
