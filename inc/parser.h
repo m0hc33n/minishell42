@@ -21,9 +21,12 @@ typedef enum e_default_priority
 	PRIORITY_CRITICAL = 1,
 	PRIORITY_HIGH,
 	PRIORITY_MEDIUM,
-	PRIORITY_IDLE
+	PRIORITY_IDLE,
+	PRIORITY_REMOVE
 }	t_default_priority;
 
 t_status	minishell_parser(t_minishell *minishell);
+t_status	minishell_translate(t_token *root, t_env *env);
+char     	*remove_quotes(char *s);
 
 #endif

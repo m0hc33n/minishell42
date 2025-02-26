@@ -63,7 +63,13 @@ typedef struct s_token
 	uint32_t		tid;
 	char			*tvalue;
 	struct s_token	*next_token;
+
+	uint32_t		priority;
+	struct s_token	*right;
+	struct s_token	*left;
 }	t_token;
+
+typedef t_token	t_root; //same same but different hhh
 
 /**/
 typedef struct s_spaced_cmdline
@@ -94,15 +100,6 @@ typedef struct s_envr
 	char			*value;
 	struct s_env	*next_key;
 }	t_envr;
-
-typedef struct s_root
-{
-	t_token_type		type;
-	char				*value;
-	uint32_t			priority;
-	struct s_root		*right;
-	struct s_root		*left;
-} t_root;
 
 typedef struct s_minishell
 {

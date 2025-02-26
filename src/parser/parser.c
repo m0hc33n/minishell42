@@ -1,86 +1,106 @@
 #include "../../inc/parser.h"
 
-static t_default_priority	default_priority(t_token_type type)
+static void					fill_tokens(t_token *head, uint32_t size);
+static void					get_priority(t_token *head, t_token *token, uint32_t index);
+static t_default_priority	default_priority(t_token_type ttype);
+static t_token				*parse_tree(t_token *head, uint32_t start, uint32_t end);
+
+t_status	minishell_parser(t_minishell *minishell)
 {
-	if (type == TTOKEN_AND_OP || type == TTOKEN_OR_OP)
-		return (PRIORITY_CRITICAL);
-	else if (type == TTOKEN_REDIRECT
-		|| type == TTOKEN_REDIRECT_EOF || type == TTOKEN_REDIRECT_FILE
-		|| type == TTOKEN_PIPE)
-		return (PRIORITY_HIGH);
-	else if (type == TTOKEN_PARENTHESE_OPEN || type == TTOKEN_PARENTHESE_CLOSE)
-		return (PRIORITY_IDLE);
-	return (PRIORITY_MEDIUM);
+	t_token		*head;
+	uint32_t	size;
+	t_status	status;
+
+	head = minishell->lexer->token;
+	size = minishell->lexer->sztoken;
+	fill_tokens(head, size);
+	minishell->root = parse_tree(head, 0, size);
+	if (status = minishell_translate(minishell->root, minishell->env))
+		return (status);
+	return (STATUS_SUCCESS);
 }
 
-static void		get_priority(uint32_t i, t_root *nodes)
+static void	fill_tokens(t_token *head, uint32_t size)
 {
-	uint32_t	j;
-	uint32_t	counter;
-
-	nodes[i].priority = default_priority(nodes[i].type);
-	j = 0;
-	counter = 0;
-	while (j <= i)
-	{
-		if (nodes[j].type == TTOKEN_PARENTHESE_OPEN)
-			counter += 1;
-		if (nodes[j].type == TTOKEN_PARENTHESE_CLOSE)
-			counter -= 1;
-		j += 1;
-	}
-	if (nodes[i].type == TTOKEN_PARENTHESE_CLOSE)
-		counter += 1;
-	nodes[i].priority += counter;
-}
-
-static t_root	*parse_tree(t_root *nodes, uint32_t start, uint32_t end)
-{
-	uint32_t	i;
-	uint32_t	prior;
-
-	if (end <= start)
-		return (NULL);
-	prior = start;
-	i = start + 1;
-	while (i < end)
-	{
-		if (nodes[i].priority < nodes[prior].priority)
-			prior = i;
-		i += 1;
-	}
-	nodes[prior].left = parse_tree(nodes, start, prior);
-	nodes[prior].right = parse_tree(nodes, prior + 1, end);
-	return (&nodes[prior]);
-}
-
-static void	fill_nodes(t_root *nodes, t_token *token, uint32_t size)
-{
+	t_token		*token;
 	uint32_t	i;
 
+	token = head;
 	i = 0;
 	while (i < size)
 	{
-		nodes[i].type = token->ttype;
-		nodes[i].value = token->tvalue; 
-		get_priority(i, nodes);
+		get_priority(head, token, i);
 		i += 1;
 		token = token->next_token;
 	}
 }
 
-t_status	minishell_parser(t_minishell *minishell)
+static void		get_priority(t_token *head, t_token *token, uint32_t index)
 {
-	t_root		*nodes;
-	t_token		*token;
-	uint32_t	size;
+	uint32_t	j;
+	t_token		*token_j;
+	uint32_t	counter;
 
-	token = minishell->lexer->token;
-	size = minishell->lexer->sztoken;
-	nodes = (t_root *)malloc(sizeof(t_root) * size);
-	if (!nodes)
-		return (STATUS_MALLOCERR);
-	fill_nodes(nodes, token, size);
-	minishell->root = parse_tree(nodes, 0, size);
-	return (STATUS_SUCCESS);
+	token->priority = default_priority(token->ttype);
+	j = 0;
+	token_j = head;
+	counter = 0;
+	while (j <= index)
+	{
+		if (token_j->ttype == TTOKEN_PARENTHESE_OPEN)
+			counter += 1;
+		if (token_j->ttype == TTOKEN_PARENTHESE_CLOSE)
+			counter -= 1;
+		j += 1;
+		token_j = token_j->next_token;
+	}
+	if (token->ttype == TTOKEN_PARENTHESE_CLOSE)
+		counter += 1;
+	token->priority += counter;
+}
+
+static t_default_priority	default_priority(t_token_type ttype)
+{
+	if (ttype == TTOKEN_AND_OP || ttype == TTOKEN_OR_OP)
+		return (PRIORITY_CRITICAL);
+	else if (ttype == TTOKEN_PIPE)
+		return (PRIORITY_HIGH);
+	else if (ttype == TTOKEN_REDIRECT
+		|| ttype == TTOKEN_REDIRECT_EOF || ttype == TTOKEN_REDIRECT_FILE)
+		return (PRIORITY_MEDIUM);
+	else if (ttype == TTOKEN_PARENTHESE_OPEN || ttype == TTOKEN_PARENTHESE_CLOSE)
+		return (PRIORITY_REMOVE);
+	return (PRIORITY_IDLE);
+}
+
+static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end) //modify head with start of search
+{
+	uint32_t	i;
+	t_token		*token_i;
+	uint32_t	prior;
+	t_token		*token_p;
+
+	if (end <= start)
+		return (NULL);
+	prior = 0;
+	while (prior < start)
+	{
+		prior += 1;
+		token_p = token_p->next_token;
+	}
+	i = prior + 1;
+	token_i = token_p->next_token;
+	while (i < end)
+	{
+		if (token_i->priority < token_p->priority)
+		{
+			prior = i;
+			token_p = token_i;
+		}
+		i += 1;
+		token_i = token_i->next_token;
+	}
+	token_p->left = parse_tree(head, start, prior);
+	token_p->right = parse_tree(head, prior + 1, end);
+	return (token_p);
 }
