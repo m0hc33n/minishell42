@@ -62,7 +62,7 @@ static int	ft_split(char const *s, char c, char **split, int count)
 			return (0);
 		}
 		minishell_strlcpy(split[split_i], s + st, i - st + 1);
-		split++;
+		split_i++;
 	}
 	split[count] = NULL;
 	return (1);

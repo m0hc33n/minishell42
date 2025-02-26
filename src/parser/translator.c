@@ -48,14 +48,14 @@ static t_status    remove_quote(t_token *token)
         token->tvalue = remove_quotes(token->tvalue);
         if (!token->tvalue)
             return (STATUS_MALLOCERR);
-        if (token->left->ttype == TTOKEN_PARENTHESE_CLOSE 
-        || token->left->ttype == TTOKEN_PARENTHESE_OPEN)
+        if (token->left && (token->left->ttype == TTOKEN_PARENTHESE_CLOSE 
+        || token->left->ttype == TTOKEN_PARENTHESE_OPEN))
         {
             free(token->left);
             token->left = NULL;
         }
-        if (token->right->ttype == TTOKEN_PARENTHESE_CLOSE 
-        || token->right->ttype == TTOKEN_PARENTHESE_OPEN)
+        if (token->right && (token->right->ttype == TTOKEN_PARENTHESE_CLOSE 
+        || token->right->ttype == TTOKEN_PARENTHESE_OPEN))
         {
             free(token->right);
             token->right = NULL;

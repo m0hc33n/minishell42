@@ -1,31 +1,26 @@
 # include "../../inc/minishell.h"
 
-void    reset_token(t_token *token)
+void    reset_token(t_root *root)
 {
-    t_token *tmp;
-
-    if (token)
+    if (root)
     {
-        while (token)
-        {
-            tmp = token->next_token;
-            free(token);
-            token = tmp;
-        }
+        reset_token(root->left);
+        reset_token(root->right);
+        if (root->tvalue)
+            free(root->tvalue);
+        free(root);
     }
 }
 
-void    reset_lexer(t_lexer *lexer)
+void    reset_lexer(t_minishell *minishell)
 {
-    if (lexer)
+    if (minishell)
     {
-        if (lexer->spaced_arr.spaced_cmdline_arr)
-            minishell_free_arr(lexer->spaced_arr.spaced_cmdline_arr);
-        if (lexer->spaced.spaced_cmdline)
-            free(lexer->spaced.spaced_cmdline);
-        if (lexer->token)
-            reset_token(lexer->token);
-        free(lexer);
+        if (minishell->lexer->spaced.spaced_cmdline)
+            free(minishell->lexer->spaced.spaced_cmdline);
+        if (minishell->root)
+            reset_token(minishell->root);
+        free(minishell->lexer);
     }
 }
 
@@ -33,10 +28,8 @@ void    minishell_reset(t_minishell **minishell)
 {
     if (minishell && *minishell)
     {
-        if ((*minishell)->root)
-            free((*minishell)->root);
         if ((*minishell)->lexer)
-            reset_lexer((*minishell)->lexer);
+            reset_lexer(*minishell);
         if ((*minishell)->cmdline)
             free((*minishell)->cmdline);
         (*minishell)->exit_code = 0;

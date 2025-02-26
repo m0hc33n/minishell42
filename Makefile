@@ -1,5 +1,5 @@
 CC		= cc
-CFLAGS	= #-Wall -Wextra -Werror
+CFLAGS	= -Wall -Wextra -Werror -g
 
 ## minishell headers
 MINISHELL_HDR	= inc/minishell.h
@@ -42,24 +42,23 @@ TOOLS_SRCS		= $(addprefix $(TOOL_PATH), $(TOOLS_FILES))
 
 ## object files
 MINISHELL_OBJS	= $(patsubst $(MINISHELL_PATH)%.c, $(OBJ_PATH)%.o, $(MINISHELL_SRCS))
-EXECUTOR_OBJS	= $(patsubst $(BUILTINS_PATH)/%.c, $(OBJ_PATH)%.o, $(BUILTINS_SRCS))
-EXECUTOR_OBJS	= $(patsubst $(EXECUTOR_PATH)/%.c, $(OBJ_PATH)%.o, $(EXECUTOR_SRCS))
-PARSER_OBJS		= $(patsubst $(PARSER_PATH)/%.c, $(OBJ_PATH)%.o, $(PARSER_SRCS))
-LEXER_OBJS		= $(patsubst $(LEXER_PATH)/%.c, $(OBJ_PATH)%.o, $(LEXER_SRCS))
-TOOLS_OBJS		= $(patsubst $(TOOL_PATH)/%.c, $(OBJ_PATH)%.o, $(TOOLS_SRCS))
+BUILTINS_OBJS	= $(patsubst $(BUILTINS_PATH)%.c, $(OBJ_PATH)%.o, $(BUILTINS_SRCS))
+EXECUTOR_OBJS	= $(patsubst $(EXECUTOR_PATH)%.c, $(OBJ_PATH)%.o, $(EXECUTOR_SRCS))
+PARSER_OBJS		= $(patsubst $(PARSER_PATH)%.c, $(OBJ_PATH)%.o, $(PARSER_SRCS))
+LEXER_OBJS		= $(patsubst $(LEXER_PATH)%.c, $(OBJ_PATH)%.o, $(LEXER_SRCS))
+TOOLS_OBJS		= $(patsubst $(TOOL_PATH)%.c, $(OBJ_PATH)%.o, $(TOOLS_SRCS))
 
 ## final executable
 NAME			= minishell
 
 ## all target
 all: $(OBJ_PATH) $(NAME)
-
 ## create obj directory if it doesn't exist
 $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
 
 ## linking
-$(NAME): $(MINISHELL_OBJS) $(EXECUTOR_OBJS) $(PARSER_OBJS) $(LEXER_OBJS) $(TOOLS_OBJS)
+$(NAME): $(MINISHELL_OBJS) $(EXECUTOR_OBJS) $(PARSER_OBJS) $(LEXER_OBJS) $(TOOLS_OBJS) $(BUILTINS_OBJS)
 	$(CC) $(CFLAGS) -lreadline -o $@ $^
 
 ## compilation

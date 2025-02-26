@@ -83,6 +83,7 @@ static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end) //modify
 	if (end <= start)
 		return (NULL);
 	prior = 0;
+	token_p = head;
 	while (prior < start)
 	{
 		prior += 1;
