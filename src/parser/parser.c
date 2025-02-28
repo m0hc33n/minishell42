@@ -2,7 +2,7 @@
 
 static void					fill_tokens(t_token *head, uint32_t size);
 static void					get_priority(t_token *head, t_token *token, uint32_t index);
-static t_default_priority	default_priority(t_token_type ttype);
+static t_default_priority	default_priority(t_token *token);
 static t_token				*parse_tree(t_token *head, uint32_t start, uint32_t end);
 
 t_status	minishell_parser(t_minishell *minishell)
@@ -41,7 +41,7 @@ static void		get_priority(t_token *head, t_token *token, uint32_t index)
 	t_token		*token_j;
 	uint32_t	counter;
 
-	token->priority = default_priority(token->ttype);
+	token->priority = default_priority(token);
 	j = 0;
 	token_j = head;
 	counter = 0;
@@ -59,16 +59,15 @@ static void		get_priority(t_token *head, t_token *token, uint32_t index)
 	token->priority += counter;
 }
 
-static t_default_priority	default_priority(t_token_type ttype)
+static t_default_priority	default_priority(t_token *token)
 {
-	if (ttype == TTOKEN_AND_OP || ttype == TTOKEN_OR_OP)
+	if (token->ttype == TTOKEN_AND_OP || token->ttype == TTOKEN_OR_OP)
 		return (PRIORITY_CRITICAL);
-	else if (ttype == TTOKEN_PIPE)
+	else if (token->ttype == TTOKEN_PIPE)
 		return (PRIORITY_HIGH);
-	else if (ttype == TTOKEN_REDIRECT
-		|| ttype == TTOKEN_REDIRECT_EOF || ttype == TTOKEN_REDIRECT_FILE)
+	else if (minishell_isred(token))
 		return (PRIORITY_MEDIUM);
-	else if (ttype == TTOKEN_PARENTHESE_OPEN || ttype == TTOKEN_PARENTHESE_CLOSE)
+	else if (token->ttype == TTOKEN_PARENTHESE_OPEN || token->ttype == TTOKEN_PARENTHESE_CLOSE)
 		return (PRIORITY_REMOVE);
 	return (PRIORITY_IDLE);
 }

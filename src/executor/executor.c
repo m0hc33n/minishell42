@@ -18,10 +18,10 @@ static void	executor_exec(t_root *root, int32_t *exit_code)
 		}
 		else if (root->ttype == TTOKEN_PIPE)
 			exec_pipe(root, exit_code);
-		else if (root->ttype == TTOKEN_REDIRECT)
-			exec_redirect(root, exit_code);
+		else if (minishell_isred(root))
+			exec_redirect(root, 0, 1, exit_code);
 		else if (root->ttype == TTOKEN_COMMAND)
-			exec_cmd(root, exit_code);
+			exec_cmd(root, STDOUT_FILENO, exit_code);
 	}
 }
 

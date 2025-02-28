@@ -44,4 +44,7 @@ char		*minishell_getvalue(t_env *env, char *key);
 
 char		*minishell_getpath(t_env *env, char *cmd);
 
+// REDIRECTION UTILS 
+bool		minishell_isred(t_root *node);
+
 #endif

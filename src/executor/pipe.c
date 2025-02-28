@@ -1,41 +1,42 @@
 #include "../../inc/executor.h"
 
-static void	pipeit_child(t_root *node, int32_t input_fd, int32_t output_fd)
+static void pipeit_child(t_root *node, int32_t input_fd,
+	int32_t output_fd, int32_t *exit_code)
 {
-	char	**argv;
+    char **argv;
 
-	if (input_fd != 0)
-	{
-		dup2(input_fd, 0);
-		close(input_fd);
-	}
-	if (node->ttype == TTOKEN_PIPE)
-	{
-		dup2(output_fd, 1);
-		close(output_fd);
-		argv = executor_getargs(node->left);
-	}
-	else if (node->ttype != TTOKEN_PARENTHESE_CLOSE
-		&& node->ttype != TTOKEN_PARENTHESE_OPEN)
-		argv = executor_getargs(node);
-	execve(argv[0], argv, NULL);
-	exit(EXIT_FAILURE);
+    if (minishell_isred(node->left))
+        exec_redirect(node->left, input_fd, output_fd, exit_code);
+    if (input_fd != 0)
+    {
+        dup2(input_fd, STDIN_FILENO);
+        close(input_fd);
+    }
+    if (node->ttype == TTOKEN_PIPE)
+    {
+        dup2(output_fd, STDOUT_FILENO);
+        close(output_fd);
+        argv = executor_getargs(node->left);
+    }
+    else
+        argv = executor_getargs(node);
+    execve(argv[0], argv, NULL);
+    exit(EXIT_FAILURE);
 }
 
 static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 {
 	int32_t pipe_fd[2];
 	pid_t	pid;
-	int32_t	status;
+	int32_t	status;	
 
-	if (node == NULL || node->ttype == TTOKEN_PARENTHESE_CLOSE
-		|| node->ttype == TTOKEN_PARENTHESE_OPEN)
+	if (node == NULL)
 		return ;
 	if (node->ttype == TTOKEN_PIPE)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
-		pipeit_child(node, input_fd, pipe_fd[PIPE_WRITE_END]);
+		pipeit_child(node, input_fd, pipe_fd[PIPE_WRITE_END], exit_code);
 	else if (pid > 0)
 	{
 		if (input_fd != 0)

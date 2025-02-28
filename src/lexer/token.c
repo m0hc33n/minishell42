@@ -8,8 +8,14 @@ static	t_token_type	cmdsep_token_type(char *token_value)
 		return (TTOKEN_PIPE);
 	if (*token_value == CHAR_AMPERSNAD && *(token_value + 1) == CHAR_AMPERSNAD)
 		return (TTOKEN_AND_OP);
-	if (*token_value == CHAR_GT || *token_value == CHAR_LT)
-		return (TTOKEN_REDIRECT);
+	if (token_value[0] == CHAR_GT && token_value[1] == CHAR_GT)
+		return (TTOKEN_APPEND);
+	if (token_value[0] == CHAR_LT && token_value[1] == CHAR_LT)
+		return (TTOKEN_HEREDOC);
+	if (token_value[0] == CHAR_GT)
+		return (TTOKEN_OUTPUT);
+	if (token_value[0] == CHAR_LT)
+		return (TTOKEN_INPUT);
 	if (*token_value == CHAR_PAREN_OPEN)
 		return (TTOKEN_PARENTHESE_OPEN);
 	if (*token_value == CHAR_PAREN_CLOSE)

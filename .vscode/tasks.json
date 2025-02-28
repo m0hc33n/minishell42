@@ -7,7 +7,12 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${workspaceFolder}/src/*/*.c",
+                "${workspaceFolder}/src/*.c",
+				"${workspaceFolder}/src/builtins/*.c",
+				"${workspaceFolder}/src/executor/*.c",
+				"${workspaceFolder}/src/lexer/*.c",
+				"${workspaceFolder}/src/parser/*.c",
+				"${workspaceFolder}/src/tools/*.c",
 				"-lreadline",
                 "-o",
                 "${workspaceFolder}/minishell"

@@ -27,6 +27,8 @@ static t_status minishell(t_minishell *minishell)
 
 
 	minishell->cmdline = readline(minishell->prompt);
+	if (!minishell->cmdline[0])
+		return (STATUS_EMPTYCMD);
 	status = minishell_lexer(minishell);
 	if (status)
 		return (status);
@@ -55,10 +57,10 @@ int main(int ac, char **av, char **env)
 	while (true)
 	{
 		status = minishell(ms);
+		if (status == STATUS_EMPTYCMD)
+			continue;
 		if (status)
 			minishell_error(status);
-		if (status == STATUS_EMPTYCMD)
-			continue ;
 		minishell_reset(&ms);
 	}
 }

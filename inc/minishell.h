@@ -21,12 +21,6 @@
 // SHELL PROMPT
 # define PROMPT "MINISHELL> "
 
-/* MINISHELL STATUS
- * INITFAIL : cant initialise s_minishell
- * SYNTERR  : cmdline syntax erro
- * LEXERCMDERR : lexer_cmd bad argument
-*/
-
 // INIT
 t_status	minishell_init(t_minishell **minishell, char **env);
 

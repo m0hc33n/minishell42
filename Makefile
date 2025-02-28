@@ -19,7 +19,7 @@ LEXER_FILES		= lexer.c lex.c spaceit.c splitit.c \
 				  validate.c token.c
 TOOLS_FILES		= strutils_0.c strutils_1.c strutils_2.c memutils.c \
 				  envutils_0.c envutils_1.c envutils_2.c \
-				  cleanup.c reset.c error.c
+				  cleanup.c reset.c error.c redutils.c
 BUILTINS_FILES	= cd.c echo.c env.c exit.c export.c \
 				  pwd.c unset.c
 
@@ -59,7 +59,7 @@ $(OBJ_PATH):
 
 ## linking
 $(NAME): $(MINISHELL_OBJS) $(EXECUTOR_OBJS) $(PARSER_OBJS) $(LEXER_OBJS) $(TOOLS_OBJS) $(BUILTINS_OBJS)
-	$(CC) $(CFLAGS) -lreadline -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 ## compilation
 $(OBJ_PATH)%.o: $(MINISHELL_PATH)%.c $(MINISHELL_HDR)
