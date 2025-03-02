@@ -72,7 +72,7 @@ static t_default_priority	default_priority(t_token *token)
 	return (PRIORITY_IDLE);
 }
 
-static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end) //modify head with start of search
+static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end)
 {
 	uint32_t	i;
 	t_token		*token_i;
@@ -81,13 +81,8 @@ static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end) //modify
 
 	if (end <= start)
 		return (NULL);
-	prior = 0;
+	prior = start;
 	token_p = head;
-	while (prior < start)
-	{
-		prior += 1;
-		token_p = token_p->next_token;
-	}
 	i = prior + 1;
 	token_i = token_p->next_token;
 	while (i < end)
@@ -101,6 +96,6 @@ static t_token	*parse_tree(t_token	*head, uint32_t start, uint32_t end) //modify
 		token_i = token_i->next_token;
 	}
 	token_p->left = parse_tree(head, start, prior);
-	token_p->right = parse_tree(head, prior + 1, end);
+	token_p->right = parse_tree(token_p->next_token, prior + 1, end);
 	return (token_p);
 }

@@ -115,4 +115,17 @@ typedef struct s_minishell
 	
 }	t_minishell;
 
+typedef struct s_ast
+{
+	bool	before;
+	bool	after;
+}	t_ast;
+
+typedef struct s_fixe
+{
+	char		**fixes;
+	t_ast		*flags;
+	uint32_t	count;
+}	t_fixe;
+
 #endif
