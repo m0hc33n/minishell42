@@ -2,6 +2,7 @@
 
 static t_status update_value(t_token *token, t_env *env);
 static t_status	interpret(t_env *env, t_token *token);
+static void		replace_asterisk(t_token *root);
 static t_status remove_quote(t_token *token);
 
 t_status	minishell_translate(t_token *root, t_env *env)
@@ -10,6 +11,7 @@ t_status	minishell_translate(t_token *root, t_env *env)
 
     if ((status = update_value(root, env)))
         return (status);
+	replace_asterisk(root);
     if ((status = remove_quote(root)))
         return (status);
     return (STATUS_SUCCESS);
@@ -51,6 +53,22 @@ static t_status	interpret(t_env *env, t_token *token)
 	free(token->tvalue);
 	token->tvalue = temp;
 	return (STATUS_SUCCESS);
+}
+
+static void	replace_asterisk(t_token *root)
+{
+	t_token		*next;
+
+	if (root->right && root->right->ttype == TTOKEN_ARGUMENT && minishell_strchr(root->right->tvalue, '*')) // no need to check left token (parsing order)
+	{
+		next = root->right->next_token;
+		free(root->right);
+		root->right = next;
+	}
+	if (root->right)
+		replace_asterisk(root->right);
+	if (root->left)
+		replace_asterisk(root->left);
 }
 
 static t_status    remove_quote(t_token *token)
