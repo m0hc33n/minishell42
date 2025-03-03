@@ -16,7 +16,6 @@ void	exec_cmd(t_minishell *minishell, t_root *root, int32_t output_fd)
 		{
 			if (output_fd != 1)
 				dup2(output_fd, STDOUT_FILENO);
-			printf("[DEBUG] : argv[0] : %s\n", argv[0]);
 			execve(argv[0], argv, NULL);
 			exit(EXIT_FAILURE);
 		}
