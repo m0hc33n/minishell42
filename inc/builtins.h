@@ -30,6 +30,6 @@ t_status	minishell_exit(t_minishell *minishell);
 # define CD		"cd"
 
 bool		minishell_isbuiltin(char *cmd);
-void		exec_builtin(t_minishell *minishell, char **argv);
+t_status	exec_builtin(t_minishell *minishell, char **argv);
 
 #endif

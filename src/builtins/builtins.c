@@ -19,20 +19,23 @@ bool		minishell_isbuiltin(char *cmd)
 	return (false);
 }
 
-void	exec_builtin(t_minishell *minishell, char **argv)
+t_status	exec_builtin(t_minishell *minishell, char **argv)
 {
+	t_status	status;
+
 	if (minishell_strequal(argv[0], EXPORT))
-		minishell_export(argv, minishell->env);
+		status = minishell_export(argv, minishell->env);
 	else if (minishell_strequal(argv[0], UNSET))
-		minishell_unset(argv, &minishell->env);
+		status = minishell_unset(argv, &minishell->env);
 	else if (minishell_strequal(argv[0], ECHO))
-		minishell_echo(argv, minishell->env);
+		status = minishell_echo(argv, minishell->env);
 	else if (minishell_strequal(argv[0], ENV))
-		minishell_env(argv, minishell->env);
+		status = minishell_env(argv, minishell->env);
 	else if (minishell_strequal(argv[0], PWD))
-		minishell_pwd(argv, minishell->env);
+		status = minishell_pwd(argv, minishell->env);
 	else if (minishell_strequal(argv[0], CD))
-		minishell_cd(argv, minishell->env);
+		status = minishell_cd(argv, minishell->env);
 	else if (minishell_strequal(argv[0], EXIT))
-		minishell_exit(minishell);
+		status = minishell_exit(minishell);
+	return (status);
 }

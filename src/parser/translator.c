@@ -44,6 +44,8 @@ static t_status	interpret(t_env *env, t_token *token)
 {
 	char	*temp;
 
+	if (token->ttype == TTOKEN_COMMAND && minishell_isbuiltin(token->tvalue))
+		return (STATUS_SUCCESS);
 	if (token->ttype == TTOKEN_ARGUMENT)
 		return (minishell_asterisk(token));
 	if (token->ttype == TTOKEN_COMMAND)
