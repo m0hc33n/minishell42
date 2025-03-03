@@ -5,9 +5,6 @@ static void	fill_flags(char *pattern, t_fixe *fixe);
 t_fixe	*split_pattern(char *pattern)
 {
 	t_fixe		*fixe;
-	char		**fixes;
-	int32_t 	*flags;
-	uint32_t	i;
 
 	fixe = (t_fixe *)malloc(sizeof(t_fixe));
 	if (!fixe)
@@ -55,7 +52,7 @@ static void	fill_flags(char *pattern, t_fixe *fixe)
 static uint32_t	contains_string(char *string, char *s);
 static bool		found_string(char *string, char *s);
 
-bool	matches_pattern(char *pattern, t_fixe *fixe, char *s)
+bool	matches_pattern(t_fixe *fixe, char *s)
 {
 	uint32_t	c;
 	uint32_t	min_start;

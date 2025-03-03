@@ -5,11 +5,10 @@ static void redirect_heredoc(t_minishell *minishell, t_root *node,
 {
 	char	buffer[HRD_BUFFER_SIZE];
 	int32_t	bytes_read;
-    int32_t	tmpfd;
 
 	bytes_read = HRD_BUFFER_SIZE;
-	tmpfd = open(TMP, __O_TMPFILE | O_RDWR | O_TRUNC, 0644);
-	if (tmpfd == -1)
+	*hdfd = open(TMP, __O_TMPFILE | O_RDWR | O_TRUNC, 0644);
+	if (*hdfd == -1)
 	{
 		perror("Error opening file");
 		return ;
@@ -20,12 +19,12 @@ static void redirect_heredoc(t_minishell *minishell, t_root *node,
 		bytes_read = read(STDIN_FILENO, &buffer, HRD_BUFFER_SIZE);
 		if (minishell_strequal(buffer, node->tvalue))
 		{
-			dup2(tmpfd, minishell->stdfd[0]);
+			dup2(*hdfd, minishell->stdfd[0]);
 			*fflag = true;
 			return ;
 		}
 		else
-			write(tmpfd, &buffer, bytes_read);
+			write(*hdfd, &buffer, bytes_read);
 	}
 }
 
@@ -36,11 +35,11 @@ static void	handle_hd(t_minishell *minishell, t_root *node,
 
 	while (node && node->ttype != TTOKEN_HEREDOC)
 		node = node->right;
-	if (node && node == TTOKEN_HEREDOC)
+	if (node && node->ttype == TTOKEN_HEREDOC)
 	{
 		if (*hdfd != -1)
 			close(*hdfd);
-		if (node->right == TTOKEN_HEREDOC)
+		if (node->right->ttype == TTOKEN_HEREDOC)
 			hd_node = node->right->left;
 		else
 			hd_node = node->right;

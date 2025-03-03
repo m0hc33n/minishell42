@@ -10,10 +10,12 @@ t_status	minishell_translate(t_token *root, t_env *env)
     t_status    status;
 
     if ((status = update_value(root, env)))
-        return (status);
+	{
+    	return (status);
+	}
 	replace_asterisk(root);
     if ((status = remove_quote(root)))
-        return (status);
+    	return (status);
     return (STATUS_SUCCESS);
 }
 
@@ -61,7 +63,7 @@ static void	replace_asterisk(t_token *root)
 
 	if (root->right && root->right->ttype == TTOKEN_ARGUMENT && minishell_strchr(root->right->tvalue, '*')) // no need to check left token (parsing order)
 	{
-		next = root->right->next_token;
+		next = root->right->right;
 		free(root->right);
 		root->right = next;
 	}

@@ -1,10 +1,11 @@
 #include "../../inc/parser.h"
 
 static t_status	add_token(t_token **list, char *s);
+static void		pre_link(t_token *list, t_token *token);
 static void		free_add_list(t_token *list);
 static void		free_fixe(t_fixe *fixes);
 
-t_status	minishell_asterisk(t_token *root, t_token *token) // check if u need to interpret * inside quotes eagle eye baby
+t_status	minishell_asterisk(t_token *token) // check if u need to interpret * inside quotes eagle eye baby
 {
 	DIR				*dirp;
 	t_token			*tokens_add;
@@ -20,16 +21,27 @@ t_status	minishell_asterisk(t_token *root, t_token *token) // check if u need to
 	{
 		fixe = split_pattern(token->tvalue);
 		if (!fixe)
-			return (STATUS_MALLOCERR);
-		if (matches_pattern(token->tvalue, fixe, entry->d_name))
+			return (closedir(dirp), STATUS_MALLOCERR);
+		if (matches_pattern(fixe, entry->d_name))
 		{
 			if (add_token(&tokens_add, entry->d_name))
-				return (STATUS_MALLOCERR);
+				return (free_fixe(fixe), closedir(dirp), STATUS_MALLOCERR);
 		}
 		entry = readdir(dirp);
 	}
-	free_fixe(fixe);
-	closedir(dirp);
+	pre_link(tokens_add, token);
+	return (free_fixe(fixe), closedir(dirp), STATUS_SUCCESS);
+}
+
+static void	pre_link(t_token *list, t_token *token)
+{
+	t_token	*next;
+
+	next = token->right;
+	token->right = list;
+	while (list->right)
+		list = list->right;
+	list->right = next;
 }
 
 static t_status	add_token(t_token **list, char *s)
@@ -51,6 +63,7 @@ static t_status	add_token(t_token **list, char *s)
 	while (last->right)
 		last = last->right;
 	last->right = token;
+	return (STATUS_SUCCESS);
 }
 
 static void		free_add_list(t_token *list)

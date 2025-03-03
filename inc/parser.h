@@ -30,6 +30,6 @@ t_status	minishell_translate(t_token *root, t_env *env);
 char     	*remove_quotes(char *s);
 t_status	minishell_asterisk(t_token *token);
 t_fixe		*split_pattern(char *pattern);
-bool		matches_pattern(char *pattern, t_fixe *fixe, char *s);
+bool		matches_pattern(t_fixe *fixe, char *s);
 
 #endif
