@@ -18,7 +18,6 @@ t_status	minishell_translate(t_token *root, t_env *env)
 static t_status    update_value(t_token *token, t_env *env)
 {
     t_status    status;
-    char		*temp;
 
     if (token)
     {

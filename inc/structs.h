@@ -111,6 +111,7 @@ typedef struct s_minishell
 	t_env	*env;
 	t_lexer	*lexer;
 	t_root	*root;
+	int32_t	stdfd[2];
 	int32_t	exit_code;
 	
 }	t_minishell;

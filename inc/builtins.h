@@ -16,7 +16,7 @@ t_status	minishell_pwd(char **argv, t_env *l_env);
 t_status	minishell_export(char **argv, t_env *l_env);
 t_status	minishell_unset(char **argv, t_env **l_env);
 t_status	minishell_env(char **argv, t_env *l_env);
-t_status	minishell_exit(char **argv, t_env *l_env); // TODO
+t_status	minishell_exit(t_minishell *minishell);
 
 
 // m0hc33n

@@ -2,7 +2,7 @@
 
 bool		minishell_isbuiltin(char *cmd)
 {
-	if (minishell_strcmp(cmd, EXPORT))
+	if (minishell_strequal(cmd, EXPORT))
 		return (true);
 	else if (minishell_strequal(cmd, UNSET))
 		return (true);
@@ -24,15 +24,15 @@ void	exec_builtin(t_minishell *minishell, char **argv)
 	if (minishell_strequal(argv[0], EXPORT))
 		minishell_export(argv, minishell->env);
 	else if (minishell_strequal(argv[0], UNSET))
-		minishell_unset(argv, minishell->env);
+		minishell_unset(argv, &minishell->env);
 	else if (minishell_strequal(argv[0], ECHO))
 		minishell_echo(argv, minishell->env);
-	else if (minishell_strequal(argv[0], EXIT))
-		minishell_exit(argv, minishell->env);
 	else if (minishell_strequal(argv[0], ENV))
 		minishell_env(argv, minishell->env);
 	else if (minishell_strequal(argv[0], PWD))
 		minishell_pwd(argv, minishell->env);
 	else if (minishell_strequal(argv[0], CD))
 		minishell_cd(argv, minishell->env);
+	else if (minishell_strequal(argv[0], EXIT))
+		minishell_exit(minishell);
 }
