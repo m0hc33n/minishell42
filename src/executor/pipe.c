@@ -18,10 +18,10 @@ static void pipeit_child(t_minishell *minishell, t_root *node,
         close(output_fd);
         argv = executor_getargs(node->left);
     }
-    else
+	else
         argv = executor_getargs(node);
 	if (minishell_isbuiltin(argv[0]))
-		exec_builtin(argv, minishell);
+		exec_builtin(minishell, argv);
 	else
 		execve(argv[0], argv, NULL);
     exit(EXIT_FAILURE);

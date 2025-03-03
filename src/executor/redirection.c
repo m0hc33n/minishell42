@@ -1,111 +1,56 @@
 #include "../../inc/executor.h"
 
-static void redirect_output(t_root *node, int32_t output_fd)
+static void redirect_heredoc(t_minishell *minishell, t_root *node,
+				int32_t *hdfd, bool *fflag)
 {
-    int32_t	fd;
-    t_root	*file_node;
+	char	buffer[HRD_BUFFER_SIZE];
+	int32_t	bytes_read;
+    int32_t	tmpfd;
 
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (fd == -1)
-        {	
-            perror("Error opening file");
-            exit(EXIT_FAILURE);
-        }
-        dup2(fd, output_fd);
-        close(fd);
-    }
+	bytes_read = HRD_BUFFER_SIZE;
+	tmpfd = open(TMP, __O_TMPFILE | O_RDWR | O_TRUNC, 0644);
+	if (tmpfd == -1)
+	{
+		perror("Error opening file");
+		return ;
+	}
+	while (bytes_read > 0)
+	{
+		minishell_memset(&buffer, 0, HRD_BUFFER_SIZE);
+		bytes_read = read(STDIN_FILENO, &buffer, HRD_BUFFER_SIZE);
+		if (minishell_strequal(buffer, node->tvalue))
+		{
+			dup2(tmpfd, minishell->stdfd[0]);
+			*fflag = true;
+			return ;
+		}
+		else
+			write(tmpfd, &buffer, bytes_read);
+	}
 }
 
-static void redirect_append(t_root *node, int32_t output_fd)
+static void	handle_hd(t_minishell *minishell, t_root *node,
+				int32_t *hdfd, bool *fflag)
 {
-    int32_t	fd;
-    t_root	*file_node;
+	t_root	*hd_node;
 
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        if (fd == -1)
-        {
-            perror("Error opening file");
-            exit(EXIT_FAILURE);
-        }
-        dup2(fd, output_fd);
-        close(fd);
-    }
+	while (node && node->ttype != TTOKEN_HEREDOC)
+		node = node->right;
+	if (node && node == TTOKEN_HEREDOC)
+	{
+		if (*hdfd != -1)
+			close(*hdfd);
+		if (node->right == TTOKEN_HEREDOC)
+			hd_node = node->right->left;
+		else
+			hd_node = node->right;
+		redirect_heredoc(minishell, hd_node, hdfd, fflag);
+		handle_hd(minishell, node->right, hdfd, fflag);
+	}
 }
 
-static void redirect_input(t_root *node, int32_t input_fd)
+static void	handle_ioa(t_root *node, int32_t input_fd, int32_t output_fd)
 {
-    int32_t	fd;
-    t_root	*file_node;
-
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("Error opening file");
-            exit(EXIT_FAILURE);
-        }
-        dup2(fd, input_fd);
-        close(fd);
-    }
-}
-
-static void redirect_heredoc(t_root *node)
-{
-    int32_t	pipe_fd[2];
-    pid_t	pid;
-    
-    pipe(pipe_fd);
-    pid = fork();
-    if (pid == 0)
-    {
-        close(pipe_fd[0]);
-        // Write the here document input to the pipe
-        write(pipe_fd[1], node->right->tvalue, strlen(node->right->tvalue));
-        close(pipe_fd[1]);
-        dup2(pipe_fd[0], STDIN_FILENO);
-        close(pipe_fd[0]);
-        
-        // Execute the command with redirected input
-        execve(node->left->tvalue, executor_getargs(node->left), NULL);
-        exit(EXIT_FAILURE);
-    }
-    else if (pid > 0)
-    {
-        close(pipe_fd[0]);
-        close(pipe_fd[1]);
-        wait(NULL);
-    }
-}
-
-void		exec_redirect(t_minishell *minishell, t_root *node,
-				int32_t input_fd, int32_t output_fd)
-{
-	t_root	*cmd_node;
-	int32_t	bkpfd[2];
-
-	bkpfd[0] = dup(input_fd);
-	bkpfd[1] = dup(output_fd);
-	cmd_node = node->left;
 	while (minishell_isred(node))
 	{
 		if (node->ttype == TTOKEN_OUTPUT)
@@ -114,13 +59,33 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 			redirect_append(node, output_fd);
 		else if (node->ttype == TTOKEN_INPUT)
 			redirect_input(node, input_fd);
-		else if (node->ttype == TTOKEN_HEREDOC)
-			redirect_heredoc(node);
 		node = node->right;
-		while (node && (!minishell_isred(node)))
+		while (node && (!minishell_isred(node)) && node->ttype != TTOKEN_HEREDOC)
 			node = node->right;
 	}
+}
+
+void		exec_redirect(t_minishell *minishell, t_root *node,
+				int32_t input_fd, int32_t output_fd)
+{
+	t_root	*cmd_node;
+	int32_t	bkpfd[2];
+	int32_t	hdfd;
+	bool	fflag;
+
+	bkpfd[0] = dup(input_fd);
+	bkpfd[1] = dup(output_fd);
+	fflag = false;
+	hdfd = -1;
+	cmd_node = node->left;
+	handle_hd(minishell, node, &hdfd, &fflag);
+	handle_ioa(node, input_fd, output_fd);
 	exec_cmd(minishell, cmd_node, output_fd);
+	if (fflag)
+	{
+		close(hdfd);
+		dup2(minishell->stdfd[0], STDIN_FILENO);
+	}
 	dup2(bkpfd[1], output_fd);
 	dup2(bkpfd[0], input_fd);
 }

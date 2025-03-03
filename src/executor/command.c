@@ -14,7 +14,7 @@ void	exec_cmd(t_minishell *minishell, t_root *root, int32_t output_fd)
 			dup2(output_fd, STDOUT_FILENO);
 		argv = executor_getargs(root);
 		if (minishell_isbuiltin(argv[0]))
-			exec_builtin(argv, minishell);
+			exec_builtin(minishell, argv);
 		else
 			execve(argv[0], argv, NULL);
 		exit(EXIT_FAILURE);
