@@ -18,4 +18,18 @@ t_status	minishell_unset(char **argv, t_env **l_env);
 t_status	minishell_env(char **argv, t_env *l_env);
 t_status	minishell_exit(char **argv, t_env *l_env); // TODO
 
+
+// m0hc33n
+
+# define EXPORT	"export"
+# define UNSET	"unset"
+# define ECHO	"echo"
+# define EXIT	"exit"
+# define ENV	"env"
+# define PWD	"pwd"
+# define CD		"cd"
+
+bool		minishell_isbuiltin(char *cmd);
+void		exec_builtin(t_minishell *minishell, char **argv);
+
 #endif

@@ -97,8 +97,8 @@ static void redirect_heredoc(t_root *node)
     }
 }
 
-void		exec_redirect(t_root *node, int32_t input_fd,
-				int32_t output_fd, int32_t *exit_code)
+void		exec_redirect(t_minishell *minishell, t_root *node,
+				int32_t input_fd, int32_t output_fd)
 {
 	t_root	*cmd_node;
 	int32_t	bkpfd[2];
@@ -120,7 +120,7 @@ void		exec_redirect(t_root *node, int32_t input_fd,
 		while (node && (!minishell_isred(node)))
 			node = node->right;
 	}
-	exec_cmd(cmd_node, output_fd, exit_code);
+	exec_cmd(minishell, cmd_node, output_fd);
 	dup2(bkpfd[1], output_fd);
 	dup2(bkpfd[0], input_fd);
 }

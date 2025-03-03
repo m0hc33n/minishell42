@@ -1,12 +1,12 @@
 #include "../../inc/executor.h"
 
-static void pipeit_child(t_root *node, int32_t input_fd,
-	int32_t output_fd, int32_t *exit_code)
+static void pipeit_child(t_minishell *minishell, t_root *node,
+				int32_t input_fd, int32_t output_fd)
 {
     char **argv;
 
     if (minishell_isred(node->left))
-        exec_redirect(node->left, input_fd, output_fd, exit_code);
+        exec_redirect(minishell, node->left, input_fd, output_fd);
     if (input_fd != 0)
     {
         dup2(input_fd, STDIN_FILENO);
@@ -20,11 +20,14 @@ static void pipeit_child(t_root *node, int32_t input_fd,
     }
     else
         argv = executor_getargs(node);
-    execve(argv[0], argv, NULL);
+	if (minishell_isbuiltin(argv[0]))
+		exec_builtin(argv, minishell);
+	else
+		execve(argv[0], argv, NULL);
     exit(EXIT_FAILURE);
 }
 
-static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
+static void	pipeit(t_minishell *minishell, t_root *node, int32_t input_fd)
 {
 	int32_t pipe_fd[2];
 	pid_t	pid;
@@ -36,7 +39,7 @@ static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 		pipe(pipe_fd);
 	pid = fork();
 	if (pid == CHILD_PROCESS)
-		pipeit_child(node, input_fd, pipe_fd[PIPE_WRITE_END], exit_code);
+		pipeit_child(minishell, node, input_fd, pipe_fd[PIPE_WRITE_END]);
 	else if (pid > 0)
 	{
 		if (input_fd != 0)
@@ -44,19 +47,19 @@ static void	pipeit(t_root *node, int32_t input_fd, int32_t *exit_code)
 		if (node->ttype == TTOKEN_PIPE)
 			close(pipe_fd[PIPE_WRITE_END]); // Close the write end of the pipe
 		if (node->ttype == TTOKEN_PIPE)
-			pipeit(node->right, pipe_fd[PIPE_READ_END], exit_code);
+			pipeit(minishell, node->right, pipe_fd[PIPE_READ_END]);
 		else
-			pipeit(node->right, input_fd, exit_code);
+			pipeit(minishell, node->right, input_fd);
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(*exit_code) && WEXITSTATUS(status) != 0)
-			*exit_code = WEXITSTATUS(status);
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			minishell->exit_code = WEXITSTATUS(status);
     }
 }
 
-void	exec_pipe(t_root *root, int32_t *exit_code)
+void	exec_pipe(t_minishell *minishell, t_root *root)
 {
 	if (root)
 	{
-		pipeit(root, 0, exit_code);
+		pipeit(minishell, root, 0);
 	}
 }

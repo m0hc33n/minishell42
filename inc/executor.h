@@ -9,10 +9,10 @@
 
 // EXECUTION
 t_status	minishell_executor(t_minishell *minishell);
-void		exec_redirect(t_root *node, int32_t input_fd,
-				int32_t output_fd, int32_t *exit_code);
-void		exec_pipe(t_root *root, int32_t *exit_code);
-void		exec_cmd(t_root *root, int32_t output_fd, int32_t *exit_code);
+void		exec_redirect(t_minishell *minishell, t_root *node,
+				int32_t input_fd, int32_t output_fd);
+void		exec_pipe(t_minishell *minishell, t_root *root);
+void		exec_cmd(t_minishell *minishell, t_root *root, int32_t output_fd);
 
 // UTILS
 char		**executor_getargs(t_root *root);
