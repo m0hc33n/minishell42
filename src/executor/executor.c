@@ -27,6 +27,7 @@ static void	executor_exec(t_minishell *minishell, t_root *root)
 
 t_status	minishell_executor(t_minishell *minishell)
 {
+	executor_handle_hd(minishell);
 	executor_exec(minishell, minishell->root);
 	return (STATUS_SUCCESS);
 }

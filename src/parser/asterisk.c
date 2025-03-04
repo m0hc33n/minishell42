@@ -57,6 +57,7 @@ static t_status	add_token(t_token **list, char *s)
 		return (free(token), free_add_list(*list), STATUS_MALLOCERR); // gadd free_add_list rah makaynach a jemmi
 	token->ttype = TTOKEN_ARGUMENT;
 	token->right = NULL;
+	token->left = NULL;
 	if (!*list)
 		return (*list = token, STATUS_SUCCESS);
 	last = *list;

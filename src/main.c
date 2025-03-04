@@ -28,7 +28,8 @@ static t_status minishell(t_minishell *minishell)
 	t_status	status;
 
 
-	minishell->cmdline = readline(minishell->prompt);
+	//minishell->cmdline = readline(minishell->prompt);
+	minishell->cmdline = minishell_strdup("exit");
 	if (!minishell->cmdline[0])
 		return (STATUS_EMPTYCMD);
 	status = minishell_lexer(minishell);

@@ -6,7 +6,7 @@ static t_status	cmd_spaced_len(char *cmdline, uint64_t *sz)
 	{
 		if (minishell_iscmdsep(*cmdline))
 		{
-			if (!minishell_iscmdsep(*(cmdline - 1)))
+			if (!minishell_iscmdsep(*(cmdline - 1))) //  fix this -1 shit
 				(*sz)++;
 			else if (*cmdline != *(cmdline - 1))
 				(*sz)++;

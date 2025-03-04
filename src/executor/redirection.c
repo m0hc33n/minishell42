@@ -17,7 +17,7 @@ static void redirect_heredoc(t_minishell *minishell, t_root *node,
 	{
 		minishell_memset(&buffer, 0, HRD_BUFFER_SIZE);
 		bytes_read = read(STDIN_FILENO, &buffer, HRD_BUFFER_SIZE);
-		if (minishell_strequal(buffer, node->tvalue))
+		if (!minishell_strequal(buffer, node->tvalue))
 		{
 			dup2(*hdfd, minishell->stdfd[0]);
 			*fflag = true;
