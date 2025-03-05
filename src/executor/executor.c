@@ -1,5 +1,10 @@
 #include "../../inc/minishell.h"
 
+static void	exec_pipe(t_minishell *minishell, t_root *root)
+{
+	pipeit(minishell, root, STDIN_FILENO);
+}
+
 static void	executor_exec(t_minishell *minishell, t_root *root)
 {
 	if (root)
@@ -21,13 +26,13 @@ static void	executor_exec(t_minishell *minishell, t_root *root)
 		else if (minishell_isred(root))
 			exec_redirect(minishell, root, 0, 1);
 		else if (root->ttype == TTOKEN_COMMAND)
-			exec_cmd(minishell, root, STDOUT_FILENO);
+			exec_cmd(minishell, root, STDIN_FILENO ,STDOUT_FILENO);
 	}
 }
 
 t_status	minishell_executor(t_minishell *minishell)
 {
-	executor_handle_hd(minishell);
+	//executor_handle_hdoc(minishell->root);
 	executor_exec(minishell, minishell->root);
 	return (STATUS_SUCCESS);
 }

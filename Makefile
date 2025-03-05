@@ -1,5 +1,5 @@
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -g#	-Wall -Wextra -Werror -g
 
 ## minishell headers
 MINISHELL_HDR	= inc/minishell.h
@@ -12,14 +12,14 @@ TOOLS_HDR		= inc/tools.h
 ## src files
 MINISHELL_FILES	= main.c
 EXECUTOR_FILES	= executor.c getargs.c pipe.c redirection.c \
-				  command.c redutils.c
+				  command.c #hdoc.c
 PARSER_FILES	= parser.c translator.c trans_utils.c \
 				  asterisk.c pattern.c
 LEXER_FILES		= lexer.c lex.c spaceit.c splitit.c \
 				  validate.c token.c
 TOOLS_FILES		= strutils_0.c strutils_1.c strutils_2.c memutils.c \
 				  envutils_0.c envutils_1.c envutils_2.c \
-				  cleanup.c reset.c error.c redtools.c
+				  cleanup.c reset.c error.c redutils.c
 BUILTINS_FILES	= cd.c echo.c env.c exit.c export.c \
 				  pwd.c unset.c builtins.c
 

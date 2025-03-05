@@ -60,14 +60,21 @@ typedef struct s_env
 	struct s_env	*next_key;
 }	t_env;
 
+// heredoce handler
+typedef struct s_hd
+{
+	bool	is_hd;
+	int32_t	fd;
+}	t_hd;
+
 typedef struct s_token
 {
 	t_token_type	ttype;
 	uint32_t		tid;
 	char			*tvalue;
 	struct s_token	*next_token;
-
 	uint32_t		priority;
+	t_hd			hd;		// do u use it yet?
 	struct s_token	*right;
 	struct s_token	*left;
 }	t_token;
