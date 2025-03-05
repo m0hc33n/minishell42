@@ -3,30 +3,31 @@
 static uint32_t count_removed(char *s);
 static uint32_t decide(char c, uint8_t *flag);
 
-char    *remove_quotes(char *s)
+char	*minishell_quotes(char *value)
 {
     uint32_t    final_size;
     char        *final_value;
-    uint32_t     i;
+    uint32_t     i[2];
     uint8_t      flag[2];
 
-    final_size = count_removed(s);
+    final_size = count_removed(value);
     final_value = (char *)malloc(sizeof(char) * (final_size + 1));
     if (!final_size)
         return (NULL);
-    i = 0;
+    i[0] = 0;
+	i[1] = 0;
     flag[0] = 0;
     flag[1] = 0;
-    while (i < final_size)
+    while (i[0] < final_size)
     {
-        if (decide(*s, flag))
+        if (decide(value[i[1]], flag))
         {
-            final_value[i] = *s;
-            i += 1;
+            final_value[i[0]] = value[i[1]];
+            i[0] += 1;
         }
-        s += 1;
+        i[1] += 1;
     }
-    final_value[i] = 0;
+    final_value[i[0]] = 0;
     return (final_value);
 }
 

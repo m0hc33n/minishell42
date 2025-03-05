@@ -9,14 +9,11 @@ t_status	minishell_parser(t_minishell *minishell)
 {
 	t_token		*head;
 	uint32_t	size;
-	t_status	status;
 
 	head = minishell->lexer->token;
 	size = minishell->lexer->sztoken;
 	fill_tokens(head, size);
 	minishell->root = parse_tree(head, 0, size);
-	if ((status = minishell_translate(minishell->root, minishell->env)))
-		return (status);
 	return (STATUS_SUCCESS);
 }
 

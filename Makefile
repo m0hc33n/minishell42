@@ -13,7 +13,7 @@ TOOLS_HDR		= inc/tools.h
 MINISHELL_FILES	= main.c
 EXECUTOR_FILES	= executor.c getargs.c pipe.c redirection.c \
 				  command.c #hdoc.c
-PARSER_FILES	= parser.c translator.c trans_utils.c \
+PARSER_FILES	= parser.c translator.c interpret.c quotes.c \
 				  asterisk.c pattern.c
 LEXER_FILES		= lexer.c lex.c spaceit.c splitit.c \
 				  validate.c token.c

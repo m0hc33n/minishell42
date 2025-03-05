@@ -48,6 +48,7 @@ static void	fill_flags(char *pattern, t_fixe *fixe)
 		c += 1;
 	}
 }
+/*----------------------------------------------------------------------------*/
 
 static uint32_t	contains_string(char *string, char *s);
 static bool		found_string(char *string, char *s);

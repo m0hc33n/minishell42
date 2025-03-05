@@ -54,7 +54,7 @@ static t_status	add_token(t_token **list, char *s)
 		return (free_add_list(*list), STATUS_MALLOCERR);
 	token->tvalue = minishell_strdup(s); // s is not in heap, read documentation
 	if (!token->tvalue)
-		return (free(token), free_add_list(*list), STATUS_MALLOCERR); // gadd free_add_list rah makaynach a jemmi
+		return (free(token), free_add_list(*list), STATUS_MALLOCERR);
 	token->ttype = TTOKEN_ARGUMENT;
 	token->right = NULL;
 	token->left = NULL;
