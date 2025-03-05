@@ -1,5 +1,13 @@
 #include "../../inc/lexer.h"
 
+static t_token_type	token_type_dquoted(char *tvalue)
+{
+	if (minishell_strchr(tvalue, CHAR_DOLLAR_SIGN))
+		return (TTOKEN_VARIABLE);
+	else
+		return (TTOKEN_ARGUMENT);
+}
+
 static	t_token_type	cmdsep_token_type(char *token_value)
 {
 	if (*token_value == CHAR_PIPE && *(token_value + 1) == CHAR_PIPE)
@@ -31,11 +39,14 @@ t_token_type	lex_get_token_type(char *token_value)
 	{
 		if (*token_value == CHAR_DOLLAR_SIGN)
 			return (TTOKEN_VARIABLE);
-		if (*token_value == CHAR_DASH)
+		else if (*token_value == CHAR_DASH)
 			return (TTOKEN_OPTION);
-		if (*token_value == CHAR_SINGLE_QUOTE
-			|| *token_value == CHAR_DOUBLE_QUOTE)
-			return (TTOKEN_STRING);
+		else if (*token_value == CHAR_SINGLE_QUOTE)
+			return (TTOKEN_ARGUMENT);
+		else if (*token_value == CHAR_DOUBLE_QUOTE)
+			return (token_type_dquoted(token_value));
+		else if (minishell_strchr(token_value, CHAR_ASTERISK))
+			return (TTOKEN_ASTERISK);
 		else
 			return (TTOKEN_ARGUMENT);
 	}
@@ -58,7 +69,7 @@ t_status	lex_add_token(t_lexer *lexer, char *tvalue, t_token_type ttype)
 	t_token			*token;
 	static uint32_t	tid;
 
-	token = (t_token *)malloc(sizeof(t_token));
+	token = (t_token *)minishell_calloc(1, sizeof(t_token));
 	if (!token)
 		return (STATUS_MALLOCERR);
 	token->ttype = ttype;
