@@ -16,11 +16,16 @@ static void exec_redirect_if_needed(t_minishell *minishell, t_root *node,
     }
 }
 
-static void setup_input_output(int32_t input_fd, int32_t output_fd)
+static void setup_input_output(t_root *node, int32_t input_fd, int32_t output_fd)
 {
-    if (input_fd != 0)
+    if (input_fd != 0 || node->hd.is_hd)
 	{
-        if (dup2(input_fd, STDIN_FILENO) == -1)
+		if (node->hd.is_hd && dup2(node->hd.fd, STDIN_FILENO) == -1)
+		{
+			perror("dup2");
+			exit(EXIT_FAILURE);
+		}
+        else if (dup2(input_fd, STDIN_FILENO) == -1)
 		{
             perror("dup2");
             exit(EXIT_FAILURE);
@@ -41,10 +46,15 @@ static void setup_input_output(int32_t input_fd, int32_t output_fd)
 static void pipeit_child(t_minishell *minishell, t_root *node,
 				int32_t input_fd, int32_t output_fd)
 {
-    char **argv;
+    char	**argv;
+	t_root	*cmd_node;
 
 	exec_redirect_if_needed(minishell, node, input_fd, output_fd);
-	setup_input_output(input_fd, output_fd);
+	if (node->ttype == TTOKEN_COMMAND)
+		cmd_node = node;
+	else
+		cmd_node = node->left;
+	setup_input_output(cmd_node, input_fd, output_fd);
 	if (node->ttype == TTOKEN_PIPE)
         argv = executor_getargs(node->left);
     else

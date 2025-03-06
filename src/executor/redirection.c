@@ -81,8 +81,21 @@ static void redirect_input(t_root *node, int32_t input_fd)
     }
 }
 
+static void	redirect_hdoc(t_root *cmd_node, int32_t input_fd)
+{
+	if (cmd_node && cmd_node->hd.is_hd)
+	{
+		if (dup2(cmd_node->hd.fd, input_fd) == -1)
+		{
+			perror("redirect_hdoc : dup2");
+			exit(EXIT_FAILURE);
+		}
+		//close(cmd_node->hd.fd);
+	}
+}
 
-static void	handle_ioa(t_root *node, int32_t input_fd, int32_t output_fd)
+static void	handle_ioa(t_root *node, t_root *cmd_node,
+				int32_t input_fd, int32_t output_fd)
 {
 	while (minishell_isred(node))
 	{
@@ -92,6 +105,8 @@ static void	handle_ioa(t_root *node, int32_t input_fd, int32_t output_fd)
 			redirect_append(node, output_fd);
 		else if (node->ttype == TTOKEN_INPUT)
 			redirect_input(node, input_fd);
+		else if (node->ttype == TTOKEN_HEREDOC)
+			redirect_hdoc(cmd_node, input_fd);
 		node = node->right;
 		while (node && (!minishell_isred(node)))
 			node = node->right;
@@ -107,8 +122,8 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 	bkpfd[0] = dup(input_fd);
 	bkpfd[1] = dup(output_fd);
 	cmd_node = node->left;
-	handle_ioa(node, input_fd, output_fd);
+	handle_ioa(node, cmd_node, input_fd, output_fd);
 	exec_cmd(minishell, cmd_node, input_fd, output_fd);
-	dup2(bkpfd[1], output_fd);
 	dup2(bkpfd[0], input_fd);
+	dup2(bkpfd[1], output_fd);
 }

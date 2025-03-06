@@ -1,26 +1,26 @@
 #include "../../inc/executor.h"
 
-static void setup_input_output(int32_t input_fd, int32_t output_fd)
-{
-    if (input_fd != 0)
-	{
-        if (dup2(input_fd, STDIN_FILENO) == -1)
-		{
-            perror("dup2");
-            exit(EXIT_FAILURE);
-        }
-        close(input_fd);
-    }
-    if (output_fd != STDOUT_FILENO)
-	{
-        if (dup2(output_fd, STDOUT_FILENO) == -1)
-		{
-            perror("dup2");
-            exit(EXIT_FAILURE);
-        }
-        close(output_fd);
-    }
-}
+// static void setup_input_output(int32_t input_fd, int32_t output_fd)
+// {
+//     if (input_fd != 0)
+// 	{	
+// 		if (dup2(input_fd, STDIN_FILENO) == -1)
+// 		{
+//             perror("dup2");
+//             exit(EXIT_FAILURE);
+//         }
+//         close(input_fd);
+//     }
+//     if (output_fd != STDOUT_FILENO)
+// 	{
+//         if (dup2(output_fd, STDOUT_FILENO) == -1)
+// 		{
+//             perror("dup2");
+//             exit(EXIT_FAILURE);
+//         }
+//         close(output_fd);
+//     }
+// }
 
 void	exec_cmd(t_minishell *minishell, t_root *root, int32_t input_fd, int32_t output_fd)
 {
@@ -29,6 +29,7 @@ void	exec_cmd(t_minishell *minishell, t_root *root, int32_t input_fd, int32_t ou
 	int32_t		status;
 
 	argv = executor_getargs(root);
+	//setup_input_output(input_fd, output_fd);
 	if (minishell_isbuiltin(argv[0]))
 			minishell->exit_code = exec_builtin(minishell, argv);
 	else
@@ -36,7 +37,6 @@ void	exec_cmd(t_minishell *minishell, t_root *root, int32_t input_fd, int32_t ou
 		pid = fork();
 		if (pid == CHILD_PROCESS)
 		{
-			setup_input_output(input_fd, output_fd);
 			execve(argv[0], argv, NULL);
 			exit(EXIT_FAILURE);
 		}

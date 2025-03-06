@@ -46,5 +46,6 @@ char		*minishell_getpath(t_env *env, char *cmd);
 
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);
+char		*minishell_generate_filename();
 
 #endif

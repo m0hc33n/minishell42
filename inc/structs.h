@@ -21,7 +21,10 @@ enum e_char_cmdsep
 typedef enum e_token_type
 {
     TTOKEN_COMMAND,
+    TTOKEN_OPTION,
     TTOKEN_ARGUMENT,
+	TTOKEN_ASTERISK,
+    TTOKEN_VARIABLE,
     TTOKEN_PIPE,
     TTOKEN_AND_OP,
     TTOKEN_OR_OP,

@@ -9,7 +9,7 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 {
 	if (minishell)
 	{
-		*minishell = (t_minishell *)malloc(sizeof(t_minishell));
+		*minishell = (t_minishell *)minishell_calloc(1, sizeof(t_minishell));
 		if (!minishell)
 			return (STATUS_MALLOCERR);
 		(*minishell)->prompt = PROMPT;

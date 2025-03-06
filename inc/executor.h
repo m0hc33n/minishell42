@@ -3,13 +3,11 @@
 
 #include "minishell.h"
 
-# define HDOC_BUFFER_SIZE 1024
-
 # define CHILD_PROCESS 0x00000000
 # define PIPE_READ_END 0x00000000
 # define PIPE_WRITE_END 0x00000001
 
-# define TMP "/tmp"
+# define TMP "/tmp/.00000000000000000000"
 
 // EXECUTION
 t_status	minishell_executor(t_minishell *minishell);

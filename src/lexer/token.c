@@ -1,5 +1,13 @@
 #include "../../inc/lexer.h"
 
+static t_token_type	token_type_dquoted(char *tvalue)
+{
+	if (minishell_strchr(tvalue, CHAR_DOLLAR_SIGN))
+		return (TTOKEN_VARIABLE);
+	else
+		return (TTOKEN_ARGUMENT);
+}
+
 static	t_token_type	cmdsep_token_type(char *token_value)
 {
 	if (*token_value == CHAR_PIPE && *(token_value + 1) == CHAR_PIPE)
@@ -28,7 +36,20 @@ t_token_type	lex_get_token_type(char *token_value)
 	if (minishell_iscmdsep(*token_value))
 		return (cmdsep_token_type(token_value));
 	else
-		return (TTOKEN_ARGUMENT);
+	{
+		if (*token_value == CHAR_DOLLAR_SIGN)
+			return (TTOKEN_VARIABLE);
+		else if (*token_value == CHAR_DASH)
+			return (TTOKEN_OPTION);
+		else if (*token_value == CHAR_SINGLE_QUOTE)
+			return (TTOKEN_ARGUMENT);
+		else if (*token_value == CHAR_DOUBLE_QUOTE)
+			return (token_type_dquoted(token_value));
+		else if (minishell_strchr(token_value, CHAR_ASTERISK))
+			return (TTOKEN_ASTERISK);
+		else
+			return (TTOKEN_ARGUMENT);
+	}
 	return (TTOKEN_UNKOWN);
 }
 
