@@ -60,8 +60,6 @@ static t_status    clean_tree(t_token *token)
 
     if (token)
     {
-        if ((status = minishell_quotes(token->tvalue)))
-            return (status);
         if (token->left && (token->left->ttype == TTOKEN_PARENTHESE_CLOSE 
 		|| token->left->ttype == TTOKEN_PARENTHESE_OPEN))
         {
