@@ -25,7 +25,7 @@ static t_status    update(t_token *token, t_env *env)
     {
 		if ((status = minishell_interpret(token, env)))
 			return (status);
-		if (token->ttype == TTOKEN_COMMAND)
+		if (token->ttype == TTOKEN_COMMAND && !minishell_isbuiltin(token->tvalue))
 		{
 			temp = minishell_getpath(env, token->tvalue);
 			if (!temp)

@@ -5,12 +5,12 @@ static void		link_chunk(t_chunk **chunks, t_chunk *chunk);
 
 t_chunk		*minishell_chunker(char *value, t_env *env) // split for norminette WSL
 {
-	static char		quote;
-	static bool		interpret;
-	static uint32_t	s;
-	static uint32_t	e;
+	char		quote = 0;
+	bool		interpret = false;
+	uint32_t	s = 0;
+	uint32_t	e = 0;
 	char			*content;
-	static t_chunk	*chunks;
+	t_chunk	*chunks = NULL;
 
 	while (value[s])
 	{
@@ -21,10 +21,11 @@ t_chunk		*minishell_chunker(char *value, t_env *env) // split for norminette WSL
 		}
 		while (value[e])
 		{
-			if (!quote && (value[e] == CHAR_SINGLE_QUOTE || value[e] == CHAR_DOUBLE_QUOTE))
+			if (!quote && (value[e] == CHAR_SINGLE_QUOTE || value[e] == CHAR_DOUBLE_QUOTE || !value[e + 1]))
 			{
-				interpret = 1;
+				interpret = true;
 				quote = value[e];
+				e += (!value[e + 1]);
 				break ;
 			}
 			if (quote && value[e] == quote)
@@ -57,7 +58,7 @@ static t_status	add_chunk(t_chunk **chunks, char *content, bool interpret, t_env
 	chunk = (t_chunk *)malloc(sizeof(t_chunk));
 	if (!chunk)
 		return (STATUS_MALLOCERR);
-	if (interpret)
+	if (interpret && minishell_strchr(content, CHAR_DOLLAR_SIGN))
 	{
 		temp = minishell_expand(content, env);
 		if (!temp)

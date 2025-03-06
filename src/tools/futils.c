@@ -8,7 +8,7 @@ char	*minishell_readfile(char *filename)
 	char	*data;
 	char	*p;
 
-	fd = open(fd, O_RDONLY);
+	fd = open(filename, O_RDONLY);
 	if (fd == -1)
 		return (NULL);
 	rbytes = FREAD_SIZE;
@@ -18,7 +18,7 @@ char	*minishell_readfile(char *filename)
 		rbytes = read(fd, &buffer, FREAD_SIZE);
 		buffer[FREAD_SIZE] = 0;
 		p = data;
-		data = minishell_strjoin(data, &buffer);
+		data = minishell_strjoin(data, buffer);
 		if (p)
 			free(p);
 	}

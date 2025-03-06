@@ -50,5 +50,6 @@ char		*minishell_getpath(t_env *env, char *cmd);
 bool		minishell_isred(t_root *node);
 char		*minishell_generate_filename();
 void		hdoc_sigint(int32_t signum);
+char		*minishell_readfile(char *filename);
 
 #endif

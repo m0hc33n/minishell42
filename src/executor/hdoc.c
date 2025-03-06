@@ -69,7 +69,6 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 void	executor_handle_hdoc(t_root *root, t_status *status)
 {
 	t_root		*cmd_node;
-	t_status	status;
 
 	if (!root || *status)
 		return ;

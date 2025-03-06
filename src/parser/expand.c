@@ -1,17 +1,17 @@
 #include "../../inc/parser.h"
 
-static char	*extract_key(char *content, uint32_t **index);
+static char	*extract_key(char *content, uint32_t *end);
 
 char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 {
-	static char		*result;
-	static char		*save;
-	static char		*temp;
-	static char		*key;
-	static char		*value;
-	static char		*group;
-	static uint32_t	s;
-	static uint32_t	e;
+	char		*result = 0;
+	char		*save = 0;
+	char		*temp = 0;
+	char		*key = 0;
+	char		*value = 0;
+	char		*group = 0;
+	uint32_t	s = 0;
+	uint32_t	e = 0;
 	
 	while (content[s])
 	{
@@ -43,12 +43,20 @@ char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 		free(value);
 		s = e;
 	}
+	return (result);
 }
 
-static char	*extract_key(char *content, uint32_t **index)
+static char	*extract_key(char *content, uint32_t *end)
 {
+	char		*key;
 	uint32_t	start;
 
-	start = *index;
-	
+	start = *end;
+	while (content[*end] && !minishell_isspace(content[*end]))
+		*end += 1;
+	key = (char *)malloc(sizeof(char) * (*end - start + 1));
+	if (!key)
+		return (NULL);
+	minishell_strlcpy(key, content + start, *end - start + 1);
+	return (key);
 }
