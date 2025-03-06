@@ -32,7 +32,12 @@ static void	executor_exec(t_minishell *minishell, t_root *root)
 
 t_status	minishell_executor(t_minishell *minishell)
 {
-	executor_handle_hdoc(minishell->root);
+	t_status	status;
+
+	status = 0;
+	executor_handle_hdoc(minishell->root, &status);
+	if (status)
+		return (status);
 	executor_exec(minishell, minishell->root);
 	return (STATUS_SUCCESS);
 }

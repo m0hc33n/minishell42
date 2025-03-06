@@ -3,6 +3,8 @@
 
 # include "minishell.h"
 
+# define FREAD_SIZE 1024
+
 // STRING FUNCTIONS
 bool		minishell_strchr(const char *s, int c);
 uint32_t	minishell_strlen(const char *s);
@@ -47,5 +49,6 @@ char		*minishell_getpath(t_env *env, char *cmd);
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);
 char		*minishell_generate_filename();
+void		hdoc_sigint(int32_t signum);
 
 #endif

@@ -17,7 +17,11 @@ void		pipeit(t_minishell *minishell, t_root *node, int32_t input_fd);
 void		exec_cmd(t_minishell *minishell, t_root *root, int32_t input_fd, int32_t output_fd);
 
 // UTILS
-void		executor_handle_hdoc(t_root *root);
-char		**executor_getargs(t_root *root);
+void		redirect_output(t_root *node, int32_t output_fd);
+void		redirect_append(t_root *node, int32_t output_fd);
+void		redirect_input(t_root *node, int32_t input_fd);
+void		redirect_hdoc(t_root *cmd_node, int32_t input_fd);
+void		executor_handle_hdoc(t_root *root, t_status *status);
+char		**executor_getargs(t_root *root, t_env *env);
 
 #endif

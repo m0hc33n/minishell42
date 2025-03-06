@@ -33,7 +33,7 @@ static char **getargs_init(t_root *root, uint32_t *argc)
 	return (NULL);
 }
 
-char	**executor_getargs(t_root *root)
+char	**executor_getargs(t_root *root, t_env *env)
 {
 	char		**argv;
 	uint32_t	argc;
@@ -44,13 +44,13 @@ char	**executor_getargs(t_root *root)
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
+	minishell_translate(root, env);
 	if (root->tvalue == TTOKEN_COMMAND)
 	{
 		argv[count++] = root->tvalue;
 		root = root->right;
 	}
-	while (root && root->ttype != TTOKEN_PARENTHESE_CLOSE
-		&& root->ttype != TTOKEN_PARENTHESE_OPEN)
+	while (root)
 	{
 		argv[count++] = root->tvalue;
 		root = root->right;

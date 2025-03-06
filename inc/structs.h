@@ -3,7 +3,7 @@
 
 # include "minishell.h"
 
-enum e_char_cmdsep
+enum e_minichar
 {
 	CHAR_SINGLE_QUOTE	= 39,
 	CHAR_DOUBLE_QUOTE	= 34,
@@ -49,7 +49,9 @@ typedef enum e_status
 	STATUS_MALLOCERR		= 0x000007,
 	STATUS_EMPTYCMD			= 0x000008,
 	STATUS_ENVFAILED		= 0x000009,
-	STATUS_CMDFAILED		= 0x000010
+	STATUS_CMDFAILED		= 0x00000A,
+	STATUS_HDOCFAILED		= 0x00000B,
+	STATUS_HDOCSIGINT		= 0x00000C
 }	t_status;
 
 typedef struct s_env
@@ -63,6 +65,7 @@ typedef struct s_env
 typedef struct s_hd
 {
 	bool	is_hd;
+	char	*filename;
 	int32_t	fd;
 }	t_hd;
 
@@ -103,12 +106,12 @@ typedef struct s_lexer
     t_spaced_cmdline_arr	spaced_arr;
 }	t_lexer;
 
-typedef struct s_envr
-{
-	char			*key;
-	char			*value;
-	struct s_env	*next_key;
-}	t_envr;
+// typedef struct s_envr
+// {
+// 	char			*key;
+// 	char			*value;
+// 	struct s_env	*next_key;
+// }	t_envr;
 
 typedef struct s_minishell
 {

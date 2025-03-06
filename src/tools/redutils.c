@@ -26,12 +26,9 @@ void	generate_filename(int32_t fd, char *filename)
         return ;
     }
 	i = 0;
-    while (i < strlen(TMP) - 1)
+    while (TMP[i] != '0' && TMP[i] != '.')
 	{
-        if (TMP[i] == '0')
-            filename[i] = "0123456789abcdef"[filename[i] % 16];
-		else
-			filename[i] = TMP[i];
+		filename[i] = TMP[i];
 		i++;
     }
     filename[strlen(TMP) - 1] = '\0';
@@ -62,4 +59,10 @@ char	*minishell_generate_filename()
     }
     generate_filename(fd, filename);
 	return (filename);
+}
+
+void	hdoc_sigint(int32_t signum)
+{
+	if (signum == SIGINT)
+		exit(STATUS_HDOCSIGINT);
 }

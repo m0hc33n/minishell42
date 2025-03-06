@@ -10,6 +10,7 @@
 # include <readline/readline.h>
 # include <wait.h>
 # include <sys/types.h>
+# include <signal.h>
 # include <dirent.h>
 # include "structs.h"
 # include "lexer.h"

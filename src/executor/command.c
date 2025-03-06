@@ -22,14 +22,14 @@
 //     }
 // }
 
-void	exec_cmd(t_minishell *minishell, t_root *root, int32_t input_fd, int32_t output_fd)
+
+void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_t output_fd)
 {
 	char		**argv;
 	pid_t		pid;
 	int32_t		status;
 
-	argv = executor_getargs(root);
-	//setup_input_output(input_fd, output_fd);
+	argv = executor_getargs(cmd_node, minishell->env);
 	if (minishell_isbuiltin(argv[0]))
 			minishell->exit_code = exec_builtin(minishell, argv);
 	else

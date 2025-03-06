@@ -41,7 +41,7 @@ static t_status minishell(t_minishell *minishell)
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);
-} 
+}
 
 int main(int ac, char **av, char **env)
 {

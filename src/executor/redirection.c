@@ -1,97 +1,23 @@
 #include "../../inc/executor.h"
 
-static void redirect_output(t_root *node, int32_t output_fd)
+static bool	expand_hdoc_in(char *filename, t_env *env)
 {
-    int32_t	fd;
-    t_root	*file_node;
+	char	*fdata;
+	char	*expanded;
+	int32_t	fd;
 
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (fd == -1)
-        {
-            perror("Error opening file");
-			exit(EXIT_FAILURE);
-        }
-        if (dup2(fd, output_fd) == -1)
-		{
-			perror("dup2");
-			exit(EXIT_FAILURE);
-		}
-        close(fd);
-    }
-}
-
-static void redirect_append(t_root *node, int32_t output_fd)
-{
-    int32_t	fd;
-    t_root	*file_node;
-
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        if (fd == -1)
-        {
-            perror("Error opening file");
-            exit(EXIT_FAILURE);
-        }
-        if (dup2(fd, output_fd) == -1)
-		{
-			perror("dup2");
-			exit(EXIT_FAILURE);
-		}
-        close(fd);
-    }
-}
-
-static void redirect_input(t_root *node, int32_t input_fd)
-{
-    int32_t	fd;
-    t_root	*file_node;
-
-	file_node = NULL;
-	if (minishell_isred(node->right))
-		file_node = node->right->left;
-	else
-		file_node = node->right;
-    if (file_node && file_node->ttype == TTOKEN_FILE)
-    {
-        fd = open(file_node->tvalue, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("Error opening file");
-            exit(EXIT_FAILURE);
-        }
-        if (dup2(fd, input_fd) == -1)
-		{
-			perror("dup2");
-			exit(EXIT_FAILURE);
-		}
-        close(fd);
-    }
-}
-
-static void	redirect_hdoc(t_root *cmd_node, int32_t input_fd)
-{
-	if (cmd_node && cmd_node->hd.is_hd)
-	{
-		if (dup2(cmd_node->hd.fd, input_fd) == -1)
-		{
-			perror("redirect_hdoc : dup2");
-			exit(EXIT_FAILURE);
-		}
-		//close(cmd_node->hd.fd);
-	}
+	fdata = minishell_readfile(filename);
+	if (!fdata)
+		return (false);
+	expanded = minishell_expand(fdata, env); // TODO
+	free(fdata);
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+		return (false);
+	write(fd, expanded, minishell_strlen(expanded));
+	close(fd);
+	unlink(filename);
+	return (true);
 }
 
 static void	handle_ioa(t_root *node, t_root *cmd_node,
@@ -118,12 +44,19 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 {
 	t_root	*cmd_node;
 	int32_t	bkpfd[2];
+	bool	tflag;
 
 	bkpfd[0] = dup(input_fd);
 	bkpfd[1] = dup(output_fd);
 	cmd_node = node->left;
+	tflag = true;
 	handle_ioa(node, cmd_node, input_fd, output_fd);
-	exec_cmd(minishell, cmd_node, input_fd, output_fd);
+	if (cmd_node->hd.is_hd)
+		tflag = expand_hdoc_in(cmd_node->hd.filename, minishell->env);
+	if (tflag)
+		exec_cmd(minishell, cmd_node, input_fd, output_fd); // TOTEST: did u use in/out fd?
+	if (cmd_node->hd.is_hd)
+		close(cmd_node->hd.fd); // TOTEST
 	dup2(bkpfd[0], input_fd);
 	dup2(bkpfd[1], output_fd);
 }
