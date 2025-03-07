@@ -11,7 +11,7 @@ static bool	expand_hdoc_in(char *filename, t_env *env)
 		return (false);
 	expanded = minishell_expand(fdata, env); // NO WORKING
 	free(fdata);
-	fd = open(filename, O_RDONLY);
+	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
 		return (false);
 	write(fd, expanded, minishell_strlen(expanded));
