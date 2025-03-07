@@ -56,15 +56,24 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 	uint32_t element)
 {
 	uint64_t	len;
+	char		quote;
 
-	len = 0;
 	if (**spaced == CHAR_SINGLE_QUOTE || **spaced == CHAR_DOUBLE_QUOTE)
 	{
 		cmd_split_quoted(spaced, lexer, element);
 		return (STATUS_SUCCESS);
 	}
+	len = 0;
 	while (*((*spaced) + len) && *((*spaced) + len) != SPACE)
+	{
+		if (*((*spaced) + len) == CHAR_SINGLE_QUOTE || *((*spaced) + len) == CHAR_DOUBLE_QUOTE)
+		{
+			quote = *((*spaced) + len++);
+			while (*((*spaced) + len) != quote)
+				len++;
+		}
 		len++;
+	}
 	lexer->spaced_arr.spaced_cmdline_arr[element]
 		= (char *)minishell_calloc(len + 1, 1);
 	if (!lexer->spaced_arr.spaced_cmdline_arr[element])
