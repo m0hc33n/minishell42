@@ -52,7 +52,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	cmd_node->hd.filename = minishell_generate_filename();
 	if (cmd_node->hd.fd)
 		close(cmd_node->hd.fd);	// TOTEST;
-	cmd_node->hd.fd = open(cmd_node->hd.filename, O_RDONLY, 0644);
+	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDONLY, 0644);
 	if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
         return(STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)

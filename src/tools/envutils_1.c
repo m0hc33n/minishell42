@@ -52,15 +52,21 @@ char		*minishell_getvalue(t_env *env, char *key)
 {
 	t_env	*node;
 
-	key += 1; //skip the $
-	if (!*key) // key is $
-		return (minishell_strdup("$"));
-	node = env;
-	while (node)
+	if (key)
 	{
-		if (minishell_strequal(key, node->key))
-			return (node->value);
-		node = node->next_key;
+		if (*key != CHAR_DOLLAR_SIGN)
+			return (minishell_strdup(""));
+		key += 1; //skip the $
+		if (!*key) // key is $
+			return (minishell_strdup("$"));
+		node = env;
+		while (node)
+		{
+			if (minishell_strequal(key, node->key))
+				return (node->value);
+			node = node->next_key;
+		}
+		return (minishell_strdup(""));
 	}
-	return (minishell_strdup(""));
+	return (NULL);
 }

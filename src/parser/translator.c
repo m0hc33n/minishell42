@@ -8,10 +8,12 @@ t_status	minishell_translate(t_token *root, t_env *env)
 {
     t_status    status;
 
-    if ((status = update(root, env)))
+	status = update(root, env);
+	if (status)
     	return (status);
 	fix_tree(root);
-    if ((status = clean_tree(root)))
+	status = clean_tree(root);
+    if (status)
     	return (status);
     return (STATUS_SUCCESS);
 }

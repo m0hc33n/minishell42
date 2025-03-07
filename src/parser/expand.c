@@ -1,6 +1,7 @@
 #include "../../inc/parser.h"
 
 static char	*extract_key(char *content, uint32_t *end);
+static bool	is_separator(char c);
 
 char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 {
@@ -12,17 +13,21 @@ char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 	char		*group = 0;
 	uint32_t	s = 0;
 	uint32_t	e = 0;
+	char		switcher;
 	
-	while (content[s])
+	if (!minishell_strchr(content, CHAR_DOLLAR_SIGN))
+		return (minishell_strdup(content));
+	while (s < minishell_strlen(content))
 	{
-		while (content[e] && content[e] != CHAR_DOLLAR_SIGN)
+		while (content[e] && !is_separator(content[e]))
 			e += 1;
+		switcher = content[e];
 		content[e] = 0;
 		temp = minishell_strdup(content + s);
-		content[e] = CHAR_DOLLAR_SIGN;
+		content[e] = switcher;
 		if (!temp)
 			return (NULL);
-		key = extract_key(content, &e);
+		key = extract_key(temp, &e);
 		if (!key)
 			return (free(temp), NULL);
 		value = minishell_getvalue(env, key);
@@ -52,11 +57,22 @@ static char	*extract_key(char *content, uint32_t *end)
 	uint32_t	start;
 
 	start = *end;
-	while (content[*end] && !minishell_isspace(content[*end])) //modify separators
+	while (content[*end] && !is_separator(content[*end])) //modify separators
 		*end += 1;
 	key = (char *)malloc(sizeof(char) * (*end - start + 1));
 	if (!key)
 		return (NULL);
 	minishell_strlcpy(key, content + start, *end - start + 1);
+	if (*end == start)
+		*end += 1;
 	return (key);
+}
+
+static bool	is_separator(char c)
+{
+	if (c == 32 || (9 <= c && c <= 13))
+		return (true);
+	if (c == CHAR_DOLLAR_SIGN)
+		return (true);
+	return (false);
 }

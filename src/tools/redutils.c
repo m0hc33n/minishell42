@@ -18,7 +18,7 @@ void	generate_filename(int32_t fd, char *filename)
 	int32_t	i;
 
 	rbytes = read(fd, filename, minishell_strlen(TMP) - 1);
-    if (rbytes != minishell_strlen(TMP) - 1)
+    if (rbytes != (int32_t)minishell_strlen(TMP) - 1)
 	{
         perror("Error reading random bytes");
         free(filename);
@@ -50,7 +50,7 @@ char	*minishell_generate_filename()
         perror("Error opening /dev/urandom");
         return (NULL);
     }
-    filename = malloc(minishell_strlen(TMP) + 1);
+    filename = (char *)minishell_calloc(minishell_strlen(TMP) + 1, 1);
     if (filename == NULL) 
 	{
         perror("Memory allocation failed");

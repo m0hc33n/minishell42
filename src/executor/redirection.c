@@ -9,7 +9,7 @@ static bool	expand_hdoc_in(char *filename, t_env *env)
 	fdata = minishell_readfile(filename);
 	if (!fdata)
 		return (false);
-	expanded = minishell_expand(fdata, env); // TODO
+	expanded = minishell_expand(fdata, env); // NO WORKING
 	free(fdata);
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)

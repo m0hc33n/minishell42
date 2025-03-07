@@ -29,6 +29,8 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_
 	pid_t		pid;
 	int32_t		status;
 
+	(void)input_fd;
+	(void)output_fd; // haaa
 	argv = executor_getargs(cmd_node, minishell->env);
 	if (minishell_isbuiltin(argv[0]))
 			minishell->exit_code = exec_builtin(minishell, argv);
@@ -46,5 +48,5 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_
 		else
 			minishell->exit_code = WEXITSTATUS(status);
 	}
-	//minishell_free_arr(argv); CAUSES AN EXEPCTION !
+	minishell_free_arr(argv); //CAUSES AN EXEPCTION !
 }
