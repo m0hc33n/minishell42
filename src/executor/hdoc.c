@@ -49,12 +49,18 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		keyword = hdoc_node->right->tvalue;
 	else
 		keyword = hdoc_node->right->left->tvalue;
-	cmd_node->hd.filename = minishell_generate_filename();
-	if (cmd_node->hd.fd)
-		close(cmd_node->hd.fd);	// TOTEST;
-	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDONLY, 0644);
-	if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
-        return(STATUS_HDOCFAILED);
+	if (cmd_node->hd.is_hd)
+	{
+		close(cmd_node->hd.fd);
+		free(cmd_node->hd.filename);
+	}
+	else
+	{
+		cmd_node->hd.filename = minishell_generate_filename();
+		cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
+		if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
+        	return(STATUS_HDOCFAILED);
+	}
 	if (fork() == CHILD_PROCESS)
 	{
 		fd = open(cmd_node->hd.filename, O_RDWR);
@@ -63,6 +69,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		hdoc_input(fd, keyword);
 	}
 	wait(&status);
+	cmd_node->hd.is_hd = true;
 	return (WEXITSTATUS(status));
 }
 
@@ -79,7 +86,6 @@ void	executor_handle_hdoc(t_root *root, t_status *status)
 		{
 			if (root->ttype == TTOKEN_HEREDOC)
 			{	
-				cmd_node->hd.is_hd = true;
 				*status = handle_hdoc(cmd_node, root);
 				if (*status)
 					return ;

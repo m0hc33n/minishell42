@@ -74,12 +74,10 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 		}
 		len++;
 	}
-	lexer->spaced_arr.spaced_cmdline_arr[element]
-		= (char *)minishell_calloc(len + 1, 1);
+	lexer->spaced_arr.spaced_cmdline_arr[element] = (char *)minishell_calloc(len + 1, 1);
 	if (!lexer->spaced_arr.spaced_cmdline_arr[element])
 		return (STATUS_MALLOCERR);
-	minishell_strlcpy(lexer->spaced_arr.spaced_cmdline_arr[element],
-		*spaced, len + 1);
+	minishell_strlcpy(lexer->spaced_arr.spaced_cmdline_arr[element], *spaced, len + 1);
 	*spaced += len;
 	return (STATUS_SUCCESS);
 }

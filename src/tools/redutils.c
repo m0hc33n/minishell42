@@ -32,7 +32,7 @@ void	generate_filename(int32_t fd, char *filename)
 		filename[i] = "0123456789ABCDEF"[filename[i] % 16];
 		i++;
     }
-    filename[FNAME_SIZE] = 0;
+    filename[i] = 0; 
     close(fd);
 }
 
@@ -59,6 +59,7 @@ char	*minishell_generate_filename()
         return (NULL);
     }
     generate_filename(fd, filename);
+	printf("filename[%s]", filename);
 	return (filename);
 }
 
