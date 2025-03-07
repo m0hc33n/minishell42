@@ -33,7 +33,8 @@ void		free_chunks(t_chunk *chunks);
 char		*minishell_expand(char *content, t_env *env);
 
 t_status	minishell_asterisk(t_token *token, bool *asterisk); // TODO
-t_fixe		*split_pattern(char *pattern);
+t_fixe		*split_pattern(char *pattern, bool *asterisk);
+char		**asterisk_split(char *pattern, bool *asterisk);
 bool		matches_pattern(t_fixe *fixe, char *s);
 
 #endif

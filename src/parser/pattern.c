@@ -2,14 +2,14 @@
 
 static void	fill_flags(char *pattern, t_fixe *fixe);
 
-t_fixe	*split_pattern(char *pattern)
+t_fixe	*split_pattern(char *pattern, bool *asterisk)
 {
 	t_fixe		*fixe;
 
 	fixe = (t_fixe *)malloc(sizeof(t_fixe));
 	if (!fixe)
 		return (NULL);
-	fixe->fixes = minishell_split(pattern, '*');
+	fixe->fixes = asterisk_split(pattern, asterisk);
 	if (!fixe->fixes)
 		return (free(fixe), NULL);
 	fixe->count = 0;

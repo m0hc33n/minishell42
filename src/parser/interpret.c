@@ -26,7 +26,7 @@ t_status	minishell_interpret(t_token *token, t_env *env)
 		return (free(asterisk), STATUS_MALLOCERR);
 	free(token->tvalue);
 	token->tvalue = pf_value;	
-	if (minishell_asterisk(token, asterisk)) // fix condition later and function
+	if (minishell_strchr(token->tvalue, '*') && minishell_asterisk(token, asterisk)) // fix condition later and function
 		return (free(asterisk), STATUS_FAILURE);
 	return (free(asterisk), STATUS_SUCCESS);
 }

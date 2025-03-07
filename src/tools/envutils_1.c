@@ -53,7 +53,7 @@ char		*minishell_getvalue(t_env *env, char *key)
 	t_env	*node;
 
 	key += 1; //skip the $
-	if (!key) // key is $
+	if (!*key) // key is $
 		return (minishell_strdup("$"));
 	node = env;
 	while (node)

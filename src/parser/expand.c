@@ -52,7 +52,7 @@ static char	*extract_key(char *content, uint32_t *end)
 	uint32_t	start;
 
 	start = *end;
-	while (content[*end] && !minishell_isspace(content[*end]))
+	while (content[*end] && !minishell_isspace(content[*end])) //modify separators
 		*end += 1;
 	key = (char *)malloc(sizeof(char) * (*end - start + 1));
 	if (!key)
