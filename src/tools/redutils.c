@@ -17,21 +17,22 @@ void	generate_filename(int32_t fd, char *filename)
 	int32_t	rbytes;
 	int32_t	i;
 
-	rbytes = read(fd, filename, minishell_strlen(TMP) - 1);
-    if (rbytes != (int32_t)minishell_strlen(TMP) - 1)
+	rbytes = read(fd, filename, FNAME_SIZE);
+    if (rbytes != FNAME_SIZE)
 	{
         perror("Error reading random bytes");
         free(filename);
         close(fd);
         return ;
     }
-	i = 0;
-    while (TMP[i] != '0' && TMP[i] != '.')
+	minishell_strlcpy(filename, "/tmp/.", 7);
+	i = 6;
+    while (i < FNAME_SIZE)
 	{
-		filename[i] = TMP[i];
+		filename[i] = "0123456789ABCDEF"[filename[i] % 16];
 		i++;
     }
-    filename[strlen(TMP) - 1] = '\0';
+    filename[FNAME_SIZE] = 0;
     close(fd);
 }
 
@@ -50,7 +51,7 @@ char	*minishell_generate_filename()
         perror("Error opening /dev/urandom");
         return (NULL);
     }
-    filename = (char *)minishell_calloc(minishell_strlen(TMP) + 1, 1);
+    filename = (char *)minishell_calloc(1, FNAME_SIZE + 1);
     if (filename == NULL) 
 	{
         perror("Memory allocation failed");

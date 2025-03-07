@@ -4,6 +4,7 @@
 # include "minishell.h"
 
 # define FREAD_SIZE 1024
+# define FNAME_SIZE 20
 
 // STRING FUNCTIONS
 bool		minishell_strchr(const char *s, int c);
