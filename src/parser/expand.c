@@ -1,54 +1,53 @@
 #include "../../inc/parser.h"
 
 static char	*extract_key(char *content, uint32_t *end);
+
 static bool	is_separator(char c);
+
+typedef struct s_result
+{
+	char	*result;
+	char	*saver;
+	char	*key;
+	char	*value;
+	char	*prefix;
+	char	*suffix;
+}	t_result;
 
 char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 {
-	char		*result = 0;
-	char		*save = 0;
-	char		*temp = 0;
-	char		*key = 0;
-	char		*value = 0;
-	char		*group = 0;
-	uint32_t	s = 0;
-	uint32_t	e = 0;
-	char		switcher;
+	t_result	buff;
+	uint32_t	s;
+	uint32_t	e;
 	
+	minishell_memset(&buff, 0, sizeof(t_result));
+	s = 0;
+	e = 0;
 	if (!minishell_strchr(content, CHAR_DOLLAR_SIGN))
 		return (minishell_strdup(content));
-	while (s < minishell_strlen(content))
+	buff.result = minishell_strdup(content); // check fail
+	while (buff.result[s]) // gad freeer l struct mf
 	{
-		while (content[e] && !is_separator(content[e]))
-			e += 1;
-		switcher = content[e];
-		content[e] = 0;
-		temp = minishell_strdup(content + s);
-		content[e] = switcher;
-		if (!temp)
-			return (NULL);
-		key = extract_key(temp, &e);
-		if (!key)
-			return (free(temp), NULL);
-		value = minishell_getvalue(env, key);
-		free(key);
-		if (!value)
-			return (free(temp), NULL);
-		if (!result)
-			result = minishell_strjoin(temp, value); // check return
-		else
+		if (buff.result[s] == CHAR_DOLLAR_SIGN)
 		{
-			save = result;
-			group = minishell_strjoin(temp, value);
-			result = minishell_strjoin(result, group);
-			free(save);
-			free(group);
+			e = s + 1;
+			while (buff.result[e] && !is_separator(content[e]))
+				e += 1;
+			buff.key = (char *)malloc(sizeof(char) * (e - s + 1));
+			buff.value = minishell_getvalue(env, buff.key);
+			free(buff.key);
+			buff.result[s] = 0;
+			buff.prefix = minishell_strdup(buff.result);
+			buff.result[s] = CHAR_DOLLAR_SIGN;
+			buff.suffix = minishell_strdup(buff.result + e);
+			buff.result = minishell_strjoin(buff.prefix, buff.value);
+			buff.result = minishell_strjoin(buff.result, buff.suffix);
+			s = e;
 		}
-		free(temp);
-		free(value);
-		s = e;
+		else
+			s += 1;
 	}
-	return (result);
+	return (buff.result);
 }
 
 static char	*extract_key(char *content, uint32_t *end)
