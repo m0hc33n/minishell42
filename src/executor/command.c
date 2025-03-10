@@ -48,5 +48,5 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_
 		else
 			minishell->exit_code = WEXITSTATUS(status);
 	}
-	minishell_free_arr(argv); //CAUSES AN EXEPCTION !
+	free(argv);
 }

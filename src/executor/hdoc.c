@@ -54,13 +54,10 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		close(cmd_node->hd.fd);
 		free(cmd_node->hd.filename);
 	}
-	else
-	{
-		cmd_node->hd.filename = minishell_generate_filename();
-		cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
-		if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
-        	return(STATUS_HDOCFAILED);
-	}
+	cmd_node->hd.filename = minishell_generate_filename();
+	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
+	if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
+		return(STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
 	{
 		fd = open(cmd_node->hd.filename, O_RDWR);
