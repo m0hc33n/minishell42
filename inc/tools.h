@@ -53,4 +53,7 @@ char		*minishell_generate_filename();
 void		hdoc_sigint(int32_t signum);
 char		*minishell_readfile(char *filename);
 
+// SIGNALS
+t_status	minishell_siginit();
+
 #endif

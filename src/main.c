@@ -1,9 +1,6 @@
 #include "../inc/minishell.h"
 
 /*
-	TODO
-		* s_minisell init
-		* segnal init
 */
 t_status	minishell_init(t_minishell **minishell, char **env)	
 {
@@ -18,6 +15,8 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 			return (STATUS_ENVFAILED);
 		(*minishell)->stdfd[0] = dup(STDIN_FILENO);
 		(*minishell)->stdfd[1] = dup(STDOUT_FILENO);
+		if (minishell_siginit())
+			return (STATUS_SIGINIT);
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_MSINITERROR);
@@ -54,7 +53,8 @@ int main(int ac, char **av, char **env)
 	if (status)
 	{
 		minishell_error(status);
-		return (1);
+		minishell_reset(&ms);
+		return (STATUS_FAILURE);
 	}
 	while (true)
 	{
@@ -65,4 +65,5 @@ int main(int ac, char **av, char **env)
 			minishell_error(status);
 		minishell_reset(&ms);
 	}
+	return (STATUS_SUCCESS);
 }
