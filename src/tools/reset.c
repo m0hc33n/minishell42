@@ -6,8 +6,8 @@ void    reset_token(t_root *root)
     {
         reset_token(root->left);
         reset_token(root->right);
-        //if (root->tvalue)
-         //   free(root->tvalue);
+        if (root->tvalue)
+        	free(root->tvalue);
         free(root);
     }
 }
@@ -32,6 +32,7 @@ void    minishell_reset(t_minishell **minishell)
             reset_lexer(*minishell);
         if ((*minishell)->cmdline)
             free((*minishell)->cmdline);
+		// free env_t
         (*minishell)->exit_code = 0;
     }
 }
