@@ -77,12 +77,14 @@ static void	clean_tree(t_token *token) // just removes parenthesis'
         if (token->left && (token->left->ttype == TTOKEN_PARENTHESE_CLOSE 
 		|| token->left->ttype == TTOKEN_PARENTHESE_OPEN))
         {
+			free(token->left->tvalue);
             free(token->left);
             token->left = NULL;
         }
         if (token->right && (token->right->ttype == TTOKEN_PARENTHESE_CLOSE 
         || token->right->ttype == TTOKEN_PARENTHESE_OPEN))
         {
+			free(token->right->tvalue);
             free(token->right);
             token->right = NULL;
         }
