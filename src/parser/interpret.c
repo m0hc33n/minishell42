@@ -18,7 +18,7 @@ t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step
 		if ((status = interpret_asterisk(token)))
 			return (status);
 	}
-	if ((status = minishell_separate(token)))
+	if (step == 0 && (status = minishell_separate(token)))
 		return (status);
 	return (STATUS_SUCCESS);
 }
