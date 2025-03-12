@@ -32,6 +32,7 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_
 	(void)input_fd;
 	(void)output_fd; // haaa
 	argv = executor_getargs(cmd_node, minishell->env);
+	printf("kaka\n");
 	if (minishell_isbuiltin(argv[0]))
 			minishell->exit_code = exec_builtin(minishell, argv);
 	else
