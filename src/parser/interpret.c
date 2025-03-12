@@ -1,48 +1,64 @@
 #include "../../inc/parser.h"
 
-static uint32_t	count_asterisks(char *value);
-static void		decide_asterisk(char *value, bool *asterisk);
-static char		*assemble_chunks(t_chunk *chunks);
-static uint32_t	count_size(t_chunk *chunks);
+/*-------------------------------------------------------------------------------------*/
+static t_status	interpret_dollar(t_token *token, t_env *env);
+static t_status	interpret_asterisk(t_token *token);
 
-t_status	minishell_interpret(t_token *token, t_env *env)
+t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step)
 {
-	uint32_t	a_count; //remove if norminette
-	bool		*asterisk;
-	t_chunk		*chunks;
-	char		*pf_value;
+	t_status	status;
 
-	a_count = count_asterisks(token->tvalue);
-	asterisk = (bool *)malloc(sizeof(bool) * a_count); // if a_count = 0 it is okay
-	if (!asterisk)
-		return (STATUS_MALLOCERR);
-	decide_asterisk(token->tvalue, asterisk);
-	chunks = minishell_chunker(token->tvalue, env);
-	if (!chunks)
-		return (free(asterisk), STATUS_MALLOCERR);
-	pf_value = assemble_chunks(chunks);
-	free_chunks(chunks);
-	if (!pf_value)
-		return (free(asterisk), STATUS_MALLOCERR);
-	free(token->tvalue);
-	token->tvalue = pf_value;	
-	if (minishell_strchr(token->tvalue, '*') && minishell_asterisk(token, asterisk)) // fix condition later and function
-		return (free(asterisk), STATUS_FAILURE);
-	return (free(asterisk), STATUS_SUCCESS);
+	if (minishell_strchr(token->tvalue, '$') && step == 0)
+	{
+		if ((status = interpret_dollar(token, env)))
+			return (status);
+	}
+	if (minishell_strchr(token->tvalue, '*') && step == 1 && flag)
+	{
+		if ((status = interpret_asterisk(token)))
+			return (status);
+	}
+	if ((status = minishell_separate(token)))
+		return (status);
+	return (STATUS_SUCCESS);
 }
-
-static uint32_t	count_asterisks(char *value)
+/*-------------------------------------------------------------------------------------*/
+static t_status	interpret_dollar(t_token *token, t_env *env)
 {
-	uint32_t	count;
+	char	*e_value;
 
-	count = 0;
+	e_value = minishell_expand(token->tvalue, env);
+	if (!e_value)
+		return (STATUS_MALLOCERR);
+	free(token->tvalue);
+	token->tvalue = e_value;
+	return (STATUS_SUCCESS);
+}
+/*-------------------------------------------------------------------------------------*/
+static void		decide_asterisk(char *value, bool *asterisk);
+
+static t_status	interpret_asterisk(t_token *token)
+{
+	uint32_t	a_count;
+	char		*value;
+	bool		*asterisk;
+	t_status	status;
+
+	a_count = 0;
+	value = token->tvalue;
 	while (*value)
 	{
 		if (*value == '*')
-			count += 1;
+			a_count += 1;
 		value += 1;
 	}
-	return (count);
+	asterisk = (bool *)malloc(sizeof(bool) * a_count);
+	if (!asterisk)
+		return (STATUS_MALLOCERR);
+	decide_asterisk(token->tvalue, asterisk);
+	if ((status = minishell_asterisk(token, asterisk)))
+		return (free(asterisk), status);
+	return (free(asterisk), STATUS_SUCCESS);
 }
 
 static void		decide_asterisk(char *value, bool *asterisk)
@@ -66,50 +82,4 @@ static void		decide_asterisk(char *value, bool *asterisk)
 		}
 		value += 1;
 	}
-}
-
-static char		*assemble_chunks(t_chunk *chunks)
-{
-	uint32_t	size;
-	char		*pf_value;
-	uint32_t	i;
-	uint32_t	j;
-
-	size = count_size(chunks);
-	pf_value = (char *)malloc(sizeof(char) * (size + 1));
-	if (!pf_value)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		j = 0;
-		while (chunks->content[j])
-		{
-			pf_value[i] = chunks->content[j];
-			i += 1;
-			j += 1;
-		}
-		chunks = chunks->next;
-	}
-	pf_value[i] = 0;
-	return (pf_value);
-}
-
-static uint32_t	count_size(t_chunk *chunks)
-{
-	uint32_t	count;
-	uint32_t	i;
-
-	count = 0;
-	while (chunks)
-	{
-		i = 0;
-		while (chunks->content[i])
-		{
-			count += 1;
-			i += 1;
-		}
-		chunks = chunks->next;
-	}
-	return (count);
 }

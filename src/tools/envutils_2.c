@@ -34,7 +34,7 @@ static char	*fetch(char *PATH, char *cmd)
 	int		i;
 	char	*path;
 
-	split = minishell_split(PATH, ':');
+	split = minishell_split(PATH, ':', NULL);
 	if (!split)
 		return (NULL);
 	i = 0;

@@ -44,7 +44,7 @@ char	**executor_getargs(t_root *root, t_env *env)
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
-	minishell_translate(root, env);
+	minishell_translate(root, env); // check failure
 	if (root->tvalue == TTOKEN_COMMAND)
 	{
 		argv[count++] = root->tvalue;

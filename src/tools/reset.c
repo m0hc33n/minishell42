@@ -20,6 +20,7 @@ void    reset_lexer(t_minishell *minishell)
             free(minishell->lexer->spaced.spaced_cmdline);
         if (minishell->root)
             reset_token(minishell->root);
+		minishell_memset(minishell->lexer, 0, sizeof(t_lexer));
         free(minishell->lexer);
     }
 }
@@ -31,7 +32,7 @@ void    minishell_reset(t_minishell **minishell)
         if ((*minishell)->lexer)
             reset_lexer(*minishell);
         if ((*minishell)->cmdline)
-            free((*minishell)->cmdline);
+           free((*minishell)->cmdline);
 		// free env_t
         (*minishell)->exit_code = 0;
     }

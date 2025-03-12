@@ -10,7 +10,7 @@ t_status	minishell_export(char **argv, t_env *l_env) // asterisk expands a jemmi
 
 	if (argv && l_env)
 	{
-		if (!argv[1])
+		if (!argv[1]) // fix behaviour
 			return (STATUS_FAILURE);
 		i = 1;
 		while (argv[i])

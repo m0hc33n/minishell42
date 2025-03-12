@@ -18,23 +18,39 @@ typedef struct s_chunk
 	struct s_chunk	*next;
 }	t_chunk;
 
-// to be called before execution
+/* parse.c */
 t_status	minishell_parser(t_minishell *minishell);
 
-// to be called during execution
+/* translate.c */
 t_status	minishell_translate(t_token *root, t_env *env);
 
-// helper functions
-t_status	minishell_interpret(t_token *token, t_env *env);
+/* interpret.c */
+t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step);
 
-t_chunk		*minishell_chunker(char *value, t_env *env);
-void		free_chunks(t_chunk *chunks);
+/* expand.c */
+char		*minishell_expand(char *content, t_env *env); //norm + fail safe
 
-char		*minishell_expand(char *content, t_env *env);
+/* separate.c */
+t_status	minishell_separate(t_token *token);
 
+/* asterisk.c */
 t_status	minishell_asterisk(t_token *token, bool *asterisk); // TODO
+
+/* pattern.c */
 t_fixe		*split_pattern(char *pattern, bool *asterisk);
-char		**asterisk_split(char *pattern, bool *asterisk);
 bool		matches_pattern(t_fixe *fixe, char *s);
 
+/* splitter.c */
+char		**asterisk_split(char *pattern, bool *asterisk);
+
 #endif
+
+
+/*
+TRANSLATION STEPS:
+
+	- EXPAND ENV VARIABLES
+	- EXPAND ASTERISK
+	- SPLIT TOKEN INTO TOKENS
+	- NULLIFY INITIAL TOKEN (TO BE REMOVED DURING CLEANING)
+*/

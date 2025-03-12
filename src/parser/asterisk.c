@@ -40,7 +40,7 @@ static void	pre_link(t_token *list, t_token *token)
 	if (list)
 	{
 		free(token->tvalue);
-		token->tvalue = 0;
+		token->tvalue = NULL;
 		next = token->right;
 		token->right = list;
 		while (list->right)
