@@ -9,7 +9,7 @@ static bool	expand_hdoc_in(char *filename, t_env *env)
 	fdata = minishell_readfile(filename);
 	if (!fdata)
 		return (false);
-	expanded = minishell_expand(fdata, env); // NO WORKING
+	expanded = minishell_expand(fdata, env);
 	free(fdata);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
@@ -54,9 +54,12 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 	if (cmd_node->hd.is_hd)
 		tflag = expand_hdoc_in(cmd_node->hd.filename, minishell->env);
 	if (tflag)
-		exec_cmd(minishell, cmd_node, input_fd, output_fd); // TOTEST: did u use in/out fd?
+		exec_cmd(minishell, cmd_node);
 	if (cmd_node->hd.is_hd)
+	{
+		free(cmd_node->hd.filename);
 		close(cmd_node->hd.fd); // TOTEST
+	}
 	dup2(bkpfd[0], input_fd);
 	dup2(bkpfd[1], output_fd);
 }

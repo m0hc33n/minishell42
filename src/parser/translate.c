@@ -5,7 +5,7 @@ static bool		check_flag(t_token *token);
 static void		fix_tree(t_token *token);
 static void 	clean_tree(t_token *token);
 
-t_status	minishell_translate(t_token *root, t_env *env)
+t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 {
     t_status    status;
 	bool		flag;

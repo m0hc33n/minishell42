@@ -56,9 +56,11 @@ static void pipeit_child(t_minishell *minishell, t_root *node,
 		cmd_node = node->left;
 	setup_input_output(cmd_node, input_fd, output_fd);
 	if (node->ttype == TTOKEN_PIPE)
-        argv = executor_getargs(node->left, minishell->env);
+        argv = executor_getargs(node->left, minishell->env, minishell->exit_code);
 	else
-        argv = executor_getargs(node, minishell->env);
+        argv = executor_getargs(node, minishell->env, minishell->exit_code);
+	if (!argv)
+		exit(EXIT_FAILURE);
 	if (minishell_isbuiltin(argv[0]))
 		exec_builtin(minishell, argv);
 	else

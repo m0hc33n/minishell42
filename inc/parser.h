@@ -22,7 +22,7 @@ typedef struct s_chunk
 t_status	minishell_parser(t_minishell *minishell);
 
 /* translate.c */
-t_status	minishell_translate(t_token *root, t_env *env);
+t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode);
 
 /* interpret.c */
 t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step);

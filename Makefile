@@ -21,7 +21,7 @@ LEXER_FILES		= lexer.c lex.c spaceit.c splitit.c \
 TOOLS_FILES		= strutils_0.c strutils_1.c strutils_2.c memutils.c \
 				  envutils_0.c envutils_1.c envutils_2.c \
 				  cleanup.c reset.c error.c redutils.c \
-				  futils.c siginit.c
+				  futils.c siginit.c i32tostr.c
 BUILTINS_FILES	= cd.c echo.c env.c exit.c export.c \
 				  pwd.c unset.c builtins.c
 

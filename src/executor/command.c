@@ -1,37 +1,14 @@
 #include "../../inc/executor.h"
 
-// static void setup_input_output(int32_t input_fd, int32_t output_fd)
-// {
-//     if (input_fd != 0)
-// 	{	
-// 		if (dup2(input_fd, STDIN_FILENO) == -1)
-// 		{
-//             perror("dup2");
-//             exit(EXIT_FAILURE);
-//         }
-//         close(input_fd);
-//     }
-//     if (output_fd != STDOUT_FILENO)
-// 	{
-//         if (dup2(output_fd, STDOUT_FILENO) == -1)
-// 		{
-//             perror("dup2");
-//             exit(EXIT_FAILURE);
-//         }
-//         close(output_fd);
-//     }
-// }
-
-
-void	exec_cmd(t_minishell *minishell, t_root *cmd_node, int32_t input_fd, int32_t output_fd)
+void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 {
 	char		**argv;
 	pid_t		pid;
 	int32_t		status;
 
-	(void)input_fd;
-	(void)output_fd; // haaa
-	argv = executor_getargs(cmd_node, minishell->env);
+	argv = executor_getargs(cmd_node, minishell->env, minishell->exit_code);
+	if (!argv)
+		return ;
 	if (minishell_isbuiltin(argv[0]))
 			minishell->exit_code = exec_builtin(minishell, argv);
 	else

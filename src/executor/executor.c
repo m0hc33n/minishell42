@@ -26,7 +26,7 @@ static void	executor_exec(t_minishell *minishell, t_root *root)
 		else if (minishell_isred(root))
 			exec_redirect(minishell, root, STDIN_FILENO, STDOUT_FILENO);
 		else if (root->ttype == TTOKEN_COMMAND)
-			exec_cmd(minishell, root, STDIN_FILENO ,STDOUT_FILENO);
+			exec_cmd(minishell, root);
 	}
 }
 

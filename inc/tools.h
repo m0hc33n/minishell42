@@ -21,6 +21,8 @@ char		*minishell_strjoin(const char *s1, const char *s2);
 char		**minishell_split(char *s, char c, bool *flags);
 size_t		minishell_strlcat(char *dst, const char *src, size_t size);
 
+char		*minishell_i32tostr(int32_t nbr);
+
 // MEMORY UTILS
 void		*minishell_memset(void *b, int c, size_t len);
 void		*minishell_calloc(size_t count, size_t size);
