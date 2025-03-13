@@ -34,23 +34,12 @@ char		*minishell_expand(char *content, t_env *env); //norm + fail safe
 t_status	minishell_separate(t_token *token);
 
 /* asterisk.c */
-t_status	minishell_asterisk(t_token *token, bool *asterisk); // TODO
+t_status	minishell_asterisk(t_token *token, bool *asterisk);
 
-/* pattern.c */
-t_fixe		*split_pattern(char *pattern, bool *asterisk);
-bool		matches_pattern(t_fixe *fixe, char *s);
+/* analyse.c */
+t_fixe		*minishell_analyse(char *pattern, bool *asterisk);
 
-/* splitter.c */
-char		**asterisk_split(char *pattern, bool *asterisk);
+/* match.c */
+bool		minishell_matcher(t_fixe *fixe, char *s);
 
 #endif
-
-
-/*
-TRANSLATION STEPS:
-
-	- EXPAND ENV VARIABLES
-	- EXPAND ASTERISK
-	- SPLIT TOKEN INTO TOKENS
-	- NULLIFY INITIAL TOKEN (TO BE REMOVED DURING CLEANING)
-*/

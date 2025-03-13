@@ -39,20 +39,10 @@ static void		decide_asterisk(char *value, bool *asterisk);
 
 static t_status	interpret_asterisk(t_token *token)
 {
-	uint32_t	a_count;
-	char		*value;
 	bool		*asterisk;
 	t_status	status;
 
-	a_count = 0;
-	value = token->tvalue;
-	while (*value)
-	{
-		if (*value == '*')
-			a_count += 1;
-		value += 1;
-	}
-	asterisk = (bool *)malloc(sizeof(bool) * a_count);
+	asterisk = (bool *)malloc(sizeof(bool) * minishell_strlen(token->tvalue));
 	if (!asterisk)
 		return (STATUS_MALLOCERR);
 	decide_asterisk(token->tvalue, asterisk);
@@ -63,23 +53,19 @@ static t_status	interpret_asterisk(t_token *token)
 
 static void		decide_asterisk(char *value, bool *asterisk)
 {
+	uint32_t	i;
 	bool		flag[2];
-	uint32_t	count;
 
+	i = 0;
 	flag[0] = false;
 	flag[1] = false;
-	count = 0;
-	while (*value)
+	while (value[i])
 	{
 		if (*value == CHAR_DOUBLE_QUOTE && !flag[0])
 			flag[1] = !flag[1];
 		else if (*value == CHAR_SINGLE_QUOTE && !flag[1])
 			flag[0] = !flag[0];
-		else if (*value == '*')
-		{
-			asterisk[count] = (!flag[0] && !flag[1]);
-			count += 1;
-		}
-		value += 1;
+		asterisk[i] = (!flag[0] && !flag[1]);
+		i += 1;
 	}
 }

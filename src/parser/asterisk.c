@@ -18,7 +18,7 @@ t_status	minishell_asterisk(t_token *token, bool *asterisk)
 	struct dirent	*entry;
 
 	names = NULL;
-	fixe = split_pattern(token->tvalue, asterisk);
+	fixe = minishell_analyse(token->tvalue, asterisk);
 	if (!fixe)
 		return (STATUS_MALLOCERR);
 	dirp = opendir(".");
@@ -27,7 +27,7 @@ t_status	minishell_asterisk(t_token *token, bool *asterisk)
 	entry = readdir(dirp);
 	while (entry)
 	{
-		if (entry->d_name[0] != '.' && matches_pattern(fixe, entry->d_name))
+		if (entry->d_name[0] != '.' && minishell_matcher(fixe, entry->d_name))
 		{
 			if (add_name(&names, entry->d_name))
 				return (free_mem(names, fixe) , closedir(dirp), STATUS_MALLOCERR);
