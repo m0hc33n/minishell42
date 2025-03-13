@@ -116,10 +116,3 @@ static t_status	add_to_tree(t_token *token, t_match *names)
 		}
 		return (STATUS_SUCCESS);
 }
-
-// t_status	minishell_asterisk(t_token *token, bool *asterisk)
-// {
-// 	(void)token;
-// 	(void)asterisk;
-// 	return (STATUS_SUCCESS);
-// }

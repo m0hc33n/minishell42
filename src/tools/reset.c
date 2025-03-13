@@ -8,9 +8,6 @@ void    reset_token(t_root *root)
         reset_token(root->right);
         if (root->tvalue)
 		{
-			setbuf(stdout, NULL);
-			printf("[%p]\n", root->tvalue);
-			printf("[%s]\n", root->tvalue);
         	free(root->tvalue);
 			root->tvalue = NULL;
 		}

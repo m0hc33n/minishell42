@@ -1,5 +1,5 @@
 CC		= cc
-CFLAGS	= -Wall -Wextra -Werror -g
+CFLAGS	= -Wall -Wextra -Werror
 
 ## minishell headers
 MINISHELL_HDR	= inc/minishell.h
