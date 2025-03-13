@@ -8,6 +8,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <readline/readline.h>
+# include <readline/history.h>
 # include <wait.h>
 # include <sys/types.h>
 # include <signal.h>

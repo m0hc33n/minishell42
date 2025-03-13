@@ -34,6 +34,7 @@ char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 				e += 1;
 			buff.key = (char *)malloc(sizeof(char) * (e - s + 1));
 			minishell_strlcpy(buff.key, buff.result + s, e - s + 1);
+			setbuf(stdout, NULL);
 			buff.value = minishell_getvalue(env, buff.key);
 			free(buff.key);
 			buff.result[s] = 0;

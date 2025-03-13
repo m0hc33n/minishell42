@@ -1,6 +1,5 @@
 #include "../../inc/builtins.h"
 
-static t_status	export(char *arg, t_env *l_env);
 static t_status	modify_node(t_env *node, char *value);
 static t_status	add_node(t_env *l_env, char *key, char *value);
 
@@ -24,7 +23,7 @@ t_status	minishell_export(char **argv, t_env *l_env) // asterisk expands a jemmi
 	return (STATUS_FAILURE);
 }
 
-static t_status	export(char *arg, t_env *l_env)
+t_status	export(char *arg, t_env *l_env)
 {
 	int		equal_i;
 	char	*key;
@@ -39,6 +38,7 @@ static t_status	export(char *arg, t_env *l_env)
 		return (STATUS_MALLOCERR);
 	arg[equal_i] = 0;
 	key = minishell_strdup(arg);
+	arg[equal_i] = '=';
 	if (!key)
 		return (free(value), STATUS_MALLOCERR);
 	node = l_env;

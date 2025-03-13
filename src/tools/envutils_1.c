@@ -63,7 +63,7 @@ char		*minishell_getvalue(t_env *env, char *key)
 		while (node)
 		{
 			if (minishell_strequal(key, node->key))
-				return (node->value);
+				return (minishell_strdup(node->value));
 			node = node->next_key;
 		}
 		return (minishell_strdup(""));

@@ -8,17 +8,19 @@ t_status	minishell_separate(t_token *token)
 	bool	*flags;
 	char	**splits;
 
-	if (!token->tvalue) // for asterisk nullified node
-		return (STATUS_SUCCESS);
-	flags = (bool *)malloc(sizeof(bool) * minishell_strlen(token->tvalue));
-	if (!flags)
-		return (STATUS_MALLOCERR);
-	get_flags(flags, token->tvalue);
-	splits = minishell_split(token->tvalue, SPACE, flags);
-	free(flags);
-	if (!splits)
-		return (STATUS_MALLOCERR);
-	return (separate(token, splits));
+	if (*token->tvalue)
+	{
+		flags = (bool *)malloc(sizeof(bool) * minishell_strlen(token->tvalue));
+		if (!flags)
+			return (STATUS_MALLOCERR);
+		get_flags(flags, token->tvalue);
+		splits = minishell_split(token->tvalue, SPACE, flags);
+		free(flags);
+		if (!splits)
+			return (STATUS_MALLOCERR);
+		return (separate(token, splits));
+	}
+	return (STATUS_SUCCESS);
 }
 
 static void	get_flags(bool *flags, char *s)

@@ -20,6 +20,8 @@ char	*minishell_strdup(const char *s)
 {
 	char	*c;
 
+	if (!s)
+		return (NULL);
 	c = (char *)malloc(sizeof(char) * (env_strlen(s) + 1));
 	if (c == NULL)
 		return (NULL);

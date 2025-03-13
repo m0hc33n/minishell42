@@ -29,6 +29,7 @@ static t_status minishell(t_minishell *minishell)
 	minishell->cmdline = readline(minishell->prompt);
 	if (!minishell->cmdline[0])
 		return (STATUS_EMPTYCMD);
+	add_history(minishell->cmdline); // decide where and when to clear history
 	status = minishell_lexer(minishell);
 	if (status)
 		return (status);

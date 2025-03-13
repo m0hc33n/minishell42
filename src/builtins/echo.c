@@ -17,7 +17,11 @@ t_status	minishell_echo(char **argv, t_env *l_env)
 			if (i == 1 && minishell_strequal(argv[i], "-n"))
 				nl = 0;
 			else
+			{
+				if ((i >= 2 && nl) || (i >= 3 && !nl))
+					write(STDOUT_FILENO, " ", 1);
 				echo(argv[i]);
+			}
 			i += 1;
 		}
 		if (nl)
