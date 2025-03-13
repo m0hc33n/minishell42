@@ -79,5 +79,32 @@ static void		free_mem(t_match *names, t_fixe *fixe)
 
 static t_status	add_to_tree(t_token *token, t_match *names)
 {
-	
+		t_token *rright;
+		bool first;
+		char *rep;
+		t_token *cur;
+		
+		rright = token->right;
+		first = true;
+		cur = token;
+		while (names)
+		{
+	   rep = minishell_strdup(names->name);
+				if (!rep)
+				 return (free_mem(names, NULL), STATUS_MALLOCERR);
+				if (first)
+				{
+				 free(cur->tvalue);
+					first = false;
+				}
+				cur->tvalue = rep;
+				cur->ttype = TTOKEN_ARGUMENT;
+				cur->next = (t_token *)malloc(sizeof(t_token));
+				if (!cur->next)
+				{
+					cur->next = rright;
+					return (free_mem(names, NULL), STATUS_MALLOCERR);
+				}
+				names = names->next;
+		}
 }
