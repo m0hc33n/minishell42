@@ -89,7 +89,7 @@ static t_status	add_to_tree(t_token *token, t_match *names)
 		cur = token;
 		while (names)
 		{
-	   rep = minishell_strdup(names->name);
+		  rep = minishell_strdup(names->name);
 				if (!rep)
 				 return (free_mem(names, NULL), STATUS_MALLOCERR);
 				if (first)
@@ -107,4 +107,5 @@ static t_status	add_to_tree(t_token *token, t_match *names)
 				}
 				names = names->next;
 		}
+		return (STATUS_SUCCESS);
 }
