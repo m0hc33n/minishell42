@@ -39,10 +39,6 @@ char	**executor_getargs(t_root *root, t_env *env)
 	uint32_t	argc;
 	uint32_t	count;
 
-	//
-	t_root *test = root;
-	(void)test;
-
 	count = 0;
 	argv = NULL;
 	argv = getargs_init(root, &argc);

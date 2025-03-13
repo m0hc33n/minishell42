@@ -27,7 +27,7 @@ t_status	minishell_asterisk(t_token *token, bool *asterisk)
 	entry = readdir(dirp);
 	while (entry)
 	{
-		if (matches_pattern(fixe, entry->d_name))
+		if (entry->d_name[0] != '.' && matches_pattern(fixe, entry->d_name))
 		{
 			if (add_name(&names, entry->d_name))
 				return (free_mem(names, fixe) , closedir(dirp), STATUS_MALLOCERR);
@@ -89,23 +89,37 @@ static t_status	add_to_tree(t_token *token, t_match *names)
 		cur = token;
 		while (names)
 		{
-		  rep = minishell_strdup(names->name);
-				if (!rep)
-				 return (free_mem(names, NULL), STATUS_MALLOCERR);
-				if (first)
+			rep = minishell_strdup(names->name);
+			if (!rep)
+				return (free_mem(names, NULL), STATUS_MALLOCERR);
+			if (first)
+			{
+				free(cur->tvalue);
+				first = false;
+			}
+			cur->tvalue = rep;
+			cur->ttype = TTOKEN_ARGUMENT;
+			names = names->next;
+			if (names)
+			{
+				cur->right = (t_token *)malloc(sizeof(t_token));
+				if (!cur->right)
 				{
-				 free(cur->tvalue);
-					first = false;
-				}
-				cur->tvalue = rep;
-				cur->ttype = TTOKEN_ARGUMENT;
-				cur->next = (t_token *)malloc(sizeof(t_token));
-				if (!cur->next)
-				{
-					cur->next = rright;
+					cur->right = rright;
 					return (free_mem(names, NULL), STATUS_MALLOCERR);
 				}
-				names = names->next;
+				cur = cur->right;
+				cur->left = NULL;
+			}
+			else
+				cur->right = rright;
 		}
 		return (STATUS_SUCCESS);
 }
+
+// t_status	minishell_asterisk(t_token *token, bool *asterisk)
+// {
+// 	(void)token;
+// 	(void)asterisk;
+// 	return (STATUS_SUCCESS);
+// }
