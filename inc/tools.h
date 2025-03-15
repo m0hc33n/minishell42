@@ -26,6 +26,7 @@ char		*minishell_i32tostr(int32_t nbr);
 // MEMORY UTILS
 void		*minishell_memset(void *b, int c, size_t len);
 void		*minishell_calloc(size_t count, size_t size);
+bool		minishell_free(void **p);
 
 // IS FUNCTIONS
 bool		minishell_isspace(int c);

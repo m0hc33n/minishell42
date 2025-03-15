@@ -25,6 +25,17 @@ typedef struct s_chunk
 	struct s_chunk	*next;
 }	t_chunk;
 
+typedef struct s_result
+{
+	char	*key;
+	char	*value;
+	char	*prefix;
+	char	*suffix;
+	char	*saver;
+	char	*result;
+	bool	flag[2];
+}	t_result;
+
 /* parse.c */
 t_status	minishell_parser(t_minishell *minishell);
 
