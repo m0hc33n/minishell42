@@ -6,11 +6,11 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 	pid_t		pid;
 	int32_t		status;
 
-	argv = executor_getargs(cmd_node, minishell->env, minishell->exit_code);
+	argv = executor_getargs(cmd_node, minishell->env, &minishell->exit_code, (t_status *)&status);
 	if (!argv)
 		return ;
 	if (minishell_isbuiltin(argv[0]))
-			minishell->exit_code = exec_builtin(minishell, argv);
+		minishell->exit_code = exec_builtin(minishell, argv);
 	else
 	{
 		pid = fork();

@@ -20,6 +20,6 @@ void		redirect_append(t_root *node, int32_t output_fd);
 void		redirect_input(t_root *node, int32_t input_fd);
 void		redirect_hdoc(t_root *cmd_node, int32_t input_fd);
 void		executor_handle_hdoc(t_root *root, t_status *status);
-char		**executor_getargs(t_root *root, t_env *env, int32_t exit_code);
+char		**executor_getargs(t_root *root, t_env *env, int32_t *exit_code, t_status *status);
 
 #endif

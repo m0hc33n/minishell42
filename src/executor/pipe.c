@@ -46,8 +46,9 @@ static void setup_input_output(t_root *node, int32_t input_fd, int32_t output_fd
 static void pipeit_child(t_minishell *minishell, t_root *node,
 				int32_t input_fd, int32_t output_fd)
 {
-    char	**argv;
-	t_root	*cmd_node;
+    char		**argv;
+	t_root		*cmd_node;
+	t_status	status;
 
 	exec_redirect_if_needed(minishell, node, input_fd, output_fd);
 	if (node->ttype == TTOKEN_COMMAND)
@@ -55,10 +56,11 @@ static void pipeit_child(t_minishell *minishell, t_root *node,
 	else
 		cmd_node = node->left;
 	setup_input_output(cmd_node, input_fd, output_fd);
+	status = 0;
 	if (node->ttype == TTOKEN_PIPE)
-        argv = executor_getargs(node->left, minishell->env, minishell->exit_code);
+        argv = executor_getargs(node->left, minishell->env, &minishell->exit_code, &status);
 	else
-        argv = executor_getargs(node, minishell->env, minishell->exit_code);
+        argv = executor_getargs(node, minishell->env, &minishell->exit_code, &status);
 	if (!argv)
 		exit(EXIT_FAILURE);
 	if (minishell_isbuiltin(argv[0]))

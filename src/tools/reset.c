@@ -37,6 +37,6 @@ void    minishell_reset(t_minishell **minishell)
             reset_lexer(*minishell);
         if ((*minishell)->cmdline)
            free((*minishell)->cmdline);
-        (*minishell)->exit_code = 0;
+        //(*minishell)->exit_code = 0;
     }
 }

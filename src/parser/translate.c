@@ -28,6 +28,7 @@ static t_status    update(t_token *token, t_env *env, t_args args)
     t_status    status;
 	char		*temp;
 
+	status = STATUS_SUCCESS;
     if (token)
     {
 		if (minishell_strchr(token->tvalue, '$') || minishell_strchr(token->tvalue, '*'))
@@ -37,9 +38,9 @@ static t_status    update(t_token *token, t_env *env, t_args args)
 		}
 		if (token->ttype == TTOKEN_COMMAND && !minishell_isbuiltin(token->tvalue))
 		{
-			temp = minishell_getpath(env, token->tvalue);
+			temp = minishell_getpath(env, token->tvalue, &status);
 			if (!temp)
-				return (STATUS_CMDFAILED);
+				return (status = (status == 0) * STATUS_CMDNOTFOUND + status, status);
 			free(token->tvalue);
 			token->tvalue = temp;
 		}

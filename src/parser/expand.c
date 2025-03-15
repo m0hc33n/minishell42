@@ -38,7 +38,6 @@ char	*minishell_expand(char *content, t_env *env, char *exit) // norm + leaks + 
 				buff.value = exit;
 			else
 				buff.value = minishell_getvalue(env, buff.key);
-			printf("%s\n", buff.value);
 			free(buff.key);
 			buff.result[s] = 0;
 			buff.prefix = minishell_strdup(buff.result);

@@ -47,7 +47,7 @@ void		minishell_freelst(t_env *l_env);
 t_env		*minishell_getenv(char **env);
 char		*minishell_getvalue(t_env *env, char *key);
 
-char		*minishell_getpath(t_env *env, char *cmd);
+char		*minishell_getpath(t_env *env, char *cmd, t_status *status);
 
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);

@@ -32,15 +32,20 @@ static char **getargs_init(t_root *root, uint32_t *argc)
 	return (NULL);
 }
 
-char	**executor_getargs(t_root *root, t_env *env, int32_t exit_code)
+char	**executor_getargs(t_root *root, t_env *env, int32_t *exit_code, t_status *status)
 {
 	char		**argv;
 	uint32_t	argc;
 	uint32_t	count;
 
 	count = 0;
-	if (!minishell_translate(root, env, minishell_i32tostr(exit_code)))
+	*status = minishell_translate(root, env, minishell_i32tostr(*exit_code));
+	if (*status)
+	{
+		if (*status != STATUS_MALLOCERR)
+			*exit_code = 127;
 		return (NULL);
+	}
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
