@@ -77,18 +77,21 @@ static void		free_mem(t_match *names, t_fixe *fixe)
 	}
 }
 
-static t_status	add_to_tree(t_token *token, t_match *names)
+static t_status	add_to_tree(t_token *token, t_match *names) // gad had lkhra - m0hc33n
 {
 		t_token *rright;
 		bool first;
 		char *rep;
+		t_match	*saver;
 		t_token *cur;
 		
 		rright = token->right;
 		first = true;
 		cur = token;
+		saver = names;
 		while (names)
 		{
+			//fprintf(stderr, "[%p]\n", names->name);
 			rep = minishell_strdup(names->name);
 			if (!rep)
 				return (free_mem(names, NULL), STATUS_MALLOCERR);
@@ -114,5 +117,5 @@ static t_status	add_to_tree(t_token *token, t_match *names)
 			else
 				cur->right = rright;
 		}
-		return (STATUS_SUCCESS);
+		return (free_mem(saver, NULL), STATUS_SUCCESS);
 }

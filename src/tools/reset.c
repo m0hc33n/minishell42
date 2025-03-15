@@ -26,6 +26,7 @@ void    reset_lexer(t_minishell *minishell)
             reset_token(minishell->root);
 		minishell_memset(minishell->lexer, 0, sizeof(t_lexer));
         free(minishell->lexer);
+		minishell->lexer = NULL;
     }
 }
 

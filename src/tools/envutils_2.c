@@ -60,7 +60,7 @@ static char	*fetch_dir(char *cmd, char *dir, t_status *status)
 
 	dirp = opendir(dir);
 	if (!dirp)
-		return (*status = STATUS_DIRFAILED, NULL);
+		return (NULL);
 	entry = readdir(dirp);
 	path = NULL;
 	while (entry && !path)

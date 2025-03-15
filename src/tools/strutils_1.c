@@ -14,29 +14,17 @@ int32_t	minishell_strncmp(const char *s1, const char *s2, size_t n)
 	return (0);
 }
 
-static int32_t	env_strlen(const char *s);
-
 char	*minishell_strdup(const char *s)
 {
 	char	*c;
 
 	if (!s)
 		return (NULL);
-	c = (char *)malloc(sizeof(char) * (env_strlen(s) + 1));
+	c = (char *)malloc(sizeof(char) * (minishell_strlen(s) + 1));
 	if (c == NULL)
 		return (NULL);
-	minishell_strlcpy(c, s, env_strlen(s) + 1);
+	minishell_strlcpy(c, s, minishell_strlen(s) + 1);
 	return (c);
-}
-
-static int32_t	env_strlen(const char *s)
-{
-	int32_t	len;
-
-	len = 0;
-	while (s[len] != '=' && s[len])
-		len += 1;
-	return (len);
 }
 
 bool	minishell_strequal(const char *s1, const char *s2)

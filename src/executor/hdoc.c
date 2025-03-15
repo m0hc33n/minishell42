@@ -67,7 +67,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	}
 	wait(&status);
 	cmd_node->hd.is_hd = true;
-	return (WEXITSTATUS(status));
+	return ((t_status)WEXITSTATUS(status));
 }
 
 void	executor_handle_hdoc(t_root *root, t_status *status)

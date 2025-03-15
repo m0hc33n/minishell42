@@ -95,6 +95,6 @@ char	*minishell_generate_filename()
 
 void	hdoc_sigint(int32_t signum)
 {
-	if (signum == SIGINT)
-		exit(STATUS_HDOCSIGINT);
+	(void)signum;
+	exit(STATUS_HDOCSIGINT);
 }

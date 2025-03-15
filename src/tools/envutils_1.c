@@ -36,7 +36,9 @@ static t_status	key_value(t_env *node, char *line)
 	equal_index = 0;
 	while (line[equal_index] != '=')
 		equal_index += 1;
+	line[equal_index] = 0;
 	node->key = minishell_strdup(line);
+	line[equal_index] = '=';
 	if (!node->key)
 		return (STATUS_MALLOCERR);
 	node->value = minishell_strdup(line + equal_index + 1);

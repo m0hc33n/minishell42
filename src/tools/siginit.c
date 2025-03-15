@@ -12,11 +12,6 @@ t_status siginit_init(int32_t signum, void (*sighandler)(int32_t))
     return (STATUS_SUCCESS);
 }
 
-void sigterm_handler(int32_t signum)
-{
-	(void)signum;
-}
-
 void sigint_handler(int32_t signum)
 {
 	(void)signum;
@@ -36,9 +31,6 @@ t_status minishell_siginit()
 	if (status)
 		return (status);
 	status = siginit_init(SIGQUIT, sigquit_handler);
-	if (status)
-		return (status);
-	status = siginit_init(SIGTERM, sigterm_handler);
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);

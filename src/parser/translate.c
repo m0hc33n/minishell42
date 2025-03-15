@@ -14,13 +14,13 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 	args.flag = check_flag(root);
 	args.step = 0;
 	if ((status = update(root, env, args)))
-    	return (status);
+    	return (minishell_free((void **)&str_exitcode), status);
 	args.step = 1;
 	if ((status = update(root, env, args)))
-    	return (status);
+    	return (minishell_free((void **)&str_exitcode), status);
 	fix_tree(root);
 	clean_tree(root);
-    return (STATUS_SUCCESS);
+    return (minishell_free((void **)&str_exitcode), STATUS_SUCCESS);
 }
 
 static t_status    update(t_token *token, t_env *env, t_args args)

@@ -6,6 +6,7 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 	pid_t		pid;
 	int32_t		status;
 
+	status = 0;
 	argv = executor_getargs(cmd_node, minishell, (t_status *)&status);
 	if (!argv)
 		return ;

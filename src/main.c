@@ -15,8 +15,8 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 			return (STATUS_ENVFAILED);
 		(*minishell)->stdfd[0] = dup(STDIN_FILENO);
 		(*minishell)->stdfd[1] = dup(STDOUT_FILENO);
-		//if (minishell_siginit())
-		//	return (STATUS_SIGINIT);
+		if (minishell_siginit())
+			return (STATUS_SIGINIT);
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_MSINITERROR);
