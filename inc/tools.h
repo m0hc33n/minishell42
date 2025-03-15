@@ -48,6 +48,7 @@ void		minishell_freelst(t_env *l_env);
 
 t_env		*minishell_getenv(char **env);
 char		*minishell_getvalue(t_env *env, char *key);
+void		minishell_envfree(t_env *env);
 
 char		*minishell_getpath(t_env *env, char *cmd, t_status *status);
 

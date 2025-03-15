@@ -24,7 +24,10 @@ void	*minishell_calloc(size_t count, size_t size)
 
 bool	minishell_free(void **p)
 {
-	free(*p);
-	*p = NULL;
+	if (*p)
+	{
+		free(*p);
+		*p = NULL;
+	}
 	return (true);
 }

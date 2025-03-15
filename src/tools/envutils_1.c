@@ -70,3 +70,17 @@ char		*minishell_getvalue(t_env *env, char *key)
 	}
 	return (NULL);
 }
+
+void	minishell_envfree(t_env *env)
+{
+	t_env	*next;
+
+	while (env)
+	{
+		next = env->next_key;
+		minishell_free(&env->key);
+		minishell_free(&env->value);
+		minishell_free(&env);
+		env = next;
+	}
+}
