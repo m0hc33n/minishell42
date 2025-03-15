@@ -78,9 +78,9 @@ void	minishell_envfree(t_env *env)
 	while (env)
 	{
 		next = env->next_key;
-		minishell_free(&env->key);
-		minishell_free(&env->value);
-		minishell_free(&env);
+		minishell_free((void **)&env->key);
+		minishell_free((void **)&env->value);
+		minishell_free((void **)&env);
 		env = next;
 	}
 }
