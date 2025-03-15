@@ -12,6 +12,13 @@ typedef enum e_default_priority
 	PRIORITY_REMOVE
 }	t_default_priority;
 
+typedef struct s_args
+{
+	char	*exit;
+	bool	flag;
+	uint8_t	step;
+}	t_args;
+
 typedef struct s_chunk
 {
 	char			*content;
@@ -25,10 +32,10 @@ t_status	minishell_parser(t_minishell *minishell);
 t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode);
 
 /* interpret.c */
-t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step);
+t_status	minishell_interpret(t_token *token, t_env *env, t_args args);
 
 /* expand.c */
-char		*minishell_expand(char *content, t_env *env); //norm + fail safe
+char		*minishell_expand(char *content, t_env *env, char *exit); //norm + fail safe
 
 /* separate.c */
 t_status	minishell_separate(t_token *token);

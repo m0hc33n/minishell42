@@ -1,6 +1,6 @@
 #include "../../inc/parser.h"
 
-static t_status update(t_token *token, t_env *env, bool flag, uint8_t step);
+static t_status update(t_token *token, t_env *env, t_args args);
 static bool		check_flag(t_token *token);
 static void		fix_tree(t_token *token);
 static void 	clean_tree(t_token *token);
@@ -8,19 +8,22 @@ static void 	clean_tree(t_token *token);
 t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 {
     t_status    status;
-	bool		flag;
+	t_args		args;
 
-	flag = check_flag(root);
-	if ((status = update(root, env, flag, 0)))
+	args.exit = str_exitcode;
+	args.flag = check_flag(root);
+	args.step = 0;
+	if ((status = update(root, env, args)))
     	return (status);
-	if ((status = update(root, env, flag, 1)))
+	args.step = 1;
+	if ((status = update(root, env, args)))
     	return (status);
 	fix_tree(root);
 	clean_tree(root);
     return (STATUS_SUCCESS);
 }
 
-static t_status    update(t_token *token, t_env *env, bool flag, uint8_t step)
+static t_status    update(t_token *token, t_env *env, t_args args)
 {
     t_status    status;
 	char		*temp;
@@ -29,7 +32,7 @@ static t_status    update(t_token *token, t_env *env, bool flag, uint8_t step)
     {
 		if (minishell_strchr(token->tvalue, '$') || minishell_strchr(token->tvalue, '*'))
 		{
-			if ((status = minishell_interpret(token, env, flag, step)))
+			if ((status = minishell_interpret(token, env, args)))
 				return (status);
 		}
 		if (token->ttype == TTOKEN_COMMAND && !minishell_isbuiltin(token->tvalue))
@@ -40,7 +43,8 @@ static t_status    update(t_token *token, t_env *env, bool flag, uint8_t step)
 			free(token->tvalue);
 			token->tvalue = temp;
 		}
-        if ((status = update(token->right, env, check_flag(token), step)))
+		args.flag = check_flag(token);
+        if ((status = update(token->right, env, args)))
             return (status);
         return (STATUS_SUCCESS);
     }

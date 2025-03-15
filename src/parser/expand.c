@@ -13,7 +13,7 @@ typedef struct s_result
 	bool	flag[2];
 }	t_result;
 
-char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
+char	*minishell_expand(char *content, t_env *env, char *exit) // norm + leaks + checks
 {
 	t_result	buff;
 	uint32_t	s;
@@ -34,8 +34,11 @@ char	*minishell_expand(char *content, t_env *env) //9ssem a jemmi hhh
 				e += 1;
 			buff.key = (char *)malloc(sizeof(char) * (e - s + 1));
 			minishell_strlcpy(buff.key, buff.result + s, e - s + 1);
-			setbuf(stdout, NULL);
-			buff.value = minishell_getvalue(env, buff.key);
+			if (minishell_strequal(buff.key, "$?"))
+				buff.value = exit;
+			else
+				buff.value = minishell_getvalue(env, buff.key);
+			printf("%s\n", buff.value);
 			free(buff.key);
 			buff.result[s] = 0;
 			buff.prefix = minishell_strdup(buff.result);

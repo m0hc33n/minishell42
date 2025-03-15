@@ -1,6 +1,6 @@
 #include "../../inc/executor.h"
 
-static bool	expand_hdoc_in(char *filename, t_env *env)
+static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
 {
 	char	*fdata;
 	char	*expanded;
@@ -9,7 +9,7 @@ static bool	expand_hdoc_in(char *filename, t_env *env)
 	fdata = minishell_readfile(filename);
 	if (!fdata)
 		return (false);
-	expanded = minishell_expand(fdata, env);
+	expanded = minishell_expand(fdata, env, minishell_i32tostr(exit_code));
 	free(fdata);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
@@ -52,7 +52,7 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 	tflag = true;
 	handle_ioa(node, cmd_node, input_fd, output_fd);
 	if (cmd_node->hd.is_hd)
-		tflag = expand_hdoc_in(cmd_node->hd.filename, minishell->env);
+		tflag = expand_hdoc_in(cmd_node->hd.filename, minishell->env, minishell->exit_code);
 	if (tflag)
 		exec_cmd(minishell, cmd_node);
 	if (cmd_node->hd.is_hd)

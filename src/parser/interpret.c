@@ -1,33 +1,33 @@
 #include "../../inc/parser.h"
 
 /*-------------------------------------------------------------------------------------*/
-static t_status	interpret_dollar(t_token *token, t_env *env);
+static t_status	interpret_dollar(t_token *token, t_env *env, char *exit);
 static t_status	interpret_asterisk(t_token *token);
 
-t_status	minishell_interpret(t_token *token, t_env *env, bool flag, uint8_t step)
+t_status	minishell_interpret(t_token *token, t_env *env, t_args args)
 {
 	t_status	status;
 
-	if (minishell_strchr(token->tvalue, '$') && step == 0)
+	if (minishell_strchr(token->tvalue, '$') && args.step == 0)
 	{
-		if ((status = interpret_dollar(token, env)))
+		if ((status = interpret_dollar(token, env, args.exit)))
 			return (status);
 	}
-	if (minishell_strchr(token->tvalue, '*') && step == 1 && flag)
+	if (minishell_strchr(token->tvalue, '*') && args.step == 1 && args.flag)
 	{
 		if ((status = interpret_asterisk(token)))
 			return (status);
 	}
-	if (step == 0 && (status = minishell_separate(token)))
+	if (args.step == 0 && (status = minishell_separate(token)))
 		return (status);
 	return (STATUS_SUCCESS);
 }
 /*-------------------------------------------------------------------------------------*/
-static t_status	interpret_dollar(t_token *token, t_env *env)
+static t_status	interpret_dollar(t_token *token, t_env *env, char *exit)
 {
 	char	*e_value;
 
-	e_value = minishell_expand(token->tvalue, env);
+	e_value = minishell_expand(token->tvalue, env, exit);
 	if (!e_value)
 		return (STATUS_MALLOCERR);
 	free(token->tvalue);
