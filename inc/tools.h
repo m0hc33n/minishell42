@@ -35,7 +35,8 @@ bool		minishell_iscmdsep(int c);
 void		minishell_error(t_status status);
 
 // CLEAN
-void   		minishell_reset(t_minishell **minishell);
+void		minishell_reset(t_minishell *minishell);
+void		minishell_cleanup(t_minishell *minishell, int32_t exit_status);
 void		minishell_free_arr(char **arr);
 
 // ENVIRONMENT UTILS

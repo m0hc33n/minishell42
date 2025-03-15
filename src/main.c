@@ -27,6 +27,11 @@ static t_status minishell(t_minishell *minishell)
 	t_status	status;
 
 	minishell->cmdline = readline(minishell->prompt);
+	if (!minishell->cmdline)
+	{
+		minishell_cleanup(minishell, STATUS_SUCCESS);
+		exit(STATUS_SUCCESS);
+	}
 	if (!minishell->cmdline[0])
 		return (STATUS_EMPTYCMD);
 	add_history(minishell->cmdline); // decide where and when to clear history
@@ -53,7 +58,7 @@ int main(int ac, char **av, char **env)
 	if (status)
 	{
 		minishell_error(status);
-		minishell_reset(&ms);
+		minishell_reset(ms);
 		return (STATUS_FAILURE);
 	}
 	while (true)
@@ -63,7 +68,7 @@ int main(int ac, char **av, char **env)
 			continue;
 		if (status)
 			minishell_error(status);
-		minishell_reset(&ms);
+		minishell_reset(ms);
 	}
 	return (STATUS_SUCCESS);
 }

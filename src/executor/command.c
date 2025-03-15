@@ -6,7 +6,7 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 	pid_t		pid;
 	int32_t		status;
 
-	argv = executor_getargs(cmd_node, minishell->env, &minishell->exit_code, (t_status *)&status);
+	argv = executor_getargs(cmd_node, minishell, (t_status *)&status);
 	if (!argv)
 		return ;
 	if (minishell_isbuiltin(argv[0]))

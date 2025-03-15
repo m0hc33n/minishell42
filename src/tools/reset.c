@@ -29,14 +29,13 @@ void    reset_lexer(t_minishell *minishell)
     }
 }
 
-void    minishell_reset(t_minishell **minishell)
+void    minishell_reset(t_minishell *minishell)
 {
-    if (minishell && *minishell)
+    if (minishell)
     {
-        if ((*minishell)->lexer)
-            reset_lexer(*minishell);
-        if ((*minishell)->cmdline)
-           free((*minishell)->cmdline);
-        //(*minishell)->exit_code = 0;
+        if (minishell->lexer)
+            reset_lexer(minishell);
+        if (minishell->cmdline)
+           free(minishell->cmdline);
     }
 }
