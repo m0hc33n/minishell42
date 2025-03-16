@@ -1,6 +1,6 @@
 #include "../inc/minishell.h"
 
-t_sig g_sig = {false, 0};
+t_sig g_sig = {false, 130, 131};
 
 /*
 */

@@ -38,8 +38,8 @@ t_status	minishell_executor(t_minishell *minishell)
 	executor_handle_hdoc(minishell->root, &status);
 	if (status)
 	{
-		minishell->exit_code = g_sig.exit_code;
-		printf("[%d]", g_sig.exit_code);
+		if (status == STATUS_HDOCSIGINT)
+			minishell->exit_code = g_sig.sigint_code;
 		return (status);
 	}
 	executor_exec(minishell, minishell->root);
