@@ -1,6 +1,6 @@
 #include "../../inc/builtins.h"
 
-t_status	minishell_pwd(char **argv, t_env *l_env) // fix and check bash behavior biman kolani
+t_status	minishell_pwd(char **argv, t_env *l_env)
 {
 	char	*cwd;
 
@@ -16,11 +16,12 @@ t_status	minishell_pwd(char **argv, t_env *l_env) // fix and check bash behavior
 	return (STATUS_FAILURE);
 }
 
-char		*pwd(t_env *l_env)
+char	*pwd(t_env *l_env) // bug: what if i delete dir and unset PWD ? 
 {
 	char	*cwd;
 
-	(void)l_env;
 	cwd = getcwd(NULL, 0);
+	if (!cwd)
+		return (minishell_getvalue(l_env, "$PWD"));
 	return (cwd);
 }
