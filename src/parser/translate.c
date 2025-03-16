@@ -11,7 +11,7 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 	t_args		args;
 	bool		ec_used;
 
-	args.exit = str_exitcode; // m0hc33n : did u free args.exit ? if so, double free!!!
+	args.exit = str_exitcode;
 	args.flag = check_flag(root);
 	args.step = 0;
 	ec_used = false;

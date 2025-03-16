@@ -6,13 +6,17 @@ static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
 	char	*expanded;
 	int32_t	fd;
 	t_args	args;
+	bool	used;
 
 	fdata = minishell_readfile(filename);
 	if (!fdata)
 		return (false);
 	args.exit = minishell_i32tostr(exit_code);
-	args.ec_usedp = NULL;
+	used = false;
+	args.ec_usedp = &used;
 	expanded = minishell_expand(fdata, env, args);
+	if (!used)
+		minishell_free((void **)&args.exit);
 	minishell_free((void **)&fdata);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
