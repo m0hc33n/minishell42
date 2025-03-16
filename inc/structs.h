@@ -87,27 +87,13 @@ typedef struct s_token
 
 typedef t_token	t_root; //same same but different hhh
 
-/**/
-typedef struct s_spaced_cmdline
-{
-    char        *spaced_cmdline;
-    uint64_t    sz;
-}   t_spaced_cmdline;
-
-typedef struct s_spaced_cmdline_arr
-{
-	char		**spaced_cmdline_arr;
-	uint64_t	sz;
-}	t_spaced_cmdline_arr;
-
-
 typedef struct s_lexer
 {
 	t_token					*token;
 	uint32_t				sztoken;
     char           			*cmdline;
-    t_spaced_cmdline		spaced;
-    t_spaced_cmdline_arr	spaced_arr;
+    char					*spaced_cmdline;
+    char					**splited_cmdline;
 }	t_lexer;
 
 // typedef struct s_envr

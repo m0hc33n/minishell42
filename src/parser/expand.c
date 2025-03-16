@@ -15,7 +15,7 @@ char	*minishell_expand(char *content, t_env *env, char *exit)
 	buff.result = minishell_strdup(content);
 	if (!buff.result)
 		return (NULL);
-	return (expand(&buff, env, exit));
+	return (expand(&buff, env, exit)); // m0hc33n : leak detected
 }
 
 static char	*expand(t_result *buff, t_env *env, char *exit)

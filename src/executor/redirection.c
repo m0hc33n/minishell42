@@ -10,11 +10,12 @@ static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
 	if (!fdata)
 		return (false);
 	expanded = minishell_expand(fdata, env, minishell_i32tostr(exit_code));
-	free(fdata);
+	minishell_free((void **)&fdata);
 	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
 		return (false);
 	write(fd, expanded, minishell_strlen(expanded));
+	minishell_free((void **)&expanded);
 	close(fd);
 	unlink(filename);
 	return (true);

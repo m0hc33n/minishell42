@@ -7,7 +7,7 @@ static char	*insert_newline(char *buffer)
 
 	if (!buffer)
 		return (NULL);
-	buffer_nl = (char *)malloc(minishell_strlen(buffer) + 2);
+	buffer_nl = (char *)minishell_calloc(1, minishell_strlen(buffer) + 2);
 	i = 0;
 	while (buffer[i])
 	{
@@ -16,7 +16,7 @@ static char	*insert_newline(char *buffer)
 	}
 	buffer_nl[i] = NEWLINE;
 	buffer_nl[++i] = 0;
-	free(buffer);
+	minishell_free((void **)&buffer);
 	return (buffer_nl);
 }
 
@@ -33,10 +33,27 @@ static void	hdoc_input(int32_t fd, char *keyword)
 			break ;
 		buffer_nl = insert_newline(buffer);
 		write(fd, buffer_nl, minishell_strlen(buffer_nl));
-		free(buffer_nl);
+		minishell_free((void **)&buffer_nl);
 	}
+	minishell_free((void **)&buffer);
 	close(fd);
 	exit(STATUS_SUCCESS);
+}
+
+static void	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keyword)
+{
+	if (hdoc_node->right->ttype == TTOKEN_HEREDOC_KEYWORD)
+		*keyword = hdoc_node->right->tvalue;
+	else
+		*keyword = hdoc_node->right->left->tvalue;
+	if (cmd_node->hd.is_hd)
+	{
+		unlink(cmd_node->hd.filename);
+		close(cmd_node->hd.fd);
+		minishell_free((void **)&cmd_node->hd.filename);
+	}
+	cmd_node->hd.filename = minishell_generate_filename();
+	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
 }
 
 static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
@@ -45,17 +62,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	int32_t	status;
 	char	*keyword;
 
-	if (hdoc_node->right->ttype == TTOKEN_HEREDOC_KEYWORD)
-		keyword = hdoc_node->right->tvalue;
-	else
-		keyword = hdoc_node->right->left->tvalue;
-	if (cmd_node->hd.is_hd)
-	{
-		close(cmd_node->hd.fd);
-		free(cmd_node->hd.filename);
-	}
-	cmd_node->hd.filename = minishell_generate_filename();
-	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
+	hdoc_keyword_file(cmd_node, hdoc_node, &keyword);
 	if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
 		return(STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
@@ -67,7 +74,9 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	}
 	wait(&status);
 	cmd_node->hd.is_hd = true;
-	return ((t_status)WEXITSTATUS(status));
+	if (WIFEXITED(status))
+		return ((t_status)WEXITSTATUS(status));
+	return (STATUS_HDOCFAILED);
 }
 
 void	executor_handle_hdoc(t_root *root, t_status *status)

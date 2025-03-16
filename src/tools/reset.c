@@ -8,11 +8,9 @@ void    reset_token(t_root *root)
         reset_token(root->right);
         if (root->tvalue)
 		{
-        	free(root->tvalue);
-			root->tvalue = NULL;
+			minishell_free((void **)&root->tvalue);
 		}
-		free(root);
-		root = NULL;
+		minishell_free((void **)&root);
 	}
 }
 
@@ -20,13 +18,14 @@ void    reset_lexer(t_minishell *minishell)
 {
     if (minishell)
     {
-        if (minishell->lexer->spaced.spaced_cmdline)
-            free(minishell->lexer->spaced.spaced_cmdline);
+        if (minishell->lexer->spaced_cmdline)
+			minishell_free((void **)&minishell->lexer->spaced_cmdline);
         if (minishell->root)
             reset_token(minishell->root);
+		if (minishell->lexer->splited_cmdline)
+			minishell_free((void **)&minishell->lexer->splited_cmdline);
 		minishell_memset(minishell->lexer, 0, sizeof(t_lexer));
-        free(minishell->lexer);
-		minishell->lexer = NULL;
+        minishell_free((void **)&minishell->lexer);
     }
 }
 
@@ -37,6 +36,6 @@ void    minishell_reset(t_minishell *minishell)
         if (minishell->lexer)
             reset_lexer(minishell);
         if (minishell->cmdline)
-           free(minishell->cmdline);
+           minishell_free((void **)&minishell->cmdline);
     }
 }
