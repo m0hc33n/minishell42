@@ -43,7 +43,7 @@ static int	s_count(t_split *split)
 		else
 		{
 			split->count++;
-			while (split->s[i] && split->s[i] != split->c)
+			while (split->s[i] && (split->s[i] != split->c || (split->flags && !split->flags[i])))
 				i++;
 		}
 	}

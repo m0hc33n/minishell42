@@ -37,10 +37,9 @@ static void	get_flags(bool *flags, char *s)
 			flag[1] = !flag[1];
 		else if (s[i] == CHAR_SINGLE_QUOTE && !flag[1])
 			flag[0] = !flag[0];
-		else if (s[i] == SPACE)
-			flags[i] = !flag[0];
-		else
-			flags[i] = false;
+		flags[i] = false;
+		if (s[i] == SPACE)
+			flags[i] = !flag[0] && !flag[1];
 		i += 1;
 	}
 }
