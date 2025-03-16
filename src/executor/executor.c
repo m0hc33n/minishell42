@@ -37,7 +37,10 @@ t_status	minishell_executor(t_minishell *minishell)
 	status = 0;
 	executor_handle_hdoc(minishell->root, &status);
 	if (status)
+	{
+		minishell->exit_code = g_sig.exit_code;
 		return (status);
+	}
 	executor_exec(minishell, minishell->root);
 	return (STATUS_SUCCESS);
 }

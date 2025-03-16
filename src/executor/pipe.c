@@ -98,7 +98,7 @@ void	pipeit(t_minishell *minishell, t_root *node, int32_t input_fd)
 	if (node->ttype == TTOKEN_PIPE && pipe(pipe_fd) == -1) 
 	{
         perror("pipe");
-        exit(EXIT_FAILURE); // TODO exit cleanly
+        minishell_cleanup(minishell, EXIT_FAILURE);
     }
 	pid = fork();
 	if (pid == CHILD_PROCESS)

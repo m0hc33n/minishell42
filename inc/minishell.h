@@ -26,4 +26,7 @@
 // INIT
 t_status	minishell_init(t_minishell **minishell, char **env);
 
+// SIGNALS
+t_status	siginit_init(int32_t signum, void (*sighandler)(int32_t));
+
 #endif

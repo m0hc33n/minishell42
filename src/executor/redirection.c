@@ -59,7 +59,7 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 	if (cmd_node->hd.is_hd)
 	{
 		free(cmd_node->hd.filename);
-		close(cmd_node->hd.fd); // TOTEST
+		close(cmd_node->hd.fd);
 	}
 	dup2(bkpfd[0], input_fd);
 	dup2(bkpfd[1], output_fd);

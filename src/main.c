@@ -1,5 +1,7 @@
 #include "../inc/minishell.h"
 
+t_sig g_sig = {false, 0};
+
 /*
 */
 t_status	minishell_init(t_minishell **minishell, char **env)	

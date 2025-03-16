@@ -80,7 +80,7 @@ typedef struct s_token
 	char			*tvalue;
 	struct s_token	*next_token;
 	uint32_t		priority;
-	t_hd			hd;		// do u use it yet?
+	t_hd			hd;
 	struct s_token	*right;
 	struct s_token	*left;
 }	t_token;
@@ -96,13 +96,6 @@ typedef struct s_lexer
     char					**splited_cmdline;
 }	t_lexer;
 
-// typedef struct s_envr
-// {
-// 	char			*key;
-// 	char			*value;
-// 	struct s_env	*next_key;
-// }	t_envr;
-
 typedef struct s_minishell
 {
 	char	*prompt;
@@ -115,17 +108,12 @@ typedef struct s_minishell
 	
 }	t_minishell;
 
-typedef struct s_ast
+typedef struct s_sig
 {
-	bool	before;
-	bool	after;
-}	t_ast;
+	bool	is_hdoc;
+	int32_t	exit_code;
+} t_sig;
 
-typedef struct s_fixe
-{
-	char		**fixes;
-	t_ast		*flags;
-	uint32_t	count;
-}	t_fixe;
+extern t_sig g_sig;
 
 #endif

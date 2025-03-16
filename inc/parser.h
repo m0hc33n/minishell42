@@ -36,6 +36,19 @@ typedef struct s_result
 	bool	flag[2];
 }	t_result;
 
+typedef struct s_ast
+{
+	bool	before;
+	bool	after;
+}	t_ast;
+
+typedef struct s_fixe
+{
+	char		**fixes;
+	t_ast		*flags;
+	uint32_t	count;
+}	t_fixe;
+
 /* parse.c */
 t_status	minishell_parser(t_minishell *minishell);
 

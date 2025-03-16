@@ -92,9 +92,3 @@ char	*minishell_generate_filename()
     generate_filename(fd, filename);
 	return (filename);
 }
-
-void	hdoc_sigint(int32_t signum)
-{
-	(void)signum;
-	exit(STATUS_HDOCSIGINT);
-}

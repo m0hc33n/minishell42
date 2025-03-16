@@ -25,10 +25,11 @@ static void	hdoc_input(int32_t fd, char *keyword)
 	char	*buffer;
 	char	*buffer_nl;
 
-	signal(SIGINT, hdoc_sigint);
 	while (true)
 	{
 		buffer = readline("> ");
+		if (!buffer)
+			exit(STATUS_SUCCESS);
 		if (minishell_strequal(keyword, buffer))
 			break ;
 		buffer_nl = insert_newline(buffer);
@@ -67,12 +68,15 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		return(STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
 	{
+		g_sig.is_hdoc = 1;
 		fd = open(cmd_node->hd.filename, O_RDWR);
 		if (fd == -1)
 			exit(STATUS_HDOCFAILED);
 		hdoc_input(fd, keyword);
+		g_sig.is_hdoc = 0;
 	}
-	wait(&status);
+	status = 0;
+	waitpid(-1, &status, 0);
 	cmd_node->hd.is_hd = true;
 	if (WIFEXITED(status))
 		return ((t_status)WEXITSTATUS(status));

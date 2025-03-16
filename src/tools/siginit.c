@@ -5,17 +5,24 @@ t_status siginit_init(int32_t signum, void (*sighandler)(int32_t))
     struct sigaction sa;
 
     sa.sa_handler = sighandler;
-    sa.sa_flags = 0;
+    sa.sa_flags = SA_RESTART;
     sigemptyset(&sa.sa_mask);
     if (-1 == sigaction(signum, &sa, NULL))
         return (STATUS_SIGINIT);
     return (STATUS_SUCCESS);
 }
 
-void sigint_handler(int32_t signum)
+void	sigint_handler(int32_t signum)
 {
 	(void)signum;
-	write(STDERR_FILENO, "\nMINISHELL> ", 12);
+	if (g_sig.is_hdoc)
+	{
+		g_sig.is_hdoc = 0;
+		g_sig.exit_code = 130;
+		exit(STATUS_HDOCSIGINT);
+	}
+	else
+		write(STDERR_FILENO, "\nMINISHELL> ", 12);
 }
 
 void sigquit_handler(int32_t signum)
