@@ -12,7 +12,7 @@ static void	cmd_split_size(const char *s, uint64_t *count)
 		if (*s == CHAR_SINGLE_QUOTE || *s == CHAR_DOUBLE_QUOTE)
 		{
 			quote = *s++;
-			while ((*s && *s != quote) || (*s && *s != SPACE))
+			while (*s && *s != quote)
 				s++;
 			s++;
 			(*count)++;
@@ -45,9 +45,9 @@ void	cmd_split_quoted(char **spaced, t_lexer *lexer,
 		while (*((*spaced) + len) && *((*spaced) + len) != SPACE)
 			len++;
 	}
-	lexer->spaced_arr.spaced_cmdline_arr[element]
+	lexer->splited_cmdline[element]
 		= (char *)minishell_calloc(len + 1, 1);
-	minishell_strlcpy(lexer->spaced_arr.spaced_cmdline_arr[element],
+	minishell_strlcpy(lexer->splited_cmdline[element],
 		*(spaced), len + 1);
 	*spaced += len;	
 }
@@ -74,20 +74,21 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 		}
 		len++;
 	}
-	lexer->spaced_arr.spaced_cmdline_arr[element] = (char *)minishell_calloc(len + 1, 1);
-	if (!lexer->spaced_arr.spaced_cmdline_arr[element])
+	lexer->splited_cmdline[element] = (char *)minishell_calloc(len + 1, 1);
+	if (!lexer->splited_cmdline[element])
 		return (STATUS_MALLOCERR);
-	minishell_strlcpy(lexer->spaced_arr.spaced_cmdline_arr[element], *spaced, len + 1);
+	minishell_strlcpy(lexer->splited_cmdline[element], *spaced, len + 1);
 	*spaced += len;
 	return (STATUS_SUCCESS);
 }
 
 static t_status	init_split(t_lexer *lexer)
 {
-	cmd_split_size(lexer->spaced.spaced_cmdline, &lexer->spaced_arr.sz);
-	lexer->spaced_arr.spaced_cmdline_arr = (char **)minishell_calloc(
-			lexer->spaced_arr.sz, sizeof(char *));
-	if (!lexer->spaced_arr.spaced_cmdline_arr)
+	uint64_t	size;
+
+	cmd_split_size(lexer->spaced_cmdline, &size);
+	lexer->splited_cmdline = (char **)minishell_calloc(size, sizeof(char *));
+	if (!lexer->splited_cmdline)
 		return (STATUS_MALLOCERR);
 	return (STATUS_SUCCESS);
 }
@@ -102,7 +103,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 	if (status)
 		return (status);
 	count = 0;
-	spaced = lexer->spaced.spaced_cmdline;
+	spaced = lexer->spaced_cmdline;
 	while (*spaced)
 	{
 		while (minishell_isspace(*spaced))
@@ -114,7 +115,7 @@ t_status	lexer_cmd_split(t_lexer *lexer)
 			return (status);
 		count++;
 	}
-	lexer->spaced_arr.spaced_cmdline_arr[count] = 0;
+	lexer->splited_cmdline[count] = 0;
 	lexer->sztoken = count;
 	return (STATUS_SUCCESS);
 }
