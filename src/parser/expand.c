@@ -1,11 +1,11 @@
 #include "../../inc/parser.h"
 
-static char		*expand(t_result *buff, t_env *env, char *exit);
-static t_status	modify(t_result *buff, t_env *env, char *exit, uint32_t *i);
+static char		*expand(t_result *buff, t_env *env, t_args args);
+static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i);
 static bool		is_separator(char c);
 static bool		free_buff(t_result *buff, uint32_t l, bool free_res);
 
-char	*minishell_expand(char *content, t_env *env, char *exit)
+char	*minishell_expand(char *content, t_env *env, t_args args)
 {
 	t_result	buff;
 	
@@ -15,15 +15,15 @@ char	*minishell_expand(char *content, t_env *env, char *exit)
 	buff.result = minishell_strdup(content);
 	if (!buff.result)
 		return (NULL);
-	return (expand(&buff, env, exit)); // m0hc33n : leak detected
+	return (expand(&buff, env, args));
 }
 
-static char	*expand(t_result *buff, t_env *env, char *exit)
+static char	*expand(t_result *buff, t_env *env, t_args args)
 {
 	uint32_t	i[2];
 
 	minishell_memset(&i, 0, 2 * sizeof(uint32_t));
-	while (buff->result[i[0]]) // gad freeer l struct mf
+	while (buff->result[i[0]])
 	{
 		if (buff->result[i[0]] == CHAR_DOLLAR_SIGN && !buff->flag[0])
 		{
@@ -31,7 +31,7 @@ static char	*expand(t_result *buff, t_env *env, char *exit)
 			while (buff->result[i[1]] && !is_separator(buff->result[i[1]]))
 				i[1] += 1;
 			buff->key = (char *)malloc(sizeof(char) * (i[1] - i[0] + 1));
-			if (modify(buff, env, exit, i))
+			if (modify(buff, env, args, i))
 				return (NULL);
 			i[0] = i[1];
 		}
@@ -47,17 +47,17 @@ static char	*expand(t_result *buff, t_env *env, char *exit)
 	return (buff->result);
 }
 
-static t_status	modify(t_result *buff, t_env *env, char *exit, uint32_t *i)
+static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i)
 {
 	if (!buff->key)
 		return (free_buff(buff, 0, true), STATUS_MALLOCERR);
 	minishell_strlcpy(buff->key, buff->result + i[0], i[1] - i[0] + 1);
-	if (minishell_strequal(buff->key, "$?"))
-		buff->value = exit;
+	if (minishell_strequal(buff->key, "$?") && setbool(args.ec_usedp, true))
+		buff->value = args.exit;
 	else
 		buff->value = minishell_getvalue(env, buff->key);
 	if (!buff->value)
-		return (free_buff(buff, 1, true), STATUS_MALLOCERR);
+		return (setbool(args.ec_usedp, false), free_buff(buff, 1, true), STATUS_MALLOCERR);
 	buff->result[i[0]] = 0;
 	buff->prefix = minishell_strdup(buff->result);
 	buff->result[i[0]] = CHAR_DOLLAR_SIGN;

@@ -17,6 +17,7 @@ typedef struct s_args
 	char	*exit;
 	bool	flag;
 	uint8_t	step;
+	bool*	ec_usedp;
 }	t_args;
 
 typedef struct s_chunk
@@ -57,9 +58,10 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode);
 
 /* interpret.c */
 t_status	minishell_interpret(t_token *token, t_env *env, t_args args);
+bool		setbool(bool *flag, bool value);
 
 /* expand.c */
-char		*minishell_expand(char *content, t_env *env, char *exit); //norm + fail safe
+char		*minishell_expand(char *content, t_env *env, t_args args);
 
 /* separate.c */
 t_status	minishell_separate(t_token *token);

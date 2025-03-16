@@ -9,10 +9,13 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 {
     t_status    status;
 	t_args		args;
+	bool		ec_used;
 
 	args.exit = str_exitcode; // m0hc33n : did u free args.exit ? if so, double free!!!
 	args.flag = check_flag(root);
 	args.step = 0;
+	ec_used = false;
+	args.ec_usedp = &ec_used;
 	if ((status = update(root, env, args)))
     	return (minishell_free((void **)&str_exitcode), status);
 	args.step = 1;
@@ -20,7 +23,9 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
     	return (minishell_free((void **)&str_exitcode), status);
 	fix_tree(root);
 	clean_tree(root);
-    return (minishell_free((void **)&str_exitcode), STATUS_SUCCESS);
+	if (!ec_used)
+		minishell_free((void **)&str_exitcode);
+    return (STATUS_SUCCESS);
 }
 
 static t_status    update(t_token *token, t_env *env, t_args args)
