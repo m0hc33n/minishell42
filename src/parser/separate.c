@@ -5,8 +5,9 @@ static t_status	separate(t_token *token, char **splits);
 
 t_status	minishell_separate(t_token *token)
 {
-	bool	*flags;
-	char	**splits;
+	bool		*flags;
+	char		**splits;
+	t_status	status;
 
 	if (*token->tvalue)
 	{
@@ -18,7 +19,8 @@ t_status	minishell_separate(t_token *token)
 		free(flags);
 		if (!splits)
 			return (STATUS_MALLOCERR);
-		return (separate(token, splits));
+		if ((status = separate(token, splits)))
+			return (status);
 	}
 	return (STATUS_SUCCESS);
 }

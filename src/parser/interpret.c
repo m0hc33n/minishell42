@@ -12,12 +12,14 @@ t_status	minishell_interpret(t_token *token, t_env *env, t_args args)
 		if ((status = interpret_dollar(token, env, args)))
 			return (status);
 	}
+	if (args.step == 0 && (status = minishell_separate(token)))
+		return (status);
 	if (minishell_strchr(token->tvalue, '*') && args.step == 1 && args.flag)
 	{
 		if ((status = interpret_asterisk(token)))
 			return (status);
 	}
-	if (args.step == 0 && (status = minishell_separate(token)))
+	if (args.step == 1 && (status = minishell_remove(token)))
 		return (status);
 	return (STATUS_SUCCESS);
 }

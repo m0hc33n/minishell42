@@ -21,8 +21,7 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 	args.step = 1;
 	if ((status = update(root, env, args)))
     	return (minishell_free((void **)&str_exitcode), status);
-	fix_tree(root);
-	clean_tree(root);
+	(fix_tree(root), clean_tree(root));
 	if (!ec_used)
 		minishell_free((void **)&str_exitcode);
     return (STATUS_SUCCESS);
@@ -36,11 +35,8 @@ static t_status    update(t_token *token, t_env *env, t_args args)
 	status = STATUS_SUCCESS;
     if (token)
     {
-		if (minishell_strchr(token->tvalue, '$') || minishell_strchr(token->tvalue, '*'))
-		{
-			if ((status = minishell_interpret(token, env, args)))
-				return (status);
-		}
+		if ((status = minishell_interpret(token, env, args)))
+			return (status);
 		if (token->ttype == TTOKEN_COMMAND && !minishell_isbuiltin(token->tvalue))
 		{
 			temp = minishell_getpath(env, token->tvalue, &status);
@@ -80,7 +76,7 @@ static void		fix_tree(t_token *token)
 	}
 }
 
-static void	clean_tree(t_token *token) // just removes parenthesis'
+static void	clean_tree(t_token *token)
 {
     if (token)
     {

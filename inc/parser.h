@@ -50,29 +50,31 @@ typedef struct s_fixe
 	uint32_t	count;
 }	t_fixe;
 
-/* parse.c */
+typedef struct s_quotes
+{
+	bool		*flags;
+	uint32_t	fsize;
+	uint32_t	i[3];
+	char		*fvalue;
+}				t_quotes;
+
 t_status	minishell_parser(t_minishell *minishell);
 
-/* translate.c */
 t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode);
 
-/* interpret.c */
 t_status	minishell_interpret(t_token *token, t_env *env, t_args args);
 bool		setbool(bool *flag, bool value);
 
-/* expand.c */
 char		*minishell_expand(char *content, t_env *env, t_args args);
 
-/* separate.c */
 t_status	minishell_separate(t_token *token);
 
-/* asterisk.c */
 t_status	minishell_asterisk(t_token *token, bool *asterisk);
 
-/* analyse.c */
 t_fixe		*minishell_analyse(char *pattern, bool *asterisk);
 
-/* match.c */
 bool		minishell_matcher(t_fixe *fixe, char *s);
+
+t_status	minishell_remove(t_token *token);
 
 #endif
