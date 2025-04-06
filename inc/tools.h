@@ -17,6 +17,7 @@ int32_t		minishell_strncmp(const char *s1,
 char		*minishell_strdup(const char *s);
 bool		minishell_strequal(const char *s1, const char *s2);
 char		*minishell_strjoin(const char *s1, const char *s2);
+int32_t		minishell_strcmp(const char *s1, const char *s2);
 
 char		**minishell_split(char *s, char c, bool *flags);
 size_t		minishell_strlcat(char *dst, const char *src, size_t size);

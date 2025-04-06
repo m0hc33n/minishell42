@@ -53,3 +53,13 @@ char		*minishell_strjoin(const char *s1, const char *s2)
 	minishell_strlcat(res, s2, total_len + 1);
 	return (res);
 }
+
+int32_t	minishell_strcmp(const char *s1, const char *s2)
+{
+	uint32_t	i;
+
+	i = 0;
+	while (s1[i] && s2[i] && s1[i] == s2[i])
+		i += 1;
+	return (s1[i] - s2[i]);
+}

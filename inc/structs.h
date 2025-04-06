@@ -63,6 +63,8 @@ typedef struct s_env
 	char			*key;
 	char			*value;
 	struct s_env	*next_key;
+
+	bool			chosen;
 }	t_env;
 
 // heredoce handler
@@ -101,11 +103,11 @@ typedef struct s_minishell
 	char	*prompt;
 	char	*cmdline;
 	t_env	*env;
+	char	*cwd;
 	t_lexer	*lexer;
 	t_root	*root;
 	int32_t	stdfd[2];
 	int32_t	exit_code;
-	
 }	t_minishell;
 
 typedef struct s_sig

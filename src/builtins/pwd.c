@@ -1,14 +1,14 @@
 #include "../../inc/builtins.h"
 
-t_status	minishell_pwd(char **argv, t_env *l_env)
+t_status	minishell_pwd(t_minishell *minishell, char **argv, t_env *l_env)
 {
 	char	*cwd;
 
 	if (argv && l_env)
 	{
-		cwd = pwd(l_env);
+		cwd = pwd(minishell, l_env);
 		if (!cwd)
-			return (STATUS_FAILURE);
+			return (STATUS_MALLOCERR);
 		printf("%s\n", cwd);
 		free(cwd);
 		return (STATUS_SUCCESS);
@@ -16,12 +16,18 @@ t_status	minishell_pwd(char **argv, t_env *l_env)
 	return (STATUS_FAILURE);
 }
 
-char	*pwd(t_env *l_env) // bug: what if i delete dir and unset PWD ? 
+char	*pwd(t_minishell *minishell, t_env *l_env)
 {
 	char	*cwd;
 
 	cwd = getcwd(NULL, 0);
 	if (!cwd)
-		return (minishell_getvalue(l_env, "$PWD"));
+		cwd = minishell_getvalue(l_env, "$PWD");
+	if (!cwd)
+		return (NULL);
+	if (!*cwd)
+		cwd = minishell_strdup(minishell->cwd);
+	if (!cwd)
+		return (NULL);
 	return (cwd);
 }

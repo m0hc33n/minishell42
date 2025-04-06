@@ -23,6 +23,7 @@ t_env		*minishell_getenv(char **env)
 			minishell_freelst(l_env);
 			return (NULL);
 		}
+		node->chosen = false;
 		node = node->next_key;
 		index += 1;
 	}

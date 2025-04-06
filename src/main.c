@@ -13,7 +13,8 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 			return (STATUS_MALLOCERR);
 		(*minishell)->prompt = PROMPT;
 		(*minishell)->env = minishell_getenv(env);
-		if (!(*minishell)->env)
+		(*minishell)->cwd = minishell_getvalue((*minishell)->env, "$PWD");
+		if (!(*minishell)->env || !(*minishell)->cwd)
 			return (STATUS_ENVFAILED);
 		(*minishell)->stdfd[0] = dup(STDIN_FILENO);
 		(*minishell)->stdfd[1] = dup(STDOUT_FILENO);
