@@ -14,7 +14,7 @@ static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
 	args.exit = minishell_i32tostr(exit_code);
 	used = false;
 	args.ec_usedp = &used;
-	expanded = minishell_expand(fdata, env, args);
+	expanded = minishell_expand(fdata, env, args); // need to check if null
 	if (!used)
 		minishell_free((void **)&args.exit);
 	minishell_free((void **)&fdata);
