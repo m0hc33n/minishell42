@@ -11,3 +11,8 @@ bool		minishell_isred(t_root *node)
 		node->ttype == TTOKEN_INPUT
 	);
 }
+
+void	hdoc_keyword_noquotes(char **keyword)
+{
+	//TODO
+}

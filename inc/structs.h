@@ -71,6 +71,7 @@ typedef struct s_env
 typedef struct s_hd
 {
 	bool	is_hd;
+	bool	is_expand;
 	char	*filename;
 	int32_t	fd;
 }	t_hd;

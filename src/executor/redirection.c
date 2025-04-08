@@ -1,6 +1,6 @@
 #include "../../inc/executor.h"
 
-static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
+static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 {
 	char	*fdata;
 	char	*expanded;
@@ -8,23 +8,24 @@ static bool	expand_hdoc_in(char *filename, t_env *env, int32_t exit_code)
 	t_args	args;
 	bool	used;
 
-	fdata = minishell_readfile(filename);
+	fdata = minishell_readfile(cmd_node->hd.filename);
 	if (!fdata)
 		return (false);
 	args.exit = minishell_i32tostr(exit_code);
 	used = false;
 	args.ec_usedp = &used;
-	expanded = minishell_expand(fdata, env, args); // need to check if null
+	if (cmd_node->hd.is_expand)
+		expanded = minishell_expand(fdata, env, args); // need to check if null
 	if (!used)
 		minishell_free((void **)&args.exit);
 	minishell_free((void **)&fdata);
-	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC);
+	fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
 		return (false);
 	write(fd, expanded, minishell_strlen(expanded));
 	minishell_free((void **)&expanded);
 	close(fd);
-	unlink(filename);
+	unlink(cmd_node->hd.filename);
 	return (true);
 }
 
@@ -60,7 +61,7 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 	tflag = true;
 	handle_ioa(node, cmd_node, input_fd, output_fd);
 	if (cmd_node->hd.is_hd)
-		tflag = expand_hdoc_in(cmd_node->hd.filename, minishell->env, minishell->exit_code);
+		tflag = expand_hdoc_in(cmd_node, minishell->env, minishell->exit_code);
 	if (tflag)
 		exec_cmd(minishell, cmd_node);
 	if (cmd_node->hd.is_hd)

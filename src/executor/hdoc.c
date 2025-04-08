@@ -47,6 +47,14 @@ static void	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keywor
 		*keyword = hdoc_node->right->tvalue;
 	else
 		*keyword = hdoc_node->right->left->tvalue;
+	if (minishell_strchr(*keyword, CHAR_SINGLE_QUOTE)
+		|| minishell_strchr(*keyword, CHAR_DOUBLE_QUOTE))
+	{
+		cmd_node->hd.is_expand = false;
+		hdoc_keyword_noquotes(keyword);
+	}
+	else
+		cmd_node->hd.is_expand = true;
 	if (cmd_node->hd.is_hd)
 	{
 		unlink(cmd_node->hd.filename);
