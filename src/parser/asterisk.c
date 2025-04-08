@@ -1,14 +1,9 @@
 #include "../../inc/parser.h"
 
-typedef struct s_match
-{
-	char			*name;
-	struct s_match	*next;
-}	t_match;
-
 static t_status	add_name(t_match **names, char *s);
 static void		free_mem(t_match *names, t_fixe *fixe);
 static t_status	add_to_tree(t_token *token, t_match *names);
+static t_status	add_name_to_tree(t_norm_ast *local);
 
 t_status	minishell_asterisk(t_token *token, bool *asterisk)
 {
@@ -23,14 +18,15 @@ t_status	minishell_asterisk(t_token *token, bool *asterisk)
 		return (STATUS_MALLOCERR);
 	dirp = opendir(".");
 	if (!dirp)
-		return (free_mem(NULL, fixe), STATUS_FAILURE); // custom status pls? :<)
+		return (free_mem(NULL, fixe), STATUS_FAILURE);
 	entry = readdir(dirp);
 	while (entry)
 	{
 		if (entry->d_name[0] != '.' && minishell_matcher(fixe, entry->d_name))
 		{
 			if (add_name(&names, entry->d_name))
-				return (free_mem(names, fixe) , closedir(dirp), STATUS_MALLOCERR);
+				return (free_mem(names, fixe),
+					closedir(dirp), STATUS_MALLOCERR);
 		}
 		entry = readdir(dirp);
 	}
@@ -45,7 +41,7 @@ static t_status	add_name(t_match **names, char *s)
 	match = (t_match *)malloc(sizeof(t_match));
 	if (!match)
 		return (STATUS_MALLOCERR);
-	match->name = minishell_strdup(s); // s is not in heap, read documentation
+	match->name = minishell_strdup(s);
 	if (!match->name)
 		return (minishell_free((void **)&match), STATUS_MALLOCERR);
 	match->next = NULL;
@@ -58,7 +54,55 @@ static t_status	add_name(t_match **names, char *s)
 	return (STATUS_SUCCESS);
 }
 
-static void		free_mem(t_match *names, t_fixe *fixe)
+static t_status	add_to_tree(t_token *token, t_match *names)
+{
+	t_norm_ast	local;
+	t_status	status;
+
+	local.names = names;
+	local.rright = token->right;
+	local.first = true;
+	local.saver = names;
+	local.cur = token;
+	while (local.names)
+	{
+		status = add_name_to_tree(&local);
+		if (status)
+			return (status);
+	}
+	return (free_mem(local.saver, NULL), STATUS_SUCCESS);
+}
+
+static t_status	add_name_to_tree(t_norm_ast *local)
+{
+	local->rep = minishell_strdup(local->names->name);
+	if (!local->rep)
+		return (free_mem(local->names, NULL), STATUS_MALLOCERR);
+	if (local->first)
+	{
+		minishell_free((void **)&local->cur->tvalue);
+		local->first = false;
+	}
+	local->cur->tvalue = local->rep;
+	local->cur->ttype = TTOKEN_ARGUMENT;
+	local->names = local->names->next;
+	if (local->names)
+	{
+		local->cur->right = (t_token *)malloc(sizeof(t_token));
+		if (!local->cur->right)
+		{
+			local->cur->right = local->rright;
+			return (free_mem(local->names, NULL), STATUS_MALLOCERR);
+		}
+		local->cur = local->cur->right;
+		local->cur->left = NULL;
+	}
+	else
+		local->cur->right = local->rright;
+	return (STATUS_SUCCESS);
+}
+
+static void	free_mem(t_match *names, t_fixe *fixe)
 {
 	t_match	*next;
 
@@ -75,47 +119,4 @@ static void		free_mem(t_match *names, t_fixe *fixe)
 		minishell_free((void **)&fixe->flags);
 		minishell_free((void **)&fixe);
 	}
-}
-
-static t_status	add_to_tree(t_token *token, t_match *names) // gad had lkhra - m0hc33n
-{
-		t_token *rright;
-		bool first;
-		char *rep;
-		t_match	*saver;
-		t_token *cur;
-		
-		rright = token->right;
-		first = true;
-		cur = token;
-		saver = names;
-		while (names)
-		{
-			//fprintf(stderr, "[%p]\n", names->name);
-			rep = minishell_strdup(names->name);
-			if (!rep)
-				return (free_mem(names, NULL), STATUS_MALLOCERR);
-			if (first)
-			{
-				minishell_free((void **)&cur->tvalue);
-				first = false;
-			}
-			cur->tvalue = rep;
-			cur->ttype = TTOKEN_ARGUMENT;
-			names = names->next;
-			if (names)
-			{
-				cur->right = (t_token *)malloc(sizeof(t_token));
-				if (!cur->right)
-				{
-					cur->right = rright;
-					return (free_mem(names, NULL), STATUS_MALLOCERR);
-				}
-				cur = cur->right;
-				cur->left = NULL;
-			}
-			else
-				cur->right = rright;
-		}
-		return (free_mem(saver, NULL), STATUS_SUCCESS);
 }

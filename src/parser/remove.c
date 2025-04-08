@@ -29,7 +29,7 @@ t_status	minishell_remove(t_token *token)
 	return (minishell_free((void **)&vars.flags), STATUS_SUCCESS);
 }
 
-static bool		*get_flags_quotes(char *s)
+static bool	*get_flags_quotes(char *s)
 {
 	bool		*qflags;
 	uint32_t	len;

@@ -20,11 +20,11 @@ enum e_minichar
 
 typedef enum e_token_type
 {
-    TTOKEN_COMMAND,
-    TTOKEN_ARGUMENT,
-    TTOKEN_PIPE,
-    TTOKEN_AND_OP,
-    TTOKEN_OR_OP,
+	TTOKEN_COMMAND,
+	TTOKEN_ARGUMENT,
+	TTOKEN_PIPE,
+	TTOKEN_AND_OP,
+	TTOKEN_OR_OP,
 	TTOKEN_OUTPUT,
 	TTOKEN_INPUT,
 	TTOKEN_APPEND,
@@ -33,8 +33,8 @@ typedef enum e_token_type
 	TTOKEN_HEREDOC_KEYWORD,
 	TTOKEN_PARENTHESE_OPEN,
 	TTOKEN_PARENTHESE_CLOSE,
-    TTOKEN_COMMENT,
-    TTOKEN_UNKOWN
+	TTOKEN_COMMENT,
+	TTOKEN_UNKOWN
 }	t_token_type;
 
 typedef enum e_status
@@ -92,11 +92,11 @@ typedef t_token	t_root; //same same but different hhh
 
 typedef struct s_lexer
 {
-	t_token					*token;
-	uint32_t				sztoken;
-    char           			*cmdline;
-    char					*spaced_cmdline;
-    char					**splited_cmdline;
+	t_token		*token;
+	uint32_t	sztoken;
+	char		*cmdline;
+	char		*spaced_cmdline;
+	char		**splited_cmdline;
 }	t_lexer;
 
 typedef struct s_minishell
@@ -117,8 +117,79 @@ typedef struct s_sig
 	bool	is_sig;
 	int32_t	sigint_code;
 	int32_t	sigquit_code;
-} t_sig;
+}	t_sig;
 
-extern t_sig g_sig;
+typedef struct s_match
+{
+	char			*name;
+	struct s_match	*next;
+}	t_match;
+
+typedef enum e_default_priority
+{
+	PRIORITY_CRITICAL = 1,
+	PRIORITY_HIGH,
+	PRIORITY_MEDIUM,
+	PRIORITY_IDLE,
+	PRIORITY_REMOVE
+}	t_default_priority;
+
+typedef struct s_args
+{
+	char	*exit;
+	bool	flag;
+	uint8_t	step;
+	bool	*ec_usedp;
+}	t_args;
+
+typedef struct s_chunk
+{
+	char			*content;
+	struct s_chunk	*next;
+}	t_chunk;
+
+typedef struct s_result
+{
+	char	*key;
+	char	*value;
+	char	*prefix;
+	char	*suffix;
+	char	*saver;
+	char	*result;
+	bool	flag[2];
+}	t_result;
+
+typedef struct s_ast
+{
+	bool	before;
+	bool	after;
+}	t_ast;
+
+typedef struct s_fixe
+{
+	char		**fixes;
+	t_ast		*flags;
+	uint32_t	count;
+}	t_fixe;
+
+typedef struct s_quotes
+{
+	bool		*flags;
+	uint32_t	fsize;
+	uint32_t	i[3];
+	char		*fvalue;
+}	t_quotes;
+
+typedef struct s_norm_ast
+{
+	t_match		*names;
+	t_token		*rright;
+	bool		first;
+	char		*rep;
+	t_match		*saver;
+	t_token		*cur;
+}	t_norm_ast;
+
+extern t_sig	g_sig;
 
 #endif

@@ -8,7 +8,7 @@ bool	minishell_matcher(t_fixe *fixe, char *s)
 	uint32_t	c;
 	uint32_t	min_start;
 	uint32_t	start_i;
-	
+
 	c = 0;
 	min_start = 0;
 	start_i = 0;
@@ -42,7 +42,7 @@ static uint32_t	contains_string(char *string, char *s)
 	return (start_i);
 }
 
-static bool		found_string(char *string, char *s)
+static bool	found_string(char *string, char *s)
 {
 	uint32_t	i;
 

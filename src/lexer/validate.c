@@ -5,7 +5,7 @@ static bool	validate_paren(t_token *token)
 	uint32_t	count;
 
 	if (token)
-	{	
+	{
 		count = 0;
 		while (token)
 		{

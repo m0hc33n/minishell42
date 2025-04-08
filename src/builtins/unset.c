@@ -31,7 +31,7 @@ static void	unset(char *key, t_env **l_env)
 		{
 			pop_node(node, l_env);
 			return ;
-		}		
+		}
 		node = node->next_key;
 	}
 }
@@ -58,5 +58,5 @@ static void	pop_node(t_env *node, t_env **l_env)
 		minishell_free((void **)&node->key);
 		minishell_free((void **)&node->value);
 		minishell_free((void **)&node);
-	}	
+	}
 }

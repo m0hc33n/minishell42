@@ -1,10 +1,8 @@
 #include "../inc/minishell.h"
 
-t_sig g_sig = {false, false, 130, 131};
+t_sig	g_sig = {false, false, 130, 131};
 
-/*
-*/
-t_status	minishell_init(t_minishell **minishell, char **env)	
+t_status	minishell_init(t_minishell **minishell, char **env)
 {
 	if (minishell)
 	{
@@ -25,16 +23,13 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 	return (STATUS_MSINITERROR);
 }
 
-static t_status minishell(t_minishell *minishell)
+static t_status	minishell(t_minishell *minishell)
 {
 	t_status	status;
 
 	minishell->cmdline = readline(minishell->prompt);
 	if (g_sig.is_sig)
-	{
-		g_sig.is_sig = false;
-		return (STATUS_SUCCESS);
-	}
+		return (g_sig.is_sig = false, STATUS_SUCCESS);
 	if (!minishell->cmdline)
 	{
 		minishell_cleanup(minishell, STATUS_SUCCESS);
@@ -55,7 +50,7 @@ static t_status minishell(t_minishell *minishell)
 	return (STATUS_SUCCESS);
 }
 
-int main(int ac, char **av, char **env)
+int	main(int ac, char **av, char **env)
 {
 	t_minishell	*ms;
 	t_status	status;
@@ -73,7 +68,7 @@ int main(int ac, char **av, char **env)
 	{
 		status = minishell(ms);
 		if (status == STATUS_EMPTYCMD)
-			continue;
+			continue ;
 		if (status)
 			minishell_error(status);
 		minishell_reset(ms);

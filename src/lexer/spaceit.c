@@ -87,7 +87,7 @@ static t_status	init_spaced(t_lexer *lexer, char *init_prev_char)
 		return (STATUS_MALLOCERR);
 	*init_prev_char = 0;
 	return (STATUS_SUCCESS);
-}	
+}
 
 t_status	lexer_cmd_spaced(t_lexer *lexer)
 {
@@ -103,7 +103,6 @@ t_status	lexer_cmd_spaced(t_lexer *lexer)
 	spaced_cmdline = lexer->spaced_cmdline;
 	while (*cmdline)
 	{
-		//prev_char = *cmdline;
 		if (!minishell_iscmdsep(*cmdline))
 		{
 			status = cmd_spaced(&cmdline, &spaced_cmdline, &prev_char, false);

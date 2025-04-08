@@ -49,7 +49,7 @@ void	cmd_split_quoted(char **spaced, t_lexer *lexer,
 		= (char *)minishell_calloc(len + 1, 1);
 	minishell_strlcpy(lexer->splited_cmdline[element],
 		*(spaced), len + 1);
-	*spaced += len;	
+	*spaced += len;
 }
 
 static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
@@ -59,14 +59,12 @@ static t_status	cmd_split_word(char **spaced, t_lexer *lexer,
 	char		quote;
 
 	if (**spaced == CHAR_SINGLE_QUOTE || **spaced == CHAR_DOUBLE_QUOTE)
-	{
-		cmd_split_quoted(spaced, lexer, element);
-		return (STATUS_SUCCESS);
-	}
+		return (cmd_split_quoted(spaced, lexer, element), STATUS_SUCCESS);
 	len = 0;
 	while (*((*spaced) + len) && *((*spaced) + len) != SPACE)
 	{
-		if (*((*spaced) + len) == CHAR_SINGLE_QUOTE || *((*spaced) + len) == CHAR_DOUBLE_QUOTE)
+		if (*((*spaced) + len) == CHAR_SINGLE_QUOTE
+			|| *((*spaced) + len) == CHAR_DOUBLE_QUOTE)
 		{
 			quote = *((*spaced) + len++);
 			while (*((*spaced) + len) != quote)

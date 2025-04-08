@@ -1,7 +1,7 @@
 #ifndef EXECUTOR_H
 # define EXECUTOR_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 # define CHILD_PROCESS 0x00000000
 # define PIPE_READ_END 0x00000000

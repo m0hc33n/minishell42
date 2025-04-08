@@ -12,8 +12,7 @@ uint32_t	minishell_strlen(const char *s);
 uint64_t	minishell_strlcpy(char *dst, const char *src,
 				uint64_t dstsize);
 
-int32_t		minishell_strncmp(const char *s1,
-				 const char *s2, size_t n);
+int32_t		minishell_strncmp(const char *s1, const char *s2, size_t n);
 char		*minishell_strdup(const char *s);
 bool		minishell_strequal(const char *s1, const char *s2);
 char		*minishell_strjoin(const char *s1, const char *s2);
@@ -56,10 +55,10 @@ char		*minishell_getpath(t_env *env, char *cmd, t_status *status);
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);
 t_status	hdoc_keyword_noquotes(char **keyword);
-char		*minishell_generate_filename();
+char		*minishell_generate_filename(void);
 char		*minishell_readfile(char *filename);
 
 // SIGNALS
-t_status	minishell_siginit();
+t_status	minishell_siginit(void);
 
 #endif

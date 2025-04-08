@@ -5,10 +5,9 @@ static t_status	lex_tflag(t_lexer *lexer, char *tvalue)
 	t_token	*ltoken;
 
 	ltoken = lex_last_token(lexer->token);
-	if (ltoken 
-		&& (ltoken->ttype == TTOKEN_OUTPUT
-		|| ltoken->ttype == TTOKEN_APPEND
-		|| ltoken->ttype == TTOKEN_INPUT))
+	if ((ltoken && ltoken->ttype == TTOKEN_OUTPUT)
+		|| (ltoken && ltoken->ttype == TTOKEN_APPEND)
+		|| (ltoken && ltoken->ttype == TTOKEN_INPUT))
 		return (lex_add_token(lexer, tvalue, TTOKEN_FILE));
 	else if (ltoken && ltoken->ttype == TTOKEN_HEREDOC)
 		return (lex_add_token(lexer, tvalue, TTOKEN_HEREDOC_KEYWORD));

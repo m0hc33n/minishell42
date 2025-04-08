@@ -7,20 +7,27 @@ t_status	minishell_interpret(t_token *token, t_env *env, t_args args)
 {
 	t_status	status;
 
-	if (minishell_strchr(token->tvalue, '$') && args.step == 0)
+	if (args.step == 0)
 	{
-		if ((status = interpret_dollar(token, env, args)))
+		status = interpret_dollar(token, env, args);
+		if (status)
+			return (status);
+		status = minishell_separate(token);
+		if (status)
 			return (status);
 	}
-	if (args.step == 0 && (status = minishell_separate(token)))
-		return (status);
-	if (minishell_strchr(token->tvalue, '*') && args.step == 1 && args.flag)
+	if (args.step == 1)
 	{
-		if ((status = interpret_asterisk(token)))
+		if (args.flag)
+		{
+			status = interpret_asterisk(token);
+			if (status)
+				return (status);
+		}
+		status = minishell_remove(token);
+		if (status)
 			return (status);
 	}
-	if (args.step == 1 && (status = minishell_remove(token)))
-		return (status);
 	return (STATUS_SUCCESS);
 }
 
@@ -28,11 +35,14 @@ static t_status	interpret_dollar(t_token *token, t_env *env, t_args args)
 {
 	char	*e_value;
 
-	e_value = minishell_expand(token->tvalue, env, args);
-	if (!e_value)
-		return (STATUS_MALLOCERR);
-	minishell_free((void **)&token->tvalue);
-	token->tvalue = e_value;
+	if (minishell_strchr(token->tvalue, '$'))
+	{
+		e_value = minishell_expand(token->tvalue, env, args);
+		if (!e_value)
+			return (STATUS_MALLOCERR);
+		minishell_free((void **)&token->tvalue);
+		token->tvalue = e_value;
+	}
 	return (STATUS_SUCCESS);
 }
 
@@ -42,17 +52,24 @@ static t_status	interpret_asterisk(t_token *token)
 {
 	bool		*asterisk;
 	t_status	status;
+	uint32_t	len;
 
-	asterisk = (bool *)malloc(sizeof(bool) * minishell_strlen(token->tvalue));
-	if (!asterisk)
-		return (STATUS_MALLOCERR);
-	decide_asterisk(token->tvalue, asterisk);
-	if ((status = minishell_asterisk(token, asterisk)))
-		return (minishell_free((void **)&asterisk), status);
-	return (minishell_free((void **)&asterisk), STATUS_SUCCESS);
+	if (minishell_strchr(token->tvalue, '*'))
+	{
+		len = minishell_strlen(token->tvalue);
+		asterisk = (bool *)malloc(sizeof(bool) * len);
+		if (!asterisk)
+			return (STATUS_MALLOCERR);
+		decide_asterisk(token->tvalue, asterisk);
+		status = minishell_asterisk(token, asterisk);
+		minishell_free((void **)&asterisk);
+		if (status)
+			return (status);
+	}
+	return (STATUS_SUCCESS);
 }
 
-static void		decide_asterisk(char *value, bool *asterisk)
+static void	decide_asterisk(char *value, bool *asterisk)
 {
 	uint32_t	i;
 	bool		flag[2];

@@ -17,7 +17,8 @@ t_fixe	*minishell_analyse(char *pattern, bool *asterisk)
 		fixe->count += 1;
 	fixe->flags = (t_ast *)malloc(sizeof(t_ast) * fixe->count);
 	if (!fixe->flags)
-		return (minishell_free((void **)&fixe->fixes), minishell_free((void **)&fixe), NULL);
+		return (minishell_free((void **)&fixe->fixes),
+			minishell_free((void **)&fixe), NULL);
 	fill_flags(pattern, fixe);
 	return (fixe);
 }
@@ -26,7 +27,7 @@ static void	fill_flags(char *pattern, t_fixe *fixe)
 {
 	uint32_t	i;
 	uint32_t	c;
-	t_ast 		*flag;
+	t_ast		*flag;
 
 	i = 0;
 	c = 0;

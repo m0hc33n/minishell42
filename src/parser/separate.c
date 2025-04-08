@@ -19,7 +19,9 @@ t_status	minishell_separate(t_token *token)
 		minishell_free((void **)&flags);
 		if (!splits)
 			return (STATUS_MALLOCERR);
-		if ((status = separate(token, splits)))
+		status = separate(token, splits);
+		minishell_free_arr(splits);
+		if (status)
 			return (status);
 	}
 	return (STATUS_SUCCESS);
@@ -46,7 +48,7 @@ static void	get_flags(bool *flags, char *s)
 	}
 }
 
-static t_status	separate(t_token *token, char **splits) // need to protect all funcs ??
+static t_status	separate(t_token *token, char **splits)
 {
 	t_token		*last_right;
 	char		*value;
@@ -55,7 +57,7 @@ static t_status	separate(t_token *token, char **splits) // need to protect all f
 	last_right = token->right;
 	value = minishell_strdup(splits[0]);
 	if (!value)
-		return (minishell_free_arr(splits), STATUS_MALLOCERR);
+		return (STATUS_MALLOCERR);
 	minishell_free((void **)&token->tvalue);
 	token->tvalue = value;
 	i = 1;
@@ -63,16 +65,14 @@ static t_status	separate(t_token *token, char **splits) // need to protect all f
 	{
 		token->right = (t_token *)malloc(sizeof(t_token));
 		if (!token->right)
-			return (token->right = last_right, minishell_free_arr(splits), STATUS_MALLOCERR);
+			return (token->right = last_right, STATUS_MALLOCERR);
 		token->right->tvalue = minishell_strdup(splits[i]);
 		if (!token->right->tvalue)
-		{
-			minishell_free((void **)&token->right);
-			return (token->right = last_right, minishell_free_arr(splits), STATUS_MALLOCERR);
-		}
+			return (minishell_free((void **)&token->right),
+				token->right = last_right, STATUS_MALLOCERR);
 		token->right->ttype = TTOKEN_ARGUMENT;
 		i += 1;
 		token = token->right;
 	}
-	return (token->right = last_right, minishell_free_arr(splits), STATUS_SUCCESS);
+	return (token->right = last_right, STATUS_SUCCESS);
 }

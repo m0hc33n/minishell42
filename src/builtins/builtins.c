@@ -1,6 +1,6 @@
 #include "../../inc/builtins.h"
 
-bool		minishell_isbuiltin(char *cmd)
+bool	minishell_isbuiltin(char *cmd)
 {
 	if (minishell_strequal(cmd, EXPORT))
 		return (true);

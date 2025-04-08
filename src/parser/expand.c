@@ -8,7 +8,7 @@ static bool		free_buff(t_result *buff, uint32_t l, bool free_res);
 char	*minishell_expand(char *content, t_env *env, t_args args)
 {
 	t_result	buff;
-	
+
 	minishell_memset(&buff, 0, sizeof(t_result));
 	if (!minishell_strchr(content, CHAR_DOLLAR_SIGN))
 		return (minishell_strdup(content));
@@ -56,8 +56,8 @@ static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i)
 		buff->value = args.exit;
 	else
 		buff->value = minishell_getvalue(env, buff->key);
-	if (!buff->value)
-		return (setbool(args.ec_usedp, false), free_buff(buff, 1, true), STATUS_MALLOCERR);
+	if (!buff->value && setbool(args.ec_usedp, false))
+		return (free_buff(buff, 1, true), STATUS_MALLOCERR);
 	buff->result[i[0]] = 0;
 	buff->prefix = minishell_strdup(buff->result);
 	buff->result[i[0]] = CHAR_DOLLAR_SIGN;

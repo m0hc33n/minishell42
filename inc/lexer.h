@@ -9,7 +9,7 @@
 
 t_status		minishell_lexer(t_minishell *minishell);
 t_status		lexer_cmd_spaced(t_lexer *lexer);
-t_status    	lexer_cmd_split(t_lexer *lexer);
+t_status		lexer_cmd_split(t_lexer *lexer);
 t_status		lexer_lex(t_lexer *lexer);
 t_status		lex_add_token(t_lexer *lexer, char *tvalue, t_token_type ttype);
 t_token			*lex_last_token(t_token *token);

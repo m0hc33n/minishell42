@@ -1,9 +1,11 @@
 #include "../../inc/parser.h"
 
 static void					fill_tokens(t_token *head, uint32_t size);
-static void					get_priority(t_token *head, t_token *token, uint32_t index);
+static void					get_priority(t_token *head, t_token *token,
+								uint32_t index);
 static t_default_priority	default_priority(t_token *token);
-static t_token				*parse_tree(t_token *head, uint32_t start, uint32_t end);
+static t_token				*parse_tree(t_token *head, uint32_t start,
+								uint32_t end);
 
 t_status	minishell_parser(t_minishell *minishell)
 {
@@ -32,7 +34,7 @@ static void	fill_tokens(t_token *head, uint32_t size)
 	}
 }
 
-static void		get_priority(t_token *head, t_token *token, uint32_t index)
+static void	get_priority(t_token *head, t_token *token, uint32_t index)
 {
 	uint32_t	j;
 	t_token		*token_j;
@@ -64,7 +66,8 @@ static t_default_priority	default_priority(t_token *token)
 		return (PRIORITY_HIGH);
 	else if (minishell_isred(token))
 		return (PRIORITY_MEDIUM);
-	else if (token->ttype == TTOKEN_PARENTHESE_OPEN || token->ttype == TTOKEN_PARENTHESE_CLOSE)
+	else if (token->ttype == TTOKEN_PARENTHESE_OPEN
+		|| token->ttype == TTOKEN_PARENTHESE_CLOSE)
 		return (PRIORITY_REMOVE);
 	return (PRIORITY_IDLE);
 }
