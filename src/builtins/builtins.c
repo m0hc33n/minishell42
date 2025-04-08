@@ -23,6 +23,7 @@ t_status	exec_builtin(t_minishell *minishell, char **argv)
 {
 	t_status	status;
 
+	status = STATUS_SUCCESS;
 	if (minishell_strequal(argv[0], EXPORT))
 		status = minishell_export(argv, minishell->env);
 	else if (minishell_strequal(argv[0], UNSET))
