@@ -14,11 +14,14 @@ static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 	args.exit = minishell_i32tostr(exit_code);
 	used = false;
 	args.ec_usedp = &used;
+	expanded = fdata;
 	if (cmd_node->hd.is_expand)
-		expanded = minishell_expand(fdata, env, args); // need to check if null
+	{
+		expanded = minishell_expand(fdata, env, args);
+		minishell_free((void **)&fdata);
+	}
 	if (!used)
 		minishell_free((void **)&args.exit);
-	minishell_free((void **)&fdata);
 	fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
 		return (false);
@@ -69,6 +72,8 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 		minishell_free((void **)&cmd_node->hd.filename);
 		close(cmd_node->hd.fd);
 	}
-	dup2(bkpfd[0], input_fd);
+	dup2(bkpfd[0], input_fd);	
 	dup2(bkpfd[1], output_fd);
+	close(bkpfd[0]);
+	close(bkpfd[1]);
 }

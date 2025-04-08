@@ -114,6 +114,7 @@ typedef struct s_minishell
 typedef struct s_sig
 {
 	bool	is_hdoc;
+	bool	is_sig;
 	int32_t	sigint_code;
 	int32_t	sigquit_code;
 } t_sig;

@@ -9,7 +9,15 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 	status = 0;
 	argv = executor_getargs(cmd_node, minishell, (t_status *)&status);
 	if (!argv)
+	{
+		if (status ==  STATUS_CMDNOTFOUND)
+		{
+			write(STDERR_FILENO, "minishell: ", 11);
+			write(STDERR_FILENO, cmd_node->tvalue, minishell_strlen(cmd_node->tvalue));
+			write(STDERR_FILENO, ": command not found\n", 20);
+		}
 		return ;
+	}
 	if (minishell_isbuiltin(argv[0]))
 		minishell->exit_code = exec_builtin(minishell, argv);
 	else

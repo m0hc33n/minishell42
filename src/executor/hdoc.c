@@ -41,7 +41,7 @@ static void	hdoc_input(int32_t fd, char *keyword)
 	exit(STATUS_SUCCESS);
 }
 
-static void	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keyword)
+static t_status	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keyword)
 {
 	if (hdoc_node->right->ttype == TTOKEN_HEREDOC_KEYWORD)
 		*keyword = hdoc_node->right->tvalue;
@@ -51,7 +51,8 @@ static void	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keywor
 		|| minishell_strchr(*keyword, CHAR_DOUBLE_QUOTE))
 	{
 		cmd_node->hd.is_expand = false;
-		hdoc_keyword_noquotes(keyword);
+		if (hdoc_keyword_noquotes(keyword))
+			return (STATUS_HDOCFAILED);
 	}
 	else
 		cmd_node->hd.is_expand = true;
@@ -63,6 +64,7 @@ static void	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keywor
 	}
 	cmd_node->hd.filename = minishell_generate_filename();
 	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);
+	return (STATUS_SUCCESS);
 }
 
 static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
@@ -71,8 +73,8 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	int32_t	status;
 	char	*keyword;
 
-	hdoc_keyword_file(cmd_node, hdoc_node, &keyword);
-	if (!cmd_node->hd.filename || cmd_node->hd.fd == -1)
+	status = hdoc_keyword_file(cmd_node, hdoc_node, &keyword);
+	if (status || !cmd_node->hd.filename || cmd_node->hd.fd == -1)
 		return(STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
 	{
@@ -81,6 +83,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		if (fd == -1)
 			exit(STATUS_HDOCFAILED);
 		hdoc_input(fd, keyword);
+		minishell_free((void **)&keyword);
 		g_sig.is_hdoc = 0;
 	}
 	status = 0;

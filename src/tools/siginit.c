@@ -15,6 +15,7 @@ t_status siginit_init(int32_t signum, void (*sighandler)(int32_t))
 void	sigint_handler(int32_t signum)
 {
 	(void)signum;
+	g_sig.is_sig = true;
 	if (g_sig.is_hdoc)
 	{
 		g_sig.is_hdoc = 0;

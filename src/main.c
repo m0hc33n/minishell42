@@ -1,6 +1,6 @@
 #include "../inc/minishell.h"
 
-t_sig g_sig = {false, 130, 131};
+t_sig g_sig = {false, false, 130, 131};
 
 /*
 */
@@ -30,6 +30,11 @@ static t_status minishell(t_minishell *minishell)
 	t_status	status;
 
 	minishell->cmdline = readline(minishell->prompt);
+	if (g_sig.is_sig)
+	{
+		g_sig.is_sig = false;
+		return (STATUS_SUCCESS);
+	}
 	if (!minishell->cmdline)
 	{
 		minishell_cleanup(minishell, STATUS_SUCCESS);
