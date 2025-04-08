@@ -47,7 +47,7 @@ static t_status	add_name(t_match **names, char *s)
 		return (STATUS_MALLOCERR);
 	match->name = minishell_strdup(s); // s is not in heap, read documentation
 	if (!match->name)
-		return (free(match), STATUS_MALLOCERR);
+		return (minishell_free((void **)&match), STATUS_MALLOCERR);
 	match->next = NULL;
 	if (!*names)
 		return (*names = match, STATUS_SUCCESS);
@@ -65,15 +65,15 @@ static void		free_mem(t_match *names, t_fixe *fixe)
 	while (names)
 	{
 		next = names->next;
-		free(names->name);
-		free(names);
+		minishell_free((void **)&names->name);
+		minishell_free((void **)&names);
 		names = next;
 	}
 	if (fixe)
 	{
 		minishell_free_arr(fixe->fixes);
-		free(fixe->flags);
-		free(fixe);
+		minishell_free((void **)&fixe->flags);
+		minishell_free((void **)&fixe);
 	}
 }
 
@@ -97,7 +97,7 @@ static t_status	add_to_tree(t_token *token, t_match *names) // gad had lkhra - m
 				return (free_mem(names, NULL), STATUS_MALLOCERR);
 			if (first)
 			{
-				free(cur->tvalue);
+				minishell_free((void **)&cur->tvalue);
 				first = false;
 			}
 			cur->tvalue = rep;

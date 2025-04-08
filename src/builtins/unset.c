@@ -44,9 +44,9 @@ static void	pop_node(t_env *node, t_env **l_env)
 	if (node == *l_env)
 	{
 		*l_env = node->next_key;
-		free(node->key);
-		free(node->value);
-		free(node);
+		minishell_free((void **)&node->key);
+		minishell_free((void **)&node->value);
+		minishell_free((void **)&node);
 	}
 	else
 	{
@@ -55,8 +55,8 @@ static void	pop_node(t_env *node, t_env **l_env)
 		while (b_node->next_key != node)
 			b_node = b_node->next_key;
 		b_node->next_key = a_node;
-		free(node->key);
-		free(node->value);
-		free(node);
+		minishell_free((void **)&node->key);
+		minishell_free((void **)&node->value);
+		minishell_free((void **)&node);
 	}	
 }

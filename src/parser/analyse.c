@@ -11,13 +11,13 @@ t_fixe	*minishell_analyse(char *pattern, bool *asterisk)
 		return (NULL);
 	fixe->fixes = minishell_split(pattern, '*', asterisk);
 	if (!fixe->fixes)
-		return (free(fixe), NULL);
+		return (minishell_free((void **)&fixe), NULL);
 	fixe->count = 0;
 	while (fixe->fixes[fixe->count])
 		fixe->count += 1;
 	fixe->flags = (t_ast *)malloc(sizeof(t_ast) * fixe->count);
 	if (!fixe->flags)
-		return (free(fixe->fixes), free(fixe), NULL);
+		return (minishell_free((void **)&fixe->fixes), minishell_free((void **)&fixe), NULL);
 	fill_flags(pattern, fixe);
 	return (fixe);
 }

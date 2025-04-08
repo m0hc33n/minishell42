@@ -67,7 +67,7 @@ static void pipeit_child(t_minishell *minishell, t_root *node,
 		exec_builtin(minishell, argv);
 	else
 		execve(argv[0], argv, NULL);
-	free(argv);
+	minishell_free((void **)&argv);
     exit(EXIT_FAILURE);
 }
 

@@ -45,7 +45,7 @@ static t_status	key_value(t_env *node, char *line)
 	node->value = minishell_strdup(line + equal_index + 1);
 	if (!node->value)
 	{
-		free(node->key);
+		minishell_free((void **)&node->key);
 		return (STATUS_MALLOCERR);
 	}
 	return (STATUS_SUCCESS);

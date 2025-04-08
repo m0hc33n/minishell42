@@ -16,7 +16,7 @@ t_status	minishell_separate(t_token *token)
 			return (STATUS_MALLOCERR);
 		get_flags(flags, token->tvalue);
 		splits = minishell_split(token->tvalue, SPACE, flags);
-		free(flags);
+		minishell_free((void **)&flags);
 		if (!splits)
 			return (STATUS_MALLOCERR);
 		if ((status = separate(token, splits)))
@@ -56,7 +56,7 @@ static t_status	separate(t_token *token, char **splits) // need to protect all f
 	value = minishell_strdup(splits[0]);
 	if (!value)
 		return (minishell_free_arr(splits), STATUS_MALLOCERR);
-	free(token->tvalue);
+	minishell_free((void **)&token->tvalue);
 	token->tvalue = value;
 	i = 1;
 	while (splits[i])
@@ -67,7 +67,7 @@ static t_status	separate(t_token *token, char **splits) // need to protect all f
 		token->right->tvalue = minishell_strdup(splits[i]);
 		if (!token->right->tvalue)
 		{
-			free(token->right);
+			minishell_free((void **)&token->right);
 			return (token->right = last_right, minishell_free_arr(splits), STATUS_MALLOCERR);
 		}
 		token->right->ttype = TTOKEN_ARGUMENT;

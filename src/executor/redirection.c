@@ -65,7 +65,7 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 		exec_cmd(minishell, cmd_node);
 	if (cmd_node->hd.is_hd)
 	{
-		free(cmd_node->hd.filename);
+		minishell_free((void **)&cmd_node->hd.filename);
 		close(cmd_node->hd.fd);
 	}
 	dup2(bkpfd[0], input_fd);

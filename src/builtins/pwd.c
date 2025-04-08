@@ -10,7 +10,7 @@ t_status	minishell_pwd(t_minishell *minishell, char **argv, t_env *l_env)
 		if (!cwd)
 			return (STATUS_MALLOCERR);
 		printf("%s\n", cwd);
-		free(cwd);
+		minishell_free((void **)&cwd);
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_FAILURE);

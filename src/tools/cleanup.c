@@ -9,11 +9,11 @@ void    minishell_free_arr(char **arr)
     {
         while (arr[i])
         {
-            free(arr[i]);
+            minishell_free((void **)&arr[i]);
 			arr[i] = NULL;
             i++;
         }
-        free(arr);
+        minishell_free((void **)&arr);
 		arr = NULL;
     }
 }
@@ -24,8 +24,8 @@ void	minishell_cleanup(t_minishell *minishell, int32_t exit_status)
 	close(minishell->stdfd[0]);
 	close(minishell->stdfd[1]);
 	minishell_envfree(minishell->env);
-	free(minishell->cwd);
-	free(minishell);
+	minishell_free((void **)&minishell->cwd);
+	minishell_free((void **)&minishell);
 	rl_clear_history();
 	exit(exit_status);
 }

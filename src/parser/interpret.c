@@ -31,7 +31,7 @@ static t_status	interpret_dollar(t_token *token, t_env *env, t_args args)
 	e_value = minishell_expand(token->tvalue, env, args);
 	if (!e_value)
 		return (STATUS_MALLOCERR);
-	free(token->tvalue);
+	minishell_free((void **)&token->tvalue);
 	token->tvalue = e_value;
 	return (STATUS_SUCCESS);
 }
@@ -48,8 +48,8 @@ static t_status	interpret_asterisk(t_token *token)
 		return (STATUS_MALLOCERR);
 	decide_asterisk(token->tvalue, asterisk);
 	if ((status = minishell_asterisk(token, asterisk)))
-		return (free(asterisk), status);
-	return (free(asterisk), STATUS_SUCCESS);
+		return (minishell_free((void **)&asterisk), status);
+	return (minishell_free((void **)&asterisk), STATUS_SUCCESS);
 }
 
 static void		decide_asterisk(char *value, bool *asterisk)

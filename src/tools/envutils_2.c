@@ -72,8 +72,8 @@ static char	*fetch_dir(char *cmd, char *dir, t_status *status)
 				return (*status = STATUS_MALLOCERR, closedir(dirp), NULL);
 			path = minishell_strjoin(join, cmd);
 			if (!path)
-				return (*status = STATUS_MALLOCERR, closedir(dirp), free(join), NULL);
-			free(join);
+				return (*status = STATUS_MALLOCERR, closedir(dirp), minishell_free((void **)&join), NULL);
+			minishell_free((void **)&join);
 		}
 		entry = readdir(dirp);
 	}

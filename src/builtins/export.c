@@ -47,7 +47,7 @@ static t_status	extract_pair(t_env *pair, char *s)
 	pair->key = minishell_strdup(s);
 	s[equal_i] = '=';
 	if (!pair->key)
-		return (free(pair->value), STATUS_MALLOCERR);
+		return (minishell_free((void **)&pair->value), STATUS_MALLOCERR);
 	return (STATUS_SUCCESS);
 }
 
@@ -61,7 +61,7 @@ t_status	export(char *key, char *value, t_env *l_env)
 	while (node)
 	{
 		if (minishell_strequal(key, node->key))
-			return (free(key), modify_node(node, value));
+			return (minishell_free((void **)&key), modify_node(node, value));
 		node = node->next_key;
 	}
 	return (add_node(l_env, key, value));
@@ -69,7 +69,7 @@ t_status	export(char *key, char *value, t_env *l_env)
 
 static t_status	modify_node(t_env *node, char *value)
 {
-	free(node->value);
+	minishell_free((void **)&node->value);
 	node->value = value;
 	return (STATUS_SUCCESS);
 }
@@ -83,7 +83,7 @@ static t_status	add_node(t_env *l_env, char *key, char *value)
 		node = node->next_key;
 	node->next_key = (t_env *)malloc(sizeof(t_env));
 	if (!node->next_key)
-		return (free(key), free(value), STATUS_MALLOCERR);
+		return (minishell_free((void **)&key), minishell_free((void **)&value), STATUS_MALLOCERR);
 	node = node->next_key;
 	node->key = key;
 	node->value = value;

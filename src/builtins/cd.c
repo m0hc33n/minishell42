@@ -18,7 +18,7 @@ t_status	minishell_cd(t_minishell *minishell, char **argv, t_env *l_env)
 		if (!dest)
 				return (STATUS_MALLOCERR);
 		if (!argv[1] && !*dest)
-			return (free(dest), write(STDERR_FILENO, CD_HOME, 27), STATUS_CMDFAILED);
+			return (minishell_free((void **)&dest), write(STDERR_FILENO, CD_HOME, 27), STATUS_CMDFAILED);
 		return (cd(minishell, dest, l_env));
 	}
 	return (STATUS_FAILURE);
@@ -31,7 +31,7 @@ static t_status	cd(t_minishell *minishell, char *dest, t_env *l_env)
 
 	old_pwd = pwd(minishell, l_env);
 	if (chdir(dest))
-		return (perror("minishell_cd"), free(dest), STATUS_FAILURE);
+		return (perror("minishell_cd"), minishell_free((void **)&dest), STATUS_FAILURE);
 	free(dest);
 	new_pwd = pwd(minishell, l_env);
 	if (!old_pwd || !new_pwd)
@@ -47,13 +47,13 @@ static t_status	update_wd(t_minishell *minishell, char *old_pwd, char *new_pwd, 
 	char		*cwd;
 
 	if ((status = export(minishell_strdup("OLDPWD"), old_pwd, l_env)))
-		return (free(new_pwd), status);
+		return (minishell_free((void **)&new_pwd), status);
 	if ((status = export(minishell_strdup("PWD"), new_pwd, l_env)))
 		return (status);
 	cwd = minishell_strdup(new_pwd);
 	if (!cwd)
 		return (STATUS_MALLOCERR);
-	free(minishell->cwd);
+	minishell_free((void **)&minishell->cwd);
 	minishell->cwd = cwd;
 	return (STATUS_SUCCESS);
 }

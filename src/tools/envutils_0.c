@@ -42,8 +42,8 @@ void	minishell_freekv(t_env *l_env, int32_t index)
 	i = 0;
 	while (i < index)
 	{
-		free(l_env[i].key);
-		free(l_env[i].value);
+		minishell_free((void **)&l_env[i].key);
+		minishell_free((void **)&l_env[i].value);
 		i += 1;
 	}
 }
@@ -55,7 +55,7 @@ void	minishell_freelst(t_env *l_env)
 	while (l_env)
 	{
 		next = l_env->next_key;
-		free(l_env);
+		minishell_free((void **)&l_env);
 		l_env = next;
 	}
 }

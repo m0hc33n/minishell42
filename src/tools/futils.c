@@ -38,7 +38,7 @@ char	*minishell_readfile(char *filename)
 		p = data;
 		data = readfile_join(data, buffer);
 		if (p)
-		 	free(p);
+		 	minishell_free((void **)&p);
 	}
 	return (data);
 }
@@ -52,7 +52,7 @@ void	generate_filename(int32_t fd, char *filename)
     if (rbytes != FNAME_SIZE)
 	{
         perror("Error reading random bytes");
-        free(filename);
+        minishell_free((void **)&filename);
         close(fd);
         return ;
     }

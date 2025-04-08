@@ -16,17 +16,17 @@ t_status	minishell_remove(t_token *token)
 	{
 		vars.fvalue = (char *)malloc(sizeof(char) * (vars.fsize + 1));
 		if (!vars.fvalue)
-			return (free(vars.flags), STATUS_MALLOCERR);
+			return (minishell_free((void **)&vars.flags), STATUS_MALLOCERR);
 		while (token->tvalue[vars.i[1]])
 		{
 			if (vars.flags[vars.i[1]++])
 				vars.fvalue[vars.i[2]++] = token->tvalue[vars.i[1] - 1];
 		}
 		vars.fvalue[vars.i[2]] = 0;
-		free(token->tvalue);
+		minishell_free((void **)&token->tvalue);
 		token->tvalue = vars.fvalue;
 	}
-	return (free(vars.flags), STATUS_SUCCESS);
+	return (minishell_free((void **)&vars.flags), STATUS_SUCCESS);
 }
 
 static bool		*get_flags_quotes(char *s)

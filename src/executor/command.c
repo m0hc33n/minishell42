@@ -26,5 +26,5 @@ void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 		else
 			minishell->exit_code = WEXITSTATUS(status);
 	}
-	free(argv);
+	minishell_free((void **)&argv);
 }
