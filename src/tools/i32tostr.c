@@ -13,7 +13,7 @@ static int32_t	itoa_count_digits(int32_t nbr)
 	return (num_digits);
 }
 
-static void	i32tostr_init(int32_t *nbr,  char **str, int32_t *d, bool *is_neg)
+static void	i32tostr_init(int32_t *nbr, char **str, int32_t *d, bool *is_neg)
 {
 	*is_neg = false;
 	*d = 0;
@@ -27,7 +27,7 @@ static void	i32tostr_init(int32_t *nbr,  char **str, int32_t *d, bool *is_neg)
 	*str = (char *)minishell_calloc(1, (*d + 1) * sizeof(char));
 }
 
-char *minishell_i32tostr(int32_t nbr)
+char	*minishell_i32tostr(int32_t nbr)
 {
 	bool	is_negative;
 	int32_t	num_digits;

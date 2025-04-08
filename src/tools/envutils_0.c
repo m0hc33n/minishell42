@@ -5,7 +5,7 @@ t_env	*minishell_envlist(int32_t count)
 	t_env	*l_env;
 	t_env	*node;
 
-	if (!count) // empty environment
+	if (!count)
 		return (NULL);
 	l_env = (t_env *)malloc(sizeof(t_env));
 	if (!l_env)

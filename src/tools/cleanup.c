@@ -1,21 +1,21 @@
 #include "../../inc/tools.h"
 
-void    minishell_free_arr(char **arr)
+void	minishell_free_arr(char **arr)
 {
-    uint64_t    i;
+	uint64_t	i;
 
-    i = 0;
-    if (arr)
-    {
-        while (arr[i])
-        {
-            minishell_free((void **)&arr[i]);
+	i = 0;
+	if (arr)
+	{
+		while (arr[i])
+		{
+			minishell_free((void **)&arr[i]);
 			arr[i] = NULL;
-            i++;
-        }
-        minishell_free((void **)&arr);
+			i++;
+		}
+		minishell_free((void **)&arr);
 		arr = NULL;
-    }
+	}
 }
 
 void	minishell_cleanup(t_minishell *minishell, int32_t exit_status)

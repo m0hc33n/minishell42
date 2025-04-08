@@ -1,6 +1,6 @@
 #include "../../inc/tools.h"
 
-char		*readfile_join(const char *s1, const char *s2)
+char	*readfile_join(const char *s1, const char *s2)
 {
 	size_t	total_len;
 	char	*res;
@@ -38,7 +38,7 @@ char	*minishell_readfile(char *filename)
 		p = data;
 		data = readfile_join(data, buffer);
 		if (p)
-		 	minishell_free((void **)&p);
+			minishell_free((void **)&p);
 	}
 	return (data);
 }
@@ -49,46 +49,46 @@ void	generate_filename(int32_t fd, char *filename)
 	int32_t	i;
 
 	rbytes = read(fd, filename, FNAME_SIZE);
-    if (rbytes != FNAME_SIZE)
+	if (rbytes != FNAME_SIZE)
 	{
-        perror("Error reading random bytes");
-        minishell_free((void **)&filename);
-        close(fd);
-        return ;
-    }
+		perror("Error reading random bytes");
+		minishell_free((void **)&filename);
+		close(fd);
+		return ;
+	}
 	minishell_strlcpy(filename, "/tmp/.", 7);
 	i = 6;
-    while (i < FNAME_SIZE)
+	while (i < FNAME_SIZE)
 	{
 		filename[i] = "0123456789ABCDEF"[(uint32_t)filename[i] % 16];
 		i++;
-    }
-    filename[i] = 0; 
-    close(fd);
+	}
+	filename[i] = 0;
+	close(fd);
 }
 
 /* 
  * generate a random file name
  * path : /tmp
 */
-char	*minishell_generate_filename()
+char	*minishell_generate_filename(void)
 {
 	int32_t	fd;
 	char	*filename;
 
 	fd = open("/dev/urandom", O_RDONLY);
-    if (fd == -1) 
+	if (fd == -1)
 	{
-        perror("Error opening /dev/urandom");
-        return (NULL);
-    }
-    filename = (char *)minishell_calloc(1, FNAME_SIZE + 1);
-    if (filename == NULL) 
+		perror("Error opening /dev/urandom");
+		return (NULL);
+	}
+	filename = (char *)minishell_calloc(1, FNAME_SIZE + 1);
+	if (filename == NULL)
 	{
-        perror("Memory allocation failed");
-        close(fd);
-        return (NULL);
-    }
-    generate_filename(fd, filename);
+		perror("Memory allocation failed");
+		close(fd);
+		return (NULL);
+	}
+	generate_filename(fd, filename);
 	return (filename);
 }

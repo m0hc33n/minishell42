@@ -190,6 +190,15 @@ typedef struct s_norm_ast
 	t_token		*cur;
 }	t_norm_ast;
 
+typedef struct s_split
+{
+	char	*s;
+	bool	*flags;
+	char	c;
+	int		count;
+	char	**split;
+}	t_split;
+
 extern t_sig	g_sig;
 
 #endif

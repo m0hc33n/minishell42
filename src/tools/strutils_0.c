@@ -33,12 +33,11 @@ bool	minishell_iscmdsep(int c)
 	return (false);
 }
 
-
 uint64_t	minishell_strlcpy(char *dst, const char *src, uint64_t dstsize)
 {
 	uint64_t	i;
 	uint64_t	src_len;
-	char	*s;
+	char		*s;
 
 	i = 0;
 	s = (char *)src;

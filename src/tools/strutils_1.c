@@ -36,7 +36,8 @@ bool	minishell_strequal(const char *s1, const char *s2)
 	}
 	return (false);
 }
-char		*minishell_strjoin(const char *s1, const char *s2)
+
+char	*minishell_strjoin(const char *s1, const char *s2)
 {
 	size_t	total_len;
 	char	*res;

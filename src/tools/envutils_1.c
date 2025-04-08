@@ -2,7 +2,7 @@
 
 static t_status	key_value(t_env *node, char *line);
 
-t_env		*minishell_getenv(char **env)
+t_env	*minishell_getenv(char **env)
 {
 	int32_t		count;
 	t_env		*l_env;
@@ -51,7 +51,7 @@ static t_status	key_value(t_env *node, char *line)
 	return (STATUS_SUCCESS);
 }
 
-char		*minishell_getvalue(t_env *env, char *key)
+char	*minishell_getvalue(t_env *env, char *key)
 {
 	t_env	*node;
 
@@ -59,8 +59,8 @@ char		*minishell_getvalue(t_env *env, char *key)
 	{
 		if (*key != CHAR_DOLLAR_SIGN)
 			return (minishell_strdup(""));
-		key += 1; //skip the $
-		if (!*key) // key is $
+		key += 1;
+		if (!*key)
 			return (minishell_strdup("$"));
 		node = env;
 		while (node)
