@@ -21,7 +21,10 @@ void    reset_lexer(t_minishell *minishell)
         if (minishell->lexer->spaced_cmdline)
 			minishell_free((void **)&minishell->lexer->spaced_cmdline);
         if (minishell->root)
+		{
             reset_token(minishell->root);
+			minishell->root = NULL;
+		}
 		if (minishell->lexer->splited_cmdline)
 			minishell_free((void **)&minishell->lexer->splited_cmdline);
 		minishell_memset(minishell->lexer, 0, sizeof(t_lexer));
