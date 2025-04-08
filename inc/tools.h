@@ -55,7 +55,7 @@ char		*minishell_getpath(t_env *env, char *cmd, t_status *status);
 
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);
-void		hdoc_keyword_noquotes(char **keyword);
+t_status	hdoc_keyword_noquotes(char **keyword);
 char		*minishell_generate_filename();
 char		*minishell_readfile(char *filename);
 

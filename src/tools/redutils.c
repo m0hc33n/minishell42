@@ -12,7 +12,16 @@ bool		minishell_isred(t_root *node)
 	);
 }
 
-void	hdoc_keyword_noquotes(char **keyword)
+t_status	hdoc_keyword_noquotes(char **keyword)
 {
-	//TODO
+	t_token		interim;
+	t_status	status;
+
+	interim.tvalue = minishell_strdup(*keyword);
+	if (!interim.tvalue)
+		return (STATUS_MALLOCERR);
+	if ((status = minishell_remove(&interim)))
+		return (status);
+	*keyword = interim.tvalue;
+	return (STATUS_SUCCESS);
 }
