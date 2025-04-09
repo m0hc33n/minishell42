@@ -28,8 +28,6 @@ static t_status	minishell(t_minishell *minishell)
 	t_status	status;
 
 	minishell->cmdline = readline(minishell->prompt);
-	if (g_sig.is_sig)
-		return (g_sig.is_sig = false, STATUS_SUCCESS);
 	if (!minishell->cmdline)
 	{
 		minishell_cleanup(minishell, STATUS_SUCCESS);

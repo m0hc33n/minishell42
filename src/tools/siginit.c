@@ -25,10 +25,10 @@ void	sigint_handler(int32_t signum)
 		write(STDERR_FILENO, "\nMINISHELL> ", 12);
 }
 
-void	sigquit_handler(int32_t signum)
-{
-	(void)signum;
-}
+// void	sigquit_handler(int32_t signum)
+// {
+// 	(void)signum;
+// }
 
 t_status	minishell_siginit(void)
 {
@@ -37,8 +37,6 @@ t_status	minishell_siginit(void)
 	status = siginit_init(SIGINT, sigint_handler);
 	if (status)
 		return (status);
-	status = siginit_init(SIGQUIT, sigquit_handler);
-	if (status)
-		return (status);
+	signal(SIGQUIT, SIG_IGN);
 	return (STATUS_SUCCESS);
 }

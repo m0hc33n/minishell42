@@ -5,16 +5,17 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "(gdb) Launch",
+			"name": "Debug minishell (External Terminal)",
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/minishell",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "${fileDirname}",
+			"cwd": "${workspaceFolder}", // Changed to workspaceFolder to avoid potential issues
 			"environment": [],
-			"externalConsole": false,
+			"externalConsole": false, // Launches in an external terminal
 			"MIMode": "gdb",
+			"miDebuggerPath": "/usr/bin/gdb", // Add path to gdb if it's not in PATH
 			"setupCommands": [
 				{
 					"description": "Enable pretty-printing for gdb",
@@ -28,6 +29,5 @@
 				}
 			]
 		}
-
 	]
 }

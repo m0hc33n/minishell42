@@ -92,8 +92,8 @@ static void	clean_tree(t_token *token)
 			minishell_free((void **)&token->left);
 			token->left = NULL;
 		}
-		if ((token->right && token->left->ttype == TTOKEN_PARENTHESE_CLOSE)
-			|| (token->right && token->left->ttype == TTOKEN_PARENTHESE_OPEN))
+		if ((token->right && token->right->ttype == TTOKEN_PARENTHESE_CLOSE)
+			|| (token->right && token->right->ttype == TTOKEN_PARENTHESE_OPEN))
 		{
 			minishell_free((void **)&token->right->tvalue);
 			minishell_free((void **)&token->right);
