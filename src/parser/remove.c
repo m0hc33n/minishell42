@@ -44,9 +44,10 @@ static bool	*get_flags_quotes(char *s)
 	i = 0;
 	while (i < len)
 	{
-		qflags[i] = (s[i] != CHAR_DOUBLE_QUOTE) && (s[i] != CHAR_SINGLE_QUOTE);
-		qflags[i] = qflags[i] || (s[i] == CHAR_DOUBLE_QUOTE && flag[0]);
-		qflags[i] = qflags[i] || (s[i] == CHAR_SINGLE_QUOTE && flag[1]);
+		qflags[i] = ((s[i] != CHAR_DOUBLE_QUOTE)
+				&& (s[i] != CHAR_SINGLE_QUOTE));
+		qflags[i] = (qflags[i] || (s[i] == CHAR_DOUBLE_QUOTE && flag[0]));
+		qflags[i] = (qflags[i] || (s[i] == CHAR_SINGLE_QUOTE && flag[1]));
 		if (s[i] == CHAR_DOUBLE_QUOTE && !flag[0])
 			flag[1] = !flag[1];
 		else if (s[i] == CHAR_SINGLE_QUOTE && !flag[1])

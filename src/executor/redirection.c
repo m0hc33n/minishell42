@@ -12,10 +12,9 @@ static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 	if (!fdata)
 		return (false);
 	args.exit = minishell_i32tostr(exit_code);
-	used = false;
 	args.ec_usedp = &used;
 	expanded = fdata;
-	if (cmd_node->hd.is_expand)
+	if (setbool(&used, false) && cmd_node->hd.is_expand)
 	{
 		expanded = minishell_expand(fdata, env, args);
 		minishell_free((void **)&fdata);
@@ -27,13 +26,11 @@ static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 		return (false);
 	write(fd, expanded, minishell_strlen(expanded));
 	minishell_free((void **)&expanded);
-	close(fd);
-	unlink(cmd_node->hd.filename);
-	return (true);
+	return (close(fd), unlink(cmd_node->hd.filename), true);
 }
 
-static void	handle_ioa(t_root *node, t_root *cmd_node,
-				int32_t input_fd, int32_t output_fd)
+static void	handle_ioa(t_root *node, t_root *cmd_node, int32_t input_fd,
+		int32_t output_fd)
 {
 	while (minishell_isred(node))
 	{
@@ -51,8 +48,8 @@ static void	handle_ioa(t_root *node, t_root *cmd_node,
 	}
 }
 
-void		exec_redirect(t_minishell *minishell, t_root *node,
-				int32_t input_fd, int32_t output_fd)
+void	exec_redirect(t_minishell *minishell, t_root *node, int32_t input_fd,
+		int32_t output_fd)
 {
 	t_root	*cmd_node;
 	int32_t	bkpfd[2];
@@ -72,7 +69,7 @@ void		exec_redirect(t_minishell *minishell, t_root *node,
 		minishell_free((void **)&cmd_node->hd.filename);
 		close(cmd_node->hd.fd);
 	}
-	dup2(bkpfd[0], input_fd);	
+	dup2(bkpfd[0], input_fd);
 	dup2(bkpfd[1], output_fd);
 	close(bkpfd[0]);
 	close(bkpfd[1]);

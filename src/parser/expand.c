@@ -76,7 +76,7 @@ static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i)
 	return (STATUS_SUCCESS);
 }
 
-static bool	is_separator(char c) // !!!!! need all cases a jemmi
+static bool	is_separator(char c)
 {
 	if (minishell_isspace(c))
 		return (true);

@@ -41,7 +41,8 @@ static void	hdoc_input(int32_t fd, char *keyword)
 	exit(STATUS_SUCCESS);
 }
 
-static t_status	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node, char **keyword)
+static t_status	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node,
+		char **keyword)
 {
 	if (hdoc_node->right->ttype == TTOKEN_HEREDOC_KEYWORD)
 		*keyword = hdoc_node->right->tvalue;
@@ -75,7 +76,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 
 	status = hdoc_keyword_file(cmd_node, hdoc_node, &keyword);
 	if (status || !cmd_node->hd.filename || cmd_node->hd.fd == -1)
-		return(STATUS_HDOCFAILED);
+		return (STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
 	{
 		g_sig.is_hdoc = 1;
@@ -96,7 +97,7 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 
 void	executor_handle_hdoc(t_root *root, t_status *status)
 {
-	t_root		*cmd_node;
+	t_root	*cmd_node;
 
 	if (!root || *status)
 		return ;
@@ -106,7 +107,7 @@ void	executor_handle_hdoc(t_root *root, t_status *status)
 		while (root && minishell_isred(root))
 		{
 			if (root->ttype == TTOKEN_HEREDOC)
-			{	
+			{
 				*status = handle_hdoc(cmd_node, root);
 				if (*status)
 					return ;
@@ -114,6 +115,6 @@ void	executor_handle_hdoc(t_root *root, t_status *status)
 			root = root->right;
 		}
 	}
-    executor_handle_hdoc(root->left, status);
-    executor_handle_hdoc(root->right, status);
+	executor_handle_hdoc(root->left, status);
+	executor_handle_hdoc(root->right, status);
 }

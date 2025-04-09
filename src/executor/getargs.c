@@ -1,7 +1,7 @@
 #include "../../inc/executor.h"
 
-static uint32_t getargs_argc(t_root *root)
-{	
+static uint32_t	getargs_argc(t_root *root)
+{
 	uint32_t	sz;
 
 	sz = 0;
@@ -15,11 +15,11 @@ static uint32_t getargs_argc(t_root *root)
 		return (sz);
 	}
 	return (0);
-}	
+}
 
-static char **getargs_init(t_root *root, uint32_t *argc)
+static char	**getargs_init(t_root *root, uint32_t *argc)
 {
-	char		**argv;
+	char	**argv;
 
 	if (root)
 	{
@@ -32,23 +32,11 @@ static char **getargs_init(t_root *root, uint32_t *argc)
 	return (NULL);
 }
 
-char	**executor_getargs(t_root *root, t_minishell *ms, t_status *status)
+static void	getargs_setargc(t_root *root, char **argv)
 {
-	char		**argv;
-	uint32_t	argc;
 	uint32_t	count;
 
 	count = 0;
-	*status = minishell_translate(root, ms->env, minishell_i32tostr(ms->exit_code));
-	if (*status)
-	{
-		if (*status != STATUS_MALLOCERR)
-			ms->exit_code = 127;
-		return (NULL);
-	}
-	argv = getargs_init(root, &argc);
-	if (!argv || !argc)
-		return (NULL);
 	if (root->tvalue == TTOKEN_COMMAND)
 	{
 		argv[count++] = root->tvalue;
@@ -60,5 +48,23 @@ char	**executor_getargs(t_root *root, t_minishell *ms, t_status *status)
 		root = root->right;
 	}
 	argv[count] = 0;
+}
+
+char	**executor_getargs(t_root *root, t_minishell *ms, t_status *status)
+{
+	char		**argv;
+	uint32_t	argc;
+
+	*status = minishell_translate(root, ms->env,
+			minishell_i32tostr(ms->exit_code));
+	if (*status)
+	{
+		if (*status != STATUS_MALLOCERR)
+			ms->exit_code = 127;
+		return (NULL);
+	}
+	argv = getargs_init(root, &argc);
+	if (!argv || !argc)
+		return (NULL);
 	return (argv);
 }

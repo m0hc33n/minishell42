@@ -43,7 +43,7 @@ static void	get_flags(bool *flags, char *s)
 			flag[0] = !flag[0];
 		flags[i] = false;
 		if (s[i] == SPACE)
-			flags[i] = !flag[0] && !flag[1];
+			flags[i] = (!flag[0] && !flag[1]);
 		i += 1;
 	}
 }
