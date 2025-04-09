@@ -66,5 +66,6 @@ char	**executor_getargs(t_root *root, t_minishell *ms, t_status *status)
 	argv = getargs_init(root, &argc);
 	if (!argv || !argc)
 		return (NULL);
+	getargs_setargc(root, argv);
 	return (argv);
 }

@@ -45,6 +45,8 @@ static t_status	minishell(t_minishell *minishell)
 	if (status)
 		return (status);
 	status = minishell_executor(minishell);
+	if (g_sig.is_sig)
+		return (g_sig.is_sig = false, STATUS_SUCCESS);
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);

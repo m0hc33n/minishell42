@@ -32,7 +32,6 @@ static void	exec_exec(t_minishell *minishell, char **argv)
 void	exec_cmd(t_minishell *minishell, t_root *cmd_node)
 {
 	char	**argv;
-	pid_t	pid;
 	int32_t	status;
 
 	status = 0;
