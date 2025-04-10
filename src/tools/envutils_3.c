@@ -11,11 +11,10 @@ char	**minishell_getenvp(t_env *env)
 	if (!env)
 		return (NULL);
 	size = get_env_size(env);
-	envp = (char **)malloc(sizeof(char *) * (size + 1));
+	envp = (char **)minishell_calloc(size + 1, sizeof(char *));
 	if (!envp)
 		return (NULL);
-	minishell_memset(envp, 0, sizeof(char *) * (size + 1));
-	if (fill_envp(env, envp))
+	if (!fill_envp(env, envp))
 		return (minishell_free_arr(envp), NULL);
 	return (envp);
 }
@@ -48,14 +47,12 @@ static bool	fill_envp(t_env *env, char **envp)
 	{
 		kl = minishell_strlen(node_i->key);
 		vl = minishell_strlen(node_i->value);
-		printf("%s=%s\n", node_i->key, node_i->value);
-		printf("[size is %u]\n", kl + vl + 2);
-		envp[i] = (char *)malloc(sizeof(char) * (kl+ vl + 2));
+		envp[i] = (char *)malloc(sizeof(char) * (kl + vl + 2));
 		if (!envp[i])
 			return (false);
 		minishell_strlcpy(envp[i], node_i->key, kl + 1);
 		minishell_strlcpy(envp[i] + kl, "=", 2);
-		minishell_strlcat(envp[i] + kl + 2, node_i->value, kl + vl + 2);
+		minishell_strlcat(envp[i], node_i->value, kl + vl + 2);
 		i += 1;
 		node_i = node_i->next_key;
 	}
