@@ -20,6 +20,7 @@ static void	exec_exec(t_minishell *minishell, char **argv)
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
+		signal(SIGQUIT, SIG_DFL);
 		envp = minishell_getenvp(minishell->env);
 		if (!envp)
 			exit(EXIT_FAILURE);
@@ -28,10 +29,7 @@ static void	exec_exec(t_minishell *minishell, char **argv)
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) == 0)
-		minishell->exit_code = 0;
-	else
-		minishell->exit_code = WEXITSTATUS(status);
+	minishell_setstatus(minishell, status);
 }
 
 void	exec_cmd(t_minishell *minishell, t_root *cmd_node)

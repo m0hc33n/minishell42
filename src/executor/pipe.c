@@ -50,6 +50,7 @@ static void	pipeit_child(t_minishell *minishell, t_root *node, int32_t input_fd,
 {
 	t_norm_pipe	p;
 
+	signal(SIGQUIT, SIG_DFL);
 	exec_redirect_if_needed(minishell, node, input_fd, output_fd);
 	p.cmd_node = node->left;
 	if (node->ttype == TTOKEN_COMMAND)
@@ -86,8 +87,7 @@ static void	handle_parent(t_minishell *minishell, t_root *node,
 	if (node->ttype == TTOKEN_PIPE)
 		pipeit(minishell, node->right, pipe_fd[PIPE_READ_END]);
 	waitpid(info[1], &status, 0);
-	if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
-		minishell->exit_code = WEXITSTATUS(status);
+	minishell_setstatus(minishell, status);
 }
 
 void	pipeit(t_minishell *minishell, t_root *node, int32_t input_fd)

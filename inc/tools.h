@@ -63,4 +63,7 @@ char		*minishell_readfile(char *filename);
 // SIGNALS
 t_status	minishell_siginit(void);
 
+// EXIT STATUS
+void		minishell_setstatus(t_minishell *minishell, int status);
+
 #endif

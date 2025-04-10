@@ -93,9 +93,9 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 	status = 0;
 	waitpid(-1, &status, 0);
 	cmd_node->hd.is_hd = true;
-	if (WIFEXITED(status))
-		return ((t_status)WEXITSTATUS(status));
-	return (STATUS_HDOCFAILED);
+	if (WTERMSIG(status) == SIGINT)
+		return (STATUS_HDOCSIGINT);
+	return (STATUS_SUCCESS);
 }
 
 void	executor_handle_hdoc(t_root *root, t_status *status)

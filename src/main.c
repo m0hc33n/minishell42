@@ -1,6 +1,6 @@
 #include "../inc/minishell.h"
 
-t_sig	g_sig = {false, false, 130, 131};
+t_sig			g_sig = {false, false, 130, 131};
 
 t_status	minishell_init(t_minishell **minishell, char **env)
 {
@@ -18,11 +18,11 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 		(*minishell)->stdfd[1] = dup(STDOUT_FILENO);
 		if (minishell_siginit())
 			return (STATUS_SIGINIT);
-		if (tcgetattr(STDIN_FILENO, &(*minishell)->original_termios) == -1) 
+		if (tcgetattr(STDIN_FILENO, &(*minishell)->original_termios) == -1)
 		{
-        	perror("tcgetattr");
-       		return (STATUS_TERMIOSAVE);
-    	}
+			perror("tcgetattr");
+			return (STATUS_TERMIOSAVE);
+		}
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_MSINITERROR);
@@ -52,8 +52,6 @@ static t_status	minishell(t_minishell *minishell)
 	if (status)
 		return (status);
 	status = minishell_executor(minishell);
-	if (g_sig.is_sig)
-		return (g_sig.is_sig = false, STATUS_SUCCESS);
 	if (status)
 		return (status);
 	return (STATUS_SUCCESS);

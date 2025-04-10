@@ -20,7 +20,6 @@ t_status	minishell_env(char **argv, t_env *l_env);
 
 t_status	minishell_exit(t_minishell *minishell);
 
-
 # define ECHOO	"echo"
 # define CD		"cd"
 # define PWD	"pwd"

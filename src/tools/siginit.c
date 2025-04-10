@@ -15,23 +15,19 @@ t_status	siginit_init(int32_t signum, void (*sighandler)(int32_t))
 void	sigint_handler(int32_t signum)
 {
 	(void)signum;
-	g_sig.is_sig = true;
 	if (g_sig.is_hdoc)
 	{
 		g_sig.is_hdoc = 0;
+		g_sig.is_sig = false;
 		exit(STATUS_HDOCSIGINT);
 	}
 	else
 		write(STDOUT_FILENO, "\n", 1);
+	g_sig.is_sig = true;
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
 }
-
-// void	sigquit_handler(int32_t signum)
-// {
-// 	(void)signum;
-// }
 
 t_status	minishell_siginit(void)
 {
