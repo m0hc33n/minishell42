@@ -185,7 +185,7 @@ typedef struct s_quotes
 
 typedef struct s_norm_ast
 {
-	t_match		*names;
+	t_match		*ns;
 	t_token		*rright;
 	bool		first;
 	char		*rep;
