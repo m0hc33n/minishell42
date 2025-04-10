@@ -15,11 +15,16 @@ static void	exec_exec(t_minishell *minishell, char **argv)
 {
 	int32_t	status;
 	pid_t	pid;
+	char	**envp;
 
 	pid = fork();
 	if (pid == CHILD_PROCESS)
 	{
-		execve(argv[0], argv, NULL);
+		envp = minishell_getenvp(minishell->env);
+		if (!envp)
+			exit(EXIT_FAILURE);
+		execve(argv[0], argv, envp);
+		minishell_free_arr(envp);
 		exit(EXIT_FAILURE);
 	}
 	waitpid(pid, &status, 0);

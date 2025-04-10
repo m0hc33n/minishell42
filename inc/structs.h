@@ -202,6 +202,14 @@ typedef struct s_split
 	char	**split;
 }	t_split;
 
+typedef struct s_norm_pipe
+{
+	char		**argv;
+	t_root		*cmd_node;
+	t_status	status;
+	char		**envp;
+}	t_norm_pipe;
+
 extern t_sig	g_sig;
 
 #endif

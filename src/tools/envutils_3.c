@@ -48,6 +48,8 @@ static bool	fill_envp(t_env *env, char **envp)
 	{
 		kl = minishell_strlen(node_i->key);
 		vl = minishell_strlen(node_i->value);
+		printf("%s=%s\n", node_i->key, node_i->value);
+		printf("[size is %u]\n", kl + vl + 2);
 		envp[i] = (char *)malloc(sizeof(char) * (kl+ vl + 2));
 		if (!envp[i])
 			return (false);
