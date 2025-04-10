@@ -22,7 +22,7 @@ t_status	default_export(t_env *env)
 			node = node->next_key;
 		}
 		smallest->chosen = true;
-		printf("declare -x %s=%s\n", smallest->key, smallest->value);
+		printf("declare -x %s=\"%s\"\n", smallest->key, smallest->value);
 	}
 	reset_chosen(env);
 	return (STATUS_SUCCESS);

@@ -52,6 +52,8 @@ void		minishell_envfree(t_env *env);
 
 char		*minishell_getpath(t_env *env, char *cmd, t_status *status);
 
+char		**minishell_getenvp(t_env *env);
+
 // REDIRECTION UTILS 
 bool		minishell_isred(t_root *node);
 t_status	hdoc_keyword_noquotes(char **keyword);
