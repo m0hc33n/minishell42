@@ -22,7 +22,10 @@ void	sigint_handler(int32_t signum)
 		exit(STATUS_HDOCSIGINT);
 	}
 	else
-		write(STDERR_FILENO, "\nMINISHELL> ", 12);
+		write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_on_new_line();
+	rl_redisplay();
 }
 
 // void	sigquit_handler(int32_t signum)

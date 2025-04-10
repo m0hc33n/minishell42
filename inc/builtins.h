@@ -20,13 +20,14 @@ t_status	minishell_env(char **argv, t_env *l_env);
 
 t_status	minishell_exit(t_minishell *minishell);
 
-# define ECHO	"echo"		//ok
-# define CD		"cd"		//ok
-# define PWD	"pwd"		//ok
-# define EXPORT	"export"	//
-# define UNSET	"unset"		//ok
-# define ENV	"env"		//ok
-# define EXIT	"exit"		//ok
+
+# define ECHOO	"echo"
+# define CD		"cd"
+# define PWD	"pwd"
+# define EXPORT	"export"
+# define UNSET	"unset"
+# define ENV	"env"
+# define EXIT	"exit"
 
 bool		minishell_isbuiltin(char *cmd);
 t_status	exec_builtin(t_minishell *minishell, char **argv);

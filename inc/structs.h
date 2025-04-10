@@ -55,7 +55,9 @@ typedef enum e_status
 	STATUS_SIGINIT			= 0x00000D,
 	STATUS_CMDNOTFOUND		= 0x00000E,
 	STATUS_PATHNOTFOUND		= 0x00000F,
-	STATUS_DIRFAILED		= 0x000010
+	STATUS_DIRFAILED		= 0x000010, 
+	STATUS_TERMIOSAVE		= 0X000011,
+	STATUS_TERMIOSRES		= 0X000011
 }	t_status;
 
 typedef struct s_env
@@ -101,14 +103,15 @@ typedef struct s_lexer
 
 typedef struct s_minishell
 {
-	char	*prompt;
-	char	*cmdline;
-	t_env	*env;
-	char	*cwd;
-	t_lexer	*lexer;
-	t_root	*root;
-	int32_t	stdfd[2];
-	int32_t	exit_code;
+	char			*prompt;
+	char			*cmdline;
+	t_env			*env;
+	char			*cwd;
+	t_lexer			*lexer;
+	t_root			*root;
+	int32_t			stdfd[2];
+	int32_t			exit_code;
+	struct termios	original_termios;
 }	t_minishell;
 
 typedef struct s_sig

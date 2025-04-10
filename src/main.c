@@ -18,6 +18,11 @@ t_status	minishell_init(t_minishell **minishell, char **env)
 		(*minishell)->stdfd[1] = dup(STDOUT_FILENO);
 		if (minishell_siginit())
 			return (STATUS_SIGINIT);
+		if (tcgetattr(STDIN_FILENO, &(*minishell)->original_termios) == -1) 
+		{
+        	perror("tcgetattr");
+       		return (STATUS_TERMIOSAVE);
+    	}
 		return (STATUS_SUCCESS);
 	}
 	return (STATUS_MSINITERROR);
@@ -27,7 +32,11 @@ static t_status	minishell(t_minishell *minishell)
 {
 	t_status	status;
 
-	minishell->cmdline = readline(minishell->prompt);
+	if (g_sig.is_sig)
+		minishell->cmdline = readline(NULL);
+	else
+		minishell->cmdline = readline(minishell->prompt);
+	g_sig.is_sig = false;
 	if (!minishell->cmdline)
 	{
 		minishell_cleanup(minishell, STATUS_SUCCESS);

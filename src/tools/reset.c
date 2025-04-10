@@ -34,11 +34,16 @@ void	reset_lexer(t_minishell *minishell)
 
 void	minishell_reset(t_minishell *minishell)
 {
-	if (minishell)
-	{
-		if (minishell->lexer)
-			reset_lexer(minishell);
-		if (minishell->cmdline)
-			minishell_free((void **)&minishell->cmdline);
+    if (minishell)
+    {
+        if (minishell->lexer)
+            reset_lexer(minishell);
+        if (minishell->cmdline)
+           minishell_free((void **)&minishell->cmdline);
+    	if (tcsetattr(STDIN_FILENO, TCSANOW, &minishell->original_termios) == -1)
+		{
+       		perror("tcsetattr");
+        	minishell_cleanup(minishell, STATUS_TERMIOSRES);
+   		}
 	}
 }
