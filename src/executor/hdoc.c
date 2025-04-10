@@ -82,13 +82,12 @@ static t_status	handle_hdoc(t_root *cmd_node, t_root *hdoc_node)
 		return (STATUS_HDOCFAILED);
 	if (fork() == CHILD_PROCESS)
 	{
-		g_sig.is_hdoc = 1;
+		signal(SIGINT, SIG_DFL);
 		fd = open(cmd_node->hd.filename, O_RDWR);
 		if (fd == -1)
 			exit(STATUS_HDOCFAILED);
 		hdoc_input(fd, keyword);
 		minishell_free((void **)&keyword);
-		g_sig.is_hdoc = 0;
 	}
 	status = 0;
 	waitpid(-1, &status, 0);

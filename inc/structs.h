@@ -114,14 +114,6 @@ typedef struct s_minishell
 	struct termios	original_termios;
 }	t_minishell;
 
-typedef struct s_sig
-{
-	bool	is_hdoc;
-	bool	is_sig;
-	int32_t	sigint_code;
-	int32_t	sigquit_code;
-}	t_sig;
-
 typedef struct s_match
 {
 	char			*name;
@@ -210,6 +202,6 @@ typedef struct s_norm_pipe
 	char		**envp;
 }	t_norm_pipe;
 
-extern t_sig	g_sig;
+extern pid_t	g_sig_pid;
 
 #endif

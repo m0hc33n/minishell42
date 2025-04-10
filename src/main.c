@@ -1,6 +1,6 @@
 #include "../inc/minishell.h"
 
-t_sig			g_sig = {false, false, 130, 131};
+pid_t	g_sig_pid = 0;
 
 t_status	minishell_init(t_minishell **minishell, char **env)
 {
@@ -32,11 +32,7 @@ static t_status	minishell(t_minishell *minishell)
 {
 	t_status	status;
 
-	if (g_sig.is_sig)
-		minishell->cmdline = readline(NULL);
-	else
-		minishell->cmdline = readline(minishell->prompt);
-	g_sig.is_sig = false;
+	minishell->cmdline = readline(minishell->prompt);
 	if (!minishell->cmdline)
 	{
 		minishell_cleanup(minishell, STATUS_SUCCESS);

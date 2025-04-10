@@ -40,6 +40,7 @@ void	minishell_reset(t_minishell *minishell)
 			reset_lexer(minishell);
 		if (minishell->cmdline)
 			minishell_free((void **)&minishell->cmdline);
+		g_sig_pid = 0;
 		if (tcsetattr(STDIN_FILENO, TCSANOW, &minishell->original_termios)
 			== -1)
 		{
