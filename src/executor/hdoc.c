@@ -29,7 +29,10 @@ static void	hdoc_input(int32_t fd, char *keyword)
 	{
 		buffer = readline("> ");
 		if (!buffer)
+		{
+			close(fd);
 			exit(STATUS_SUCCESS);
+		}
 		if (minishell_strequal(keyword, buffer))
 			break ;
 		buffer_nl = insert_newline(buffer);

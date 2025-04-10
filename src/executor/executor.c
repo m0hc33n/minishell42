@@ -40,6 +40,11 @@ t_status	minishell_executor(t_minishell *minishell)
 	{
 		if (status == STATUS_HDOCSIGINT)
 			minishell->exit_code = g_sig.sigint_code;
+		if (minishell->root->left->hd.is_hd)
+		{
+			minishell_free((void **)&minishell->root->left->hd.filename);
+			close(minishell->root->left->hd.fd);
+		}
 		return (status);
 	}
 	executor_exec(minishell, minishell->root);

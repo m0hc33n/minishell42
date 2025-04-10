@@ -40,6 +40,7 @@ char	*minishell_readfile(char *filename)
 		if (p)
 			minishell_free((void **)&p);
 	}
+	close(fd);
 	return (data);
 }
 
