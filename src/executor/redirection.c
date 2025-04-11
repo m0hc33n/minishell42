@@ -6,21 +6,17 @@ static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 	char	*expanded;
 	int32_t	fd;
 	t_args	args;
-	bool	used;
 
 	fdata = minishell_readfile(cmd_node->hd.filename);
 	if (!fdata)
 		return (false);
 	args.exit = minishell_i32tostr(exit_code);
-	args.ec_usedp = &used;
 	expanded = fdata;
-	if (setbool(&used, false) && cmd_node->hd.is_expand)
+	if (cmd_node->hd.is_expand)
 	{
 		expanded = minishell_expand(fdata, env, args);
 		minishell_free((void **)&fdata);
 	}
-	if (!used)
-		minishell_free((void **)&args.exit);
 	fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR | O_TRUNC);
 	if (fd == -1)
 		return (false);

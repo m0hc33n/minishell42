@@ -31,9 +31,8 @@ static char	*expand(t_result *buff, t_env *env, t_args args)
 			while (buff->result[i[1]] && !is_separator(buff->result[i[1]]))
 				i[1] += 1;
 			buff->key = (char *)malloc(sizeof(char) * (i[1] - i[0] + 1));
-			if (modify(buff, env, args, i))
-				return (NULL);
-			i[0] = i[1];
+			if (!buff->key || modify(buff, env, args, i))
+				return (minishell_free((void **)&buff->result), NULL);
 		}
 		else
 		{
@@ -49,14 +48,12 @@ static char	*expand(t_result *buff, t_env *env, t_args args)
 
 static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i)
 {
-	if (!buff->key)
-		return (free_buff(buff, 0, true), STATUS_MALLOCERR);
 	minishell_strlcpy(buff->key, buff->result + i[0], i[1] - i[0] + 1);
-	if (minishell_strequal(buff->key, "$?") && setbool(args.ec_usedp, true))
-		buff->value = args.exit;
+	if (minishell_strequal(buff->key, "$?"))
+		buff->value = minishell_strdup(args.exit);
 	else
 		buff->value = minishell_getvalue(env, buff->key);
-	if (!buff->value && setbool(args.ec_usedp, false))
+	if (!buff->value)
 		return (free_buff(buff, 1, true), STATUS_MALLOCERR);
 	buff->result[i[0]] = 0;
 	buff->prefix = minishell_strdup(buff->result);
@@ -67,6 +64,7 @@ static t_status	modify(t_result *buff, t_env *env, t_args args, uint32_t *i)
 	if (free_buff(buff, 0, true) && !buff->suffix)
 		return (free_buff(buff, 3, false), STATUS_MALLOCERR);
 	buff->result = minishell_strjoin(buff->prefix, buff->value);
+	i[0] += minishell_strlen(buff->value);
 	if (free_buff(buff, 3, false) && !buff->result)
 		return (free_buff(buff, 4, false), STATUS_MALLOCERR);
 	buff->saver = buff->result;

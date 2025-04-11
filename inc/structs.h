@@ -134,7 +134,6 @@ typedef struct s_args
 	char	*exit;
 	bool	flag;
 	uint8_t	step;
-	bool	*ec_usedp;
 }	t_args;
 
 typedef struct s_chunk
