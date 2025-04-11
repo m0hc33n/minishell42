@@ -23,7 +23,8 @@ t_status	minishell_translate(t_token *root, t_env *env, char *str_exitcode)
 	status = update(root, env, args);
 	if (status)
 		return (minishell_free((void **)&str_exitcode), status);
-	(fix_tree(root), clean_tree(root));
+	fix_tree(root);
+	clean_tree(root);
 	if (!ec_used)
 		minishell_free((void **)&str_exitcode);
 	return (STATUS_SUCCESS);
@@ -34,26 +35,27 @@ static t_status	update(t_token *token, t_env *env, t_args args)
 	t_status	s;
 	char		*temp;
 
-	if (token)
-	{
-		s = minishell_interpret(token, env, args);
-		if (s)
-			return (s);
-		if (token->ttype == TTOKEN_COMMAND
-			&& !minishell_isbuiltin(token->tvalue))
-		{
-			temp = minishell_getpath(env, token->tvalue, &s);
-			if (!temp)
-				return (s = (s == 0) * STATUS_CMDNOTFOUND + s, s);
-			minishell_free((void **)&token->tvalue);
-			token->tvalue = temp;
-		}
-		args.flag = check_flag(token);
-		s = update(token->right, env, args);
-		if (s)
-			return (s);
+	if (!token)
 		return (STATUS_SUCCESS);
+	s = minishell_interpret(token, env, args);
+	if (s)
+		return (s);
+	if (args.step == 1 && token->ttype == TTOKEN_COMMAND
+		&& !minishell_isbuiltin(token->tvalue))
+	{
+		s = minishell_remove(token);
+		if (s)
+			return (s);
+		temp = minishell_getpath(env, token->tvalue, &s);
+		if (!temp)
+			return (s = (s == 0) * STATUS_CMDNOTFOUND + s, s);
+		minishell_free((void **)&token->tvalue);
+		token->tvalue = temp;
 	}
+	args.flag = check_flag(token);
+	s = update(token->right, env, args);
+	if (s)
+		return (s);
 	return (STATUS_SUCCESS);
 }
 

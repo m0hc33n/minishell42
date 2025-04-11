@@ -3,6 +3,7 @@ CFLAGS	= -Wall -Wextra -Werror -g
 
 ## minishell headers
 MINISHELL_HDR	= inc/minishell.h
+STRUCTS_HDR		= inc/structs.h
 BUILTINS_HDR	= inc/builtins.h
 EXECUTOR_HDR	= inc/executor.h
 PARSER_HDR		= inc/parser.h
@@ -64,22 +65,22 @@ $(NAME): $(MINISHELL_OBJS) $(EXECUTOR_OBJS) $(PARSER_OBJS) $(LEXER_OBJS) $(TOOLS
 	$(CC) $(CFLAGS) -o $@ $^ -lreadline
 
 ## compilation
-$(OBJ_PATH)%.o: $(MINISHELL_PATH)%.c $(MINISHELL_HDR)
+$(OBJ_PATH)%.o: $(MINISHELL_PATH)%.c $(MINISHELL_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_PATH)%.o: $(EXECUTOR_PATH)/%.c $(EXECUTOR_HDR)
+$(OBJ_PATH)%.o: $(EXECUTOR_PATH)/%.c $(EXECUTOR_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_PATH)%.o: $(PARSER_PATH)/%.c $(PARSER_HDR)
+$(OBJ_PATH)%.o: $(PARSER_PATH)/%.c $(PARSER_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_PATH)%.o: $(LEXER_PATH)/%.c $(LEXER_HDR)
+$(OBJ_PATH)%.o: $(LEXER_PATH)/%.c $(LEXER_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_PATH)%.o: $(BUILTINS_PATH)/%.c $(BUILTINS_HDR)
+$(OBJ_PATH)%.o: $(BUILTINS_PATH)/%.c $(BUILTINS_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_PATH)%.o: $(TOOL_PATH)/%.c $(TOOLS_HDR)
+$(OBJ_PATH)%.o: $(TOOL_PATH)/%.c $(TOOLS_HDR) $(STRUCTS_HDR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 ## clean target

@@ -79,13 +79,11 @@ static t_status	add_name_to_tree(t_norm_ast *local)
 	local->rep = minishell_strdup(local->ns->name);
 	if (!local->rep)
 		return (free_mem(local->ns, NULL), STATUS_MALLOCERR);
-	if (local->first)
-	{
-		minishell_free((void **)&local->cur->tvalue);
+	if (!local->first)
+		local->cur->ttype = TTOKEN_ARGUMENT;
+	if (local->first && minishell_free((void **)&local->cur->tvalue))
 		local->first = false;
-	}
 	local->cur->tvalue = local->rep;
-	local->cur->ttype = TTOKEN_ARGUMENT;
 	local->ns = local->ns->next;
 	if (local->ns)
 	{
