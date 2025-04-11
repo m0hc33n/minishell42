@@ -48,6 +48,14 @@ static void	handle_ioa(t_root *node, t_root *cmd_node, int32_t input_fd,
 	}
 }
 
+static void	redirect_clean(int32_t fds[], int32_t input_fd, int32_t output_fd)
+{
+	dup2(fds[0], input_fd);
+	dup2(fds[1], output_fd);
+	close(fds[0]);
+	close(fds[1]);
+}
+
 void	exec_redirect(t_minishell *minishell, t_root *node, int32_t input_fd,
 		int32_t output_fd)
 {
@@ -74,8 +82,5 @@ void	exec_redirect(t_minishell *minishell, t_root *node, int32_t input_fd,
 		minishell_free((void **)&cmd_node->hd.filename);
 		close(cmd_node->hd.fd);
 	}
-	dup2(bkpfd[0], input_fd);
-	dup2(bkpfd[1], output_fd);
-	close(bkpfd[0]);
-	close(bkpfd[1]);
+	redirect_clean(bkpfd, input_fd, output_fd);
 }
