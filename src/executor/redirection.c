@@ -29,23 +29,24 @@ static bool	expand_hdoc_in(t_root *cmd_node, t_env *env, int32_t exit_code)
 	return (close(fd), unlink(cmd_node->hd.filename), true);
 }
 
-static void	handle_ioa(t_root *node, t_root *cmd_node, int32_t input_fd,
+static t_status	handle_ioa(t_root *node, t_root *cmd_node, int32_t input_fd,
 		int32_t output_fd)
 {
 	while (minishell_isred(node))
 	{
 		if (node->ttype == TTOKEN_OUTPUT)
-			redirect_output(node, output_fd);
+			return (redirect_output(node, output_fd));
 		else if (node->ttype == TTOKEN_APPEND)
-			redirect_append(node, output_fd);
+			return (redirect_append(node, output_fd));
 		else if (node->ttype == TTOKEN_INPUT)
-			redirect_input(node, input_fd);
+			return (redirect_input(node, input_fd));
 		else if (node->ttype == TTOKEN_HEREDOC)
-			redirect_hdoc(cmd_node, input_fd);
+			return (redirect_hdoc(cmd_node, input_fd));
 		node = node->right;
 		while (node && (!minishell_isred(node)))
 			node = node->right;
 	}
+	return (STATUS_SUCCESS);
 }
 
 static void	redirect_clean(int32_t fds[], int32_t input_fd, int32_t output_fd)
@@ -72,12 +73,13 @@ void	exec_redirect(t_minishell *minishell, t_root *node, int32_t input_fd,
 	}
 	cmd_node = node->left;
 	tflag = true;
-	handle_ioa(node, cmd_node, input_fd, output_fd);
+	if (handle_ioa(node, cmd_node, input_fd, output_fd))
+		return ;
 	if (cmd_node->hd.is_hd)
 		tflag = expand_hdoc_in(cmd_node, minishell->env, minishell->exit_code);
 	if (tflag)
 		exec_cmd(minishell, cmd_node);
-	if (cmd_node->hd.is_hd)
+	if (cmd_node->hd.is_hd && setbool(&cmd_node->hd.is_hd, false))
 	{
 		minishell_free((void **)&cmd_node->hd.filename);
 		close(cmd_node->hd.fd);

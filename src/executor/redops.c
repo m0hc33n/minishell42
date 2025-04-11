@@ -1,6 +1,6 @@
 #include "../../inc/executor.h"
 
-void	redirect_output(t_root *node, int32_t output_fd)
+t_status	redirect_output(t_root *node, int32_t output_fd)
 {
 	int32_t	fd;
 	t_root	*file_node;
@@ -16,18 +16,19 @@ void	redirect_output(t_root *node, int32_t output_fd)
 		if (fd == -1)
 		{
 			perror("Error opening file");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		if (dup2(fd, output_fd) == -1)
 		{
 			perror("dup2");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		close(fd);
 	}
+	return (STATUS_SUCCESS);
 }
 
-void	redirect_append(t_root *node, int32_t output_fd)
+t_status	redirect_append(t_root *node, int32_t output_fd)
 {
 	int32_t	fd;
 	t_root	*file_node;
@@ -43,18 +44,19 @@ void	redirect_append(t_root *node, int32_t output_fd)
 		if (fd == -1)
 		{
 			perror("Error opening file");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		if (dup2(fd, output_fd) == -1)
 		{
 			perror("dup2");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		close(fd);
 	}
+	return (STATUS_SUCCESS);
 }
 
-void	redirect_input(t_root *node, int32_t input_fd)
+t_status	redirect_input(t_root *node, int32_t input_fd)
 {
 	int32_t	fd;
 	t_root	*file_node;
@@ -70,25 +72,27 @@ void	redirect_input(t_root *node, int32_t input_fd)
 		if (fd == -1)
 		{
 			perror("Error opening file");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		if (dup2(fd, input_fd) == -1)
 		{
 			perror("dup2");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 		close(fd);
 	}
+	return (STATUS_SUCCESS);
 }
 
-void	redirect_hdoc(t_root *cmd_node, int32_t input_fd)
+t_status	redirect_hdoc(t_root *cmd_node, int32_t input_fd)
 {
 	if (cmd_node && cmd_node->hd.is_hd)
 	{
 		if (dup2(cmd_node->hd.fd, input_fd) == -1)
 		{
 			perror("redirect_hdoc : dup2");
-			exit(EXIT_FAILURE);
+			return (STATUS_FAILURE);
 		}
 	}
+	return (STATUS_SUCCESS);
 }
