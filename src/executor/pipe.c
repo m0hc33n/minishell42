@@ -1,22 +1,5 @@
 #include "../../inc/executor.h"
 
-static void	exec_redirect_if_needed(t_minishell *minishell, t_root *node,
-		int32_t input_fd, int32_t output_fd)
-{
-	t_root	*rnode;
-
-	rnode = NULL;
-	if (minishell_isred(node) || minishell_isred(node->left))
-	{
-		if (minishell_isred(node))
-			rnode = node;
-		else
-			rnode = node->left;
-		exec_redirect(minishell, rnode, input_fd, output_fd);
-		exit(minishell->exit_code);
-	}
-}
-
 static void	setup_input_output(t_root *node, int32_t input_fd,
 		int32_t output_fd)
 {
@@ -45,22 +28,38 @@ static void	setup_input_output(t_root *node, int32_t input_fd,
 	}
 }
 
+static void	exec_redirect_if_needed(t_minishell *minishell, t_root *node,
+		int32_t input_fd, int32_t output_fd)
+{
+	t_root	*rnode;
+
+	rnode = NULL;
+	if (minishell_isred(node) || minishell_isred(node->left))
+	{
+		if (minishell_isred(node))
+		{
+			rnode = node;
+		}
+		else
+			rnode = node->left;
+		exec_redirect(minishell, rnode, input_fd, output_fd);
+		exit(minishell->exit_code);
+	}
+}
+
 static void	pipeit_child(t_minishell *minishell, t_root *node, int32_t input_fd,
 		int32_t output_fd)
 {
 	t_norm_pipe	p;
 
 	signal(SIGQUIT, SIG_DFL);
-	exec_redirect_if_needed(minishell, node, input_fd, output_fd);
 	p.cmd_node = node->left;
 	if (node->ttype == TTOKEN_COMMAND)
 		p.cmd_node = node;
 	setup_input_output(p.cmd_node, input_fd, output_fd);
+	exec_redirect_if_needed(minishell, node, 0, 1);
 	p.status = 0;
-	if (node->ttype == TTOKEN_PIPE)
-		p.argv = executor_getargs(node->left, minishell, &p.status);
-	else
-		p.argv = executor_getargs(node, minishell, &p.status);
+	p.argv = executor_getargs(p.cmd_node, minishell, &p.status);
 	if (!p.argv)
 		exit(p.status);
 	if (minishell_isbuiltin(p.argv[0]))

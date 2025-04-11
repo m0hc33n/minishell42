@@ -57,6 +57,11 @@ void	exec_redirect(t_minishell *minishell, t_root *node, int32_t input_fd,
 
 	bkpfd[0] = dup(input_fd);
 	bkpfd[1] = dup(output_fd);
+	if (bkpfd[0] == -1 || bkpfd[1] == -1)
+	{
+		perror("exec_redirect");
+		return ;
+	}
 	cmd_node = node->left;
 	tflag = true;
 	handle_ioa(node, cmd_node, input_fd, output_fd);
