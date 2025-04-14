@@ -87,7 +87,7 @@ static t_status	add_name_to_tree(t_norm_ast *local)
 	local->ns = local->ns->next;
 	if (local->ns)
 	{
-		local->cur->right = (t_token *)malloc(sizeof(t_token));
+		local->cur->right = (t_token *)minishell_calloc(1, sizeof(t_token));
 		if (!local->cur->right)
 		{
 			local->cur->right = local->rright;

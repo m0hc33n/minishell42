@@ -10,6 +10,11 @@ static void	reset_token(t_root *root)
 		{
 			minishell_free((void **)&root->tvalue);
 		}
+		if (root->hd.is_hd)
+		{
+			minishell_free((void **)&root->hd.filename);
+			close(root->hd.fd);
+		}
 		minishell_free((void **)&root);
 	}
 }
@@ -32,25 +37,10 @@ static void	reset_lexer(t_minishell *minishell)
 	}
 }
 
-static void	free_hdoc_data(t_root *root)
-{
-	if (root)
-	{
-		free_hdoc_data(root->left);
-		free_hdoc_data(root->right);
-		if (root->hd.is_hd)
-		{
-			minishell_free((void **)&root->hd.filename);
-			close(root->hd.fd);
-		}
-	}
-}
-
 void	minishell_reset(t_minishell *minishell)
 {
 	if (minishell)
 	{
-		free_hdoc_data(minishell->root);
 		if (minishell->lexer)
 			reset_lexer(minishell);
 		if (minishell->cmdline)

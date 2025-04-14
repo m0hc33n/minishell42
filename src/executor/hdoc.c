@@ -63,8 +63,9 @@ static t_status	hdoc_keyword_file(t_root *cmd_node, t_root *hdoc_node,
 	if (cmd_node->hd.is_hd)
 	{
 		unlink(cmd_node->hd.filename);
-		close(cmd_node->hd.fd);
+		cmd_node->hd.is_hd = false;
 		minishell_free((void **)&cmd_node->hd.filename);
+		close(cmd_node->hd.fd);
 	}
 	cmd_node->hd.filename = minishell_generate_filename();
 	cmd_node->hd.fd = open(cmd_node->hd.filename, O_CREAT | O_RDWR, 0644);

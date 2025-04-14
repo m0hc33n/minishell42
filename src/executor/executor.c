@@ -42,6 +42,7 @@ t_status	minishell_executor(t_minishell *minishell)
 			minishell->exit_code = 130;
 		if (minishell->root->left->hd.is_hd)
 		{
+			minishell->root->left->hd.is_hd = false;
 			minishell_free((void **)&minishell->root->left->hd.filename);
 			close(minishell->root->left->hd.fd);
 		}
